@@ -11,7 +11,7 @@ setup-hooks.sh
 
 # Kanopy
 
-./KANOPY_DEPLOYMENT_README.md
+KANOPY_DEPLOYMENT_README.md
 .drone-multicontainer-pods.yml
 .drone-seperate-pods.yml
 
