@@ -5,7 +5,7 @@ const GlobalSlice = createSlice({
   initialState: {
     currentStep: 1,
     maxStep: 1,
-    loadedAlerts: [],
+    loadedExternalConditions: [],
     selectedSupplier: null,
     selectedAlertType: "logistical",
   },
@@ -21,8 +21,8 @@ const GlobalSlice = createSlice({
       state.currentStep = step;
       if (step > state.maxStep) state.maxStep = step;
     },
-    setLoadedAlerts(state, action) {
-      state.loadedAlerts = action.payload;
+    setLoadedExternalConditions(state, action) {
+      state.loadedExternalConditions = action.payload;
     },
     setSelectedSupplier(state, action) {
       state.selectedSupplier = action.payload;
@@ -37,7 +37,7 @@ export const {
   setCurrentStep,
   setMaxStep,
   advanceToStep,
-  setLoadedAlerts,
+  setLoadedExternalConditions,
   setSelectedSupplier,
   setSelectedAlertType,
 } = GlobalSlice.actions;
