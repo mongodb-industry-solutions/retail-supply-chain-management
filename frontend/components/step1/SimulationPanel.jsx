@@ -59,70 +59,78 @@ export default function SimulationPanel() {
   const isIdle = !isSimulating && !isDone;
 
   return (
-    <Card className="mb-4">
-      <div className="d-flex align-items-start justify-content-between mb-3">
-        <SectionHeader
-          title="External Conditions"
-          subtitle="Trigger simulated supply chain disruption conditions"
-        />
-        <Button
-          variant="primary"
-          size="large"
-          disabled={isSimulating || isDone}
-          onClick={startSimulation}
-        >
-          {isSimulating ? "Simulating..." : "▶ Start Simulation"}
-        </Button>
-      </div>
+    <>
+      <SectionHeader
+        title="External Conditions"
+        subtitle="Trigger simulated supply chain disruption conditions"
+        rightElement={
+          <Button
+            variant="primary"
+            size="large"
+            disabled={isSimulating || isDone}
+            onClick={startSimulation}
+          >
+            {isSimulating ? "Simulating..." : "▶ Start Simulation"}
+          </Button>
+        }
+      />
+      <Card className="mb-4">
+        {isSimulating && (
+          <div style={{ marginBottom: spacing[400] }}>
+            <div className="d-flex justify-content-between mb-1">
+              <Body style={{ color: palette.gray.dark1, fontSize: 12 }}>
+                Receiving external conditions...
+              </Body>
+              <Body style={{ color: palette.gray.dark1, fontSize: 12 }}>
+                {Math.round(
+                  (progress / 100) * simulatedExternalConditions.length,
+                )}{" "}
+                / {simulatedExternalConditions.length}
+              </Body>
+            </div>
+            <ProgressBar
+              now={progress}
+              style={{ height: 4, borderRadius: 2 }}
+            />
+          </div>
+        )}
 
-      {isSimulating && (
-        <div style={{ marginBottom: spacing[400] }}>
-          <div className="d-flex justify-content-between mb-1">
-            <Body style={{ color: palette.gray.dark1, fontSize: 12 }}>
-              Receiving external conditions...
+        {isIdle && (
+          <div
+            style={{
+              border: `1.5px dashed ${palette.gray.light1}`,
+              borderRadius: 10,
+              padding: 32,
+              textAlign: "center",
+              color: palette.gray.base,
+            }}
+          >
+            <div style={{ fontSize: 32, marginBottom: spacing[200] }}>⚡</div>
+            <Body style={{ color: palette.gray.base }}>
+              Click &quot;Start Simulation&quot; to receive external conditions
             </Body>
-            <Body style={{ color: palette.gray.dark1, fontSize: 12 }}>
-              {Math.round(
-                (progress / 100) * simulatedExternalConditions.length,
-              )}{" "}
-              / {simulatedExternalConditions.length}
-            </Body>
           </div>
-          <ProgressBar now={progress} style={{ height: 4, borderRadius: 2 }} />
-        </div>
-      )}
+        )}
 
-      {isIdle && (
-        <div
-          style={{
-            border: `1.5px dashed ${palette.gray.light1}`,
-            borderRadius: 10,
-            padding: 32,
-            textAlign: "center",
-            color: palette.gray.base,
-          }}
-        >
-          <div style={{ fontSize: 32, marginBottom: spacing[200] }}>⚡</div>
-          <Body style={{ color: palette.gray.base }}>
-            Click &quot;Start Simulation&quot; to receive external conditions
-          </Body>
-        </div>
-      )}
-
-      {isDone && (
-        <div>
-          <div className="d-flex flex-column gap-2">
-            {conditions.map((c) => (
-              <ExternalConditionCard key={c.id} condition={c} />
-            ))}
+        {isDone && (
+          <div>
+            <div className="d-flex flex-column gap-2">
+              {conditions.map((c) => (
+                <ExternalConditionCard key={c.id} condition={c} />
+              ))}
+            </div>
+            <div className="d-flex justify-content-end mt-2">
+              <Button
+                variant="primary"
+                size="large"
+                onClick={handleGoToAnalysis}
+              >
+                Go to supplier impact analysis →
+              </Button>
+            </div>
           </div>
-          <div className="d-flex justify-content-end mt-2">
-            <Button variant="primary" size="large" onClick={handleGoToAnalysis}>
-              Go to supplier impact analysis →
-            </Button>
-          </div>
-        </div>
-      )}
-    </Card>
+        )}
+      </Card>
+    </>
   );
 }

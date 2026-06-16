@@ -5,7 +5,7 @@ import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import Button from "@leafygreen-ui/button";
 
-export default function WhyMongoDB({ children, onLearnMore, learnMoreLabel = "✨ Learn More" }) {
+export default function WhyMongoDB({ children, title = "🍃 Why MongoDB?", onLearnMore, learnMoreLabel = "✨ Learn More" }) {
   return (
     <div
       style={{
@@ -20,7 +20,7 @@ export default function WhyMongoDB({ children, onLearnMore, learnMoreLabel = "�
         style={{ marginBottom: spacing[200] }}
       >
         <Body weight="medium" style={{ color: palette.green.dark2, margin: 0 }}>
-          🍃 Why MongoDB?
+          {title}
         </Body>
         {onLearnMore && (
           <Button size="small" variant="default" onClick={onLearnMore}>

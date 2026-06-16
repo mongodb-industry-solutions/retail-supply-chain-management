@@ -6,6 +6,7 @@ const GlobalSlice = createSlice({
     currentStep: 1,
     maxStep: 1,
     loadedExternalConditions: [],
+    affectedSuppliers: [],
     selectedSupplier: null,
     selectedAlertType: "logistical",
   },
@@ -24,6 +25,9 @@ const GlobalSlice = createSlice({
     setLoadedExternalConditions(state, action) {
       state.loadedExternalConditions = action.payload;
     },
+    setAffectedSuppliers(state, action) {
+      state.affectedSuppliers = action.payload;
+    },
     setSelectedSupplier(state, action) {
       state.selectedSupplier = action.payload;
     },
@@ -38,6 +42,7 @@ export const {
   setMaxStep,
   advanceToStep,
   setLoadedExternalConditions,
+  setAffectedSuppliers,
   setSelectedSupplier,
   setSelectedAlertType,
 } = GlobalSlice.actions;
