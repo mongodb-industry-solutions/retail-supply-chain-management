@@ -1,29 +1,19 @@
 "use client";
 
+import Accordion from "react-bootstrap/Accordion";
 import { Drawer } from "@leafygreen-ui/drawer";
-
-import { ExpandableCard } from "@leafygreen-ui/expandable-card";
+import { Overline } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import WhyMongoDB from "./WhyMongoDB";
-
-const TYPE_VARIANT = { thought: "green", tool: "blue", observation: "yellow" };
-
-const BORDER_COLOR = {
-  tool: palette.blue.light1,
-  thought: palette.green.base,
-  observation: palette.yellow.light1,
-};
 
 export default function LogDrawer({
   show,
   onHide,
   title = "",
   subtitle = "",
-  logs = [],
+  phases = [],
 }) {
-  const isStringLog = logs.length > 0 && typeof logs[0] === "string";
-
   return (
     <>
       <style>{`
@@ -42,10 +32,9 @@ export default function LogDrawer({
             className="d-flex flex-column"
             style={{ height: "fit-content", margin: "10px 0" }}
           >
-            <p className="m-0">{title} </p>
+            <p className="m-0">{title}</p>
             <small style={{ fontSize: 13 }} className="text-secondary m-0">
-              {" "}
-              {subtitle}{" "}
+              {subtitle}
             </small>
           </div>
         }
@@ -57,93 +46,64 @@ export default function LogDrawer({
         }}
       >
         <div>
-          {/* LangGraph + MongoDB banner */}
           <WhyMongoDB title="🍃 LangGraph + MongoDB">
-            LangChain and MongoDB <a href="https://www.mongodb.com/docs/atlas/ai-integrations/langgraph/build-agents/" target="_blank">combined stack</a> gives agents retrieval, persistent memory, access to operational data, observability, and reliable deployment across the full pipeline — all without rearchitecting the data layer.
+            LangChain and MongoDB{" "}
+            <a
+              href="https://www.mongodb.com/docs/atlas/ai-integrations/langgraph/build-agents/"
+              target="_blank"
+            >
+              combined stack
+            </a>{" "}
+            gives agents retrieval, persistent memory, access to operational
+            data, observability, and reliable deployment across the full
+            pipeline — all without rearchitecting the data layer.
           </WhyMongoDB>
-          <br></br>
-          <div className="d-flex flex-column gap-2">
-            {isStringLog
-              ? logs.map((label, i) => (
-                  <ExpandableLogCard key={i} index={i} label={label} />
-                ))
-              : logs.map((log, i) => <FlatLogEntry key={i} log={log} />)}
+
+          <div className="d-flex flex-column gap-4 mt-3">
+            {phases.map((phase, phaseIdx) => (
+              <div key={phaseIdx}>
+                <Overline
+                  style={{
+                    display: "block",
+                    marginBottom: spacing[200],
+                    color: palette.gray.dark1,
+                    paddingBottom: spacing[100],
+                    borderBottom: `1px solid ${palette.gray.light2}`,
+                  }}
+                >
+                  {phase.name}
+                </Overline>
+
+                <Accordion>
+                  {phase.steps.map((step, stepIdx) => (
+                    <Accordion.Item key={stepIdx} eventKey={String(stepIdx)}>
+                      <Accordion.Header>{step.name}</Accordion.Header>
+                      <Accordion.Body>
+                        <div className="d-flex flex-column gap-1">
+                          {step.logs.map((line, lineIdx) => (
+                            <p
+                              key={lineIdx}
+                              style={{
+                                fontSize: 12,
+                                fontFamily: "monospace",
+                                color: palette.gray.dark3,
+                                margin: 0,
+                                lineHeight: 1.7,
+                              }}
+                            >
+                              {line}
+                            </p>
+                          ))}
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+              </div>
+            ))}
           </div>
         </div>
       </Drawer>
     </>
-  );
-}
-
-function ExpandableLogCard({ index, label }) {
-  return (
-    <ExpandableCard
-      title={`Step ${index + 1}`}
-      description={label}
-      flagText="agent"
-    >
-      <p
-        style={{
-          fontSize: 13,
-          color: palette.gray.light1,
-          margin: 0,
-          fontStyle: "italic",
-        }}
-      >
-        Execution details for this step are streamed live during agent run.
-      </p>
-    </ExpandableCard>
-  );
-}
-
-function FlatLogEntry({ log }) {
-  const borderColor = BORDER_COLOR[log.type] ?? palette.gray.light1;
-  const typeColor =
-    log.type === "thought"
-      ? palette.green.light1
-      : log.type === "tool"
-        ? palette.blue.light1
-        : palette.yellow.light1;
-
-  return (
-    <div
-      style={{
-        borderLeft: `3px solid ${borderColor}`,
-        padding: `${spacing[200]}px ${spacing[400]}px`,
-        background: palette.gray.dark3,
-        borderRadius: "0 8px 8px 0",
-      }}
-    >
-      <div
-        className="d-flex align-items-center gap-2"
-        style={{ marginBottom: spacing[100] }}
-      >
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: typeColor,
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-          }}
-        >
-          {log.type}
-        </span>
-        <span style={{ color: palette.gray.light1, fontSize: 13 }}>
-          {log.timestamp}
-        </span>
-      </div>
-      <p
-        style={{
-          fontSize: 14,
-          color: palette.gray.light2,
-          fontFamily: log.type === "tool" ? "monospace" : "inherit",
-          lineHeight: 1.6,
-          margin: 0,
-        }}
-      >
-        {log.message}
-      </p>
-    </div>
   );
 }

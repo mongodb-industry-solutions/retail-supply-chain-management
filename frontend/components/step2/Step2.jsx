@@ -19,23 +19,58 @@ import WorldMap from "./WorldMap";
 import BehindTheScenes from "./BehindTheScenes";
 import Icon from "@leafygreen-ui/icon";
 import { Code } from "@leafygreen-ui/code";
-import Card from "@leafygreen-ui/card";
+import {Card} from "@leafygreen-ui/card";
 
-const AGENT_STEPS = [
-  "Connecting to MongoDB Atlas cluster...",
-  "Fetching active external condition events from change stream...",
-  "Cross-referencing supplier contracts with affected regions...",
-  "Running geospatial risk assessment via Atlas Search...",
-  "Calculating compound risk scores using Aggregation Pipeline...",
-  "Ranking suppliers by exposure and contract value...",
-  "Analysis complete — suppliers identified with critical exposure.",
+const AGENT_PHASES = [
+  {
+    name: "Affected suppliers",
+    steps: [
+      "Identifying suppliers inside the affected external condition area",
+      "Context Assembly (knowledge, memory, state)",
+      "Calculating Dynamic Risk Priority Number (RPN) for the suppliers",
+      "Writing the evaluations to MongoDB",
+    ],
+  },
 ];
 
-const AGENT_LOGS = [
-  "Identifying suppliers inside the affected external condition area",
-  "Context Assembly (knowledge, memory, tool state)",
-  "Calculating Dynamic Risk Priority Number (RPN) for affected suppliers",
-  "Writing supplier evaluations to MongoDB",
+const AGENT_LOG_PHASES = [
+  {
+    name: "Affected suppliers",
+    steps: [
+      {
+        name: "Identifying suppliers inside the affected external condition area",
+        logs: [
+          "Loading external condition zones from MongoDB...",
+          "Running $geoWithin query on supplier collection...",
+          "Found 7 suppliers within 320 km radius of Red Sea epicentre",
+        ],
+      },
+      {
+        name: "Context Assembly (knowledge, memory, state)",
+        logs: [
+          "Fetching supplier contracts from Atlas...",
+          "Loading agent memory: 3 historical episodes retrieved",
+          "Assembling context window (4,200 tokens)",
+        ],
+      },
+      {
+        name: "Calculating Dynamic Risk Priority Number (RPN) for the suppliers",
+        logs: [
+          "Applying severity weight: 1.8 (logistical disruption)",
+          "RPN updated for 5 critical suppliers",
+          "Highest RPN: Shenzhen Electronics Co. → 847",
+        ],
+      },
+      {
+        name: "Writing the evaluations to MongoDB",
+        logs: [
+          "Writing 7 supplier evaluations to MongoDB...",
+          "Collection: supplier_risk_evaluations",
+          "Acknowledged: 7 documents written",
+        ],
+      },
+    ],
+  },
 ];
 
 const GEO_QUERY = `db.suppliers.aggregate([
@@ -83,7 +118,7 @@ export default function Step2() {
       <ReActAgent
         title="Identifying affected suppliers"
         subtitle="The ReAct (Reason + Act) agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
-        steps={AGENT_STEPS}
+        phases={AGENT_PHASES}
         onComplete={() => setAgentDone(true)}
         onViewLogs={() => setLogsOpen(true)}
       />
@@ -93,7 +128,7 @@ export default function Step2() {
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="ReAct Agent powered by LangGraph + MongoDB Atlas"
-        logs={AGENT_LOGS}
+        phases={AGENT_LOG_PHASES}
       />
 
       {agentDone && (
