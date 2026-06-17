@@ -6,6 +6,9 @@ export const simulatedExternalConditions = [
       "Expected logistics delays for suppliers dependent on the Red Sea supply corridor. Estimated 7-14 day delays for shipments rerouting via Cape of Good Hope.",
     severity: "high",
     region: "Middle East / Suez Canal",
+    lat: 13.5127,
+    lng: 43.6229,
+    radiusKm: 320,
   },
   {
     type: "geopolitical",
@@ -14,6 +17,9 @@ export const simulatedExternalConditions = [
       "Escalating sanctions and border restrictions affecting cross-border freight. Alternative routing through Baltic states recommended for affected suppliers.",
     severity: "high",
     region: "Eastern Europe",
+    lat: 51.5,
+    lng: 26.5,
+    radiusKm: 700,
   },
   {
     type: "climate",
@@ -22,6 +28,9 @@ export const simulatedExternalConditions = [
       "Hurricane Maria projected to make landfall near Houston ports within 72 hours. Port operations expected to halt. Pre-position inventory from Gulf Coast warehouses.",
     severity: "high",
     region: "Gulf of Mexico",
+    lat: 29.5,
+    lng: -94.0,
+    radiusKm: 350,
   },
 ];
 

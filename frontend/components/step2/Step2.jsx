@@ -189,10 +189,10 @@ export default function Step2() {
             </Card>
           )}
           <div className="row g-4" style={{ marginBottom: spacing[400] }}>
-            <div className="col-8">
+            <div className="col-7">
               <SupplierGrid onFindAlternatives={handleFindAlternatives} />
             </div>
-            <div className="col-4">
+            <div className="col-5">
               <WorldMap />
             </div>
           </div>

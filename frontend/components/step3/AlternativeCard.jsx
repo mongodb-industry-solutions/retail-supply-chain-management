@@ -180,7 +180,7 @@ export default function AlternativeCard({ supplier, isFirst, onOpenCert, onEscal
       {/* ── Footer ── */}
       <div className="d-flex justify-content-end pt-3" style={{ borderTop: `1px solid ${palette.gray.light2}` }}>
         <Button variant="primary" onClick={onEscalate}>
-          Escalate
+          Elect
         </Button>
       </div>
     </Card>
