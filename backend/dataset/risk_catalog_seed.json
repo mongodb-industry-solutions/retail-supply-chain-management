@@ -1,0 +1,175 @@
+[
+  {
+    "risk_id": "RISK-GEO-001",
+    "risk_type": "geopolitical_tariff",
+    "name": "US-CN trade tariff escalation",
+    "description": "US import tariffs imposed on goods from China, affecting cost and lead times for CN-region suppliers.",
+    "applies_to_regions": [
+      "CN",
+      "TW"
+    ],
+    "severity": 8,
+    "occurrence_base": 5,
+    "detection": 4,
+    "rpn_base": 160,
+    "alert_threshold_rpn": 260,
+    "signal_source": "GDELT",
+    "has_physical_location": false
+  },
+  {
+    "risk_id": "RISK-GEO-002",
+    "risk_type": "geopolitical_tariff",
+    "name": "US-VN trade tariff escalation",
+    "description": "US tariff pressure on Vietnamese manufactured goods following trade policy shifts.",
+    "applies_to_regions": [
+      "VN"
+    ],
+    "severity": 6,
+    "occurrence_base": 3,
+    "detection": 4,
+    "rpn_base": 72,
+    "alert_threshold_rpn": 180,
+    "signal_source": "GDELT",
+    "has_physical_location": false
+  },
+  {
+    "risk_id": "RISK-LOG-001",
+    "risk_type": "logistics_disruption",
+    "name": "Shenzhen / Yantian port congestion",
+    "description": "Severe congestion at Yantian and Nansha terminals causing 12-18 day transit delays.",
+    "applies_to_regions": [
+      "CN",
+      "HK"
+    ],
+    "severity": 6,
+    "occurrence_base": 4,
+    "detection": 5,
+    "rpn_base": 120,
+    "alert_threshold_rpn": 180,
+    "signal_source": "MarineTraffic",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-LOG-002",
+    "risk_type": "logistics_disruption",
+    "name": "Rotterdam port congestion",
+    "description": "Congestion at Rotterdam causing delays for EU-origin shipments.",
+    "applies_to_regions": [
+      "NL",
+      "DE",
+      "BE"
+    ],
+    "severity": 5,
+    "occurrence_base": 3,
+    "detection": 4,
+    "rpn_base": 60,
+    "alert_threshold_rpn": 150,
+    "signal_source": "MarineTraffic",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-LOG-003",
+    "risk_type": "logistics_disruption",
+    "name": "Panama Canal capacity restriction",
+    "description": "Reduced canal capacity due to drought, causing rerouting and 10-14 day delays for LATAM-US routes.",
+    "applies_to_regions": [
+      "MX",
+      "CO",
+      "PE",
+      "BR"
+    ],
+    "severity": 7,
+    "occurrence_base": 3,
+    "detection": 4,
+    "rpn_base": 84,
+    "alert_threshold_rpn": 200,
+    "signal_source": "MarineTraffic",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-CLM-001",
+    "risk_type": "climate_disruption",
+    "name": "Tropical storm \u2014 Oaxaca / Pacific coast MX",
+    "description": "Tropical storm or hurricane affecting fresh produce growing regions in Oaxaca and surrounding states.",
+    "applies_to_regions": [
+      "MX"
+    ],
+    "severity": 9,
+    "occurrence_base": 4,
+    "detection": 3,
+    "rpn_base": 108,
+    "alert_threshold_rpn": 220,
+    "signal_source": "NOAA",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-CLM-002",
+    "risk_type": "climate_disruption",
+    "name": "Drought \u2014 California / US West",
+    "description": "Prolonged drought affecting agricultural output in California and US West Coast suppliers.",
+    "applies_to_regions": [
+      "US"
+    ],
+    "severity": 7,
+    "occurrence_base": 5,
+    "detection": 3,
+    "rpn_base": 105,
+    "alert_threshold_rpn": 200,
+    "signal_source": "NOAA",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-CLM-003",
+    "risk_type": "climate_disruption",
+    "name": "Flooding \u2014 Thailand / Chao Phraya basin",
+    "description": "Seasonal flooding in central Thailand disrupting agricultural and manufacturing supply.",
+    "applies_to_regions": [
+      "TH"
+    ],
+    "severity": 7,
+    "occurrence_base": 4,
+    "detection": 4,
+    "rpn_base": 112,
+    "alert_threshold_rpn": 210,
+    "signal_source": "NOAA",
+    "has_physical_location": true
+  },
+  {
+    "risk_id": "RISK-GEO-003",
+    "risk_type": "geopolitical_tariff",
+    "name": "EU import restrictions \u2014 food safety compliance",
+    "description": "EU tightening food safety import requirements, affecting certification compliance timelines.",
+    "applies_to_regions": [
+      "MA",
+      "ZA",
+      "IN"
+    ],
+    "severity": 5,
+    "occurrence_base": 2,
+    "detection": 3,
+    "rpn_base": 30,
+    "alert_threshold_rpn": 120,
+    "signal_source": "GDELT",
+    "has_physical_location": false
+  },
+  {
+    "risk_id": "RISK-LOG-004",
+    "risk_type": "logistics_disruption",
+    "name": "US East Coast port labor disruption",
+    "description": "Strike or labor action at major US East Coast ports affecting inbound shipments.",
+    "applies_to_regions": [
+      "CN",
+      "VN",
+      "TW",
+      "IN",
+      "BR"
+    ],
+    "severity": 8,
+    "occurrence_base": 2,
+    "detection": 3,
+    "rpn_base": 48,
+    "alert_threshold_rpn": 180,
+    "signal_source": "MarineTraffic",
+    "has_physical_location": true
+  }
+]
