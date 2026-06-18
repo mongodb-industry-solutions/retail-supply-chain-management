@@ -10,24 +10,37 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@leafygreen-ui/badge": "^10.2.4",
     "@leafygreen-ui/button": "^23.1.6",
+    "@leafygreen-ui/card": "^13.3.1",
+    "@leafygreen-ui/code": "^20.2.7",
+    "@leafygreen-ui/drawer": "^5.2.3",
+    "@leafygreen-ui/expandable-card": "^5.2.4",
     "@leafygreen-ui/icon": "^13.4.0",
+    "@leafygreen-ui/icon-button": "^17.1.5",
     "@leafygreen-ui/leafygreen-provider": "^4.0.7",
     "@leafygreen-ui/modal": "^17.1.7",
+    "@leafygreen-ui/ordered-list": "^3.0.11",
     "@leafygreen-ui/palette": "^5.0.1",
+    "@leafygreen-ui/stepper": "^6.1.5",
     "@leafygreen-ui/tabs": "^14.2.5",
+    "@leafygreen-ui/tokens": "^4.2.2",
     "@leafygreen-ui/typography": "^20.1.9",
+    "@reduxjs/toolkit": "^2.12.0",
+    "bootstrap": "^5.3.8",
     "dotenv": "^17.2.2",
+    "leaflet": "^1.9.4",
     "next": "^15.5.7",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "19.1.0",
+    "react-leaflet": "^5.0.0",
+    "react-redux": "^9.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
-    "license-checker": "^25.0.1",
-    "tailwindcss": "^4"
+    "license-checker": "^25.0.1"
   }
 }
