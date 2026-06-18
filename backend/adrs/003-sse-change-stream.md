@@ -8,7 +8,7 @@ Accepted
 The frontend requires real-time visibility into agent progress. Two communication patterns are needed:
 
 1. **Frontend ← Backend**: The frontend must receive incremental updates as agents run (LLM token streaming, node completion events, final results).
-2. **Ingestion → Risk Evaluator**: The risk evaluator must activate automatically when new disruption signals are written, without the frontend or ingestion engine calling it directly.
+2. **Ingestion → Risk Evaluator**: The risk evaluator must activate when new disruption signals are written. The activation model differs between demo and production.
 
 Options considered for frontend communication: WebSockets, polling, SSE. Options considered for internal activation: direct function call, message broker, Change Streams.
 
@@ -29,11 +29,18 @@ data: {"event": "stream_end"}
 
 ```
 
-### Internal Agent Activation: MongoDB Change Streams
+### Agent Activation: Demo vs Production
 
-Rather than having `ingestion_engine` directly call `risk_evaluator`, the ingestion engine writes trigger documents to the `external_conditions` collection with `is_demo_trigger: true` and a `session_id`. The `risk_evaluator` watches this collection via a MongoDB Change Stream filtered to the relevant `session_id`.
+#### Demo
 
-This preserves the slice boundary: ingestion does not import from risk_evaluator. MongoDB is the message bus.
+Both agents are activated by explicit frontend POSTs — this is a human-driven flow that matches the demo's step-by-step UX:
+
+- `risk_evaluator` — activated by `POST /api/simulation/evaluate` after the ingestion step completes. The frontend drives the sequence.
+- `alternative_finder` — activated by `POST /api/agent/find-alternatives` after the user reviews the risk evaluation results. Human-in-the-loop by design.
+
+#### Production
+
+- `risk_evaluator` — would be activated automatically by a MongoDB Change Stream watching the `external_conditions` collection for `is_demo_trigger: true` inserts. The ingestion engine writes a trigger document; the risk evaluator wakes up without any direct call from the frontend or ingestion service. This preserves the slice boundary: ingestion does not import from risk_evaluator. MongoDB is the message bus.
 
 ```
 [ingestion_engine]
@@ -46,9 +53,9 @@ This preserves the slice boundary: ingestion does not import from risk_evaluator
   streams results to frontend via SSE
 ```
 
-### Human-in-the-Loop: Explicit POST for Alternative Finder
+- `alternative_finder` — remains frontend-triggered (`POST /api/agent/find-alternatives`). Human-in-the-loop is intentional regardless of environment.
 
-The `alternative_finder` is not activated automatically. After reviewing the risk evaluation results, the user explicitly triggers it via `POST /api/agent/find-alternatives`. This models the human-in-the-loop pattern intentionally.
+See `risk_evaluator/stream_listener.py` for the Change Stream implementation stub.
 
 ## In Production
 
@@ -60,7 +67,7 @@ SSE would remain appropriate for frontend communication unless bidirectional mes
 
 **Positive**
 - Real-time UX with no polling on the frontend.
-- Slice boundaries are enforced at the data layer — ingestion and risk evaluation are decoupled.
+- In production, slice boundaries are enforced at the data layer — ingestion and risk evaluation are decoupled.
 - Change Streams provide at-least-once delivery within the replica set oplog window.
 - SSE is simple to implement and debug (plain HTTP, inspectable in browser DevTools).
 

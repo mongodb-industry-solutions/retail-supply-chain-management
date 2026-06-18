@@ -7,7 +7,7 @@ This is the FastAPI backend for the Retail Supply Chain Risk demo. It simulates 
 | Slice | What it does |
 |---|---|
 | `ingestion_engine` | Accepts a `POST /api/simulation/start` request, deterministically selects a target supplier and disruption type for the session, generates 3 demo trigger documents (one per risk type), and inserts them into the `external_conditions` collection. Streams progress to the frontend via SSE. |
-| `risk_evaluator` | Activated internally by a MongoDB Change Stream watching `external_conditions` for `is_demo_trigger=True` inserts. Runs a LangGraph graph that detects conditions, matches affected suppliers, calculates RPN scores, retrieves session memory, and generates a streamed LLM risk summary. |
+| `risk_evaluator` | Activated by explicit frontend `POST /api/simulation/evaluate` (demo). Runs a LangGraph graph that detects conditions, matches affected suppliers, calculates RPN scores, retrieves session memory, and generates a streamed LLM risk summary. In production: would be activated by a MongoDB Change Stream on `external_conditions` (see `stream_listener.py` and ADR 003). |
 | `alternative_finder` | Activated by an explicit `POST /api/agent/find-alternatives` (human-in-the-loop). Runs a LangGraph graph that performs hybrid search, Voyage AI reranking, and validation (certifications, lead time, capacity) to surface replacement suppliers. Streams results via SSE. |
 
 ## Folder Structure
