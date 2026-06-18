@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Body } from "@leafygreen-ui/typography";
 import { Badge } from "@leafygreen-ui/badge";
-import Button from "@leafygreen-ui/button";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { conditionConfig } from "../../data/externalConditions";
@@ -26,8 +25,7 @@ const DOC_MODELS = {
     epicentre: { type: "Point", coordinates: [43.6229, 13.5127] },
     impact_radius_km: 320,
     detected_at: 'ISODate("2026-05-05T09:41:00Z")',
-    "valid_until  // ← TTL index — auto-deletes in 72h":
-      'ISODate("2026-05-08T09:41:00Z")',
+    valid_until: 'ISODate("2026-05-08T09:41:00Z")', // TTL index — auto-deletes in 72h
   },
   geopolitical: {
     condition_id: "COND-20260505-1134",
@@ -40,8 +38,7 @@ const DOC_MODELS = {
     epicentre: { type: "Point", coordinates: [30.5234, 50.4501] },
     impact_radius_km: 500,
     detected_at: 'ISODate("2026-05-05T11:34:00Z")',
-    "valid_until  // ← TTL index — auto-deletes in 72h":
-      'ISODate("2026-05-08T11:34:00Z")',
+    valid_until: 'ISODate("2026-05-08T11:34:00Z")', // TTL index — auto-deletes in 72h
   },
   climate: {
     condition_id: "COND-20260505-1408",

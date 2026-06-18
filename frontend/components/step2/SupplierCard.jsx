@@ -10,7 +10,6 @@ import { spacing } from "@leafygreen-ui/tokens";
 import { setSelectedSupplier } from "../../redux/slices/GlobalSlice";
 import { riskConfig, categoryConfig } from "../../data/suppliers";
 import { conditionConfig } from "../../data/externalConditions";
-import Icon from "@leafygreen-ui/icon";
 import SupplierTitle from "../shared/SupplierTitle";
 
 function ConditionBadgeWithRPN({ type, rpnByCondition }) {

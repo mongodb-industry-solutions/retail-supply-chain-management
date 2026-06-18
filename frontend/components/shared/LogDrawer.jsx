@@ -51,6 +51,7 @@ export default function LogDrawer({
             <a
               href="https://www.mongodb.com/docs/atlas/ai-integrations/langgraph/build-agents/"
               target="_blank"
+              rel="noopener noreferrer"
             >
               combined stack
             </a>{" "}

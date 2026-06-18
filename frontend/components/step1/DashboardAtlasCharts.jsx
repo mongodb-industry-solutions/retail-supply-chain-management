@@ -44,7 +44,7 @@ export default function DashboardAtlasCharts() {
         }
       />
       <Card style={{ padding: spacing[400], marginBottom: spacing[400] }}>
-        <div className="row g-3 m-4">Comming soon...</div>
+        <div className="row g-3 m-4">Coming soon...</div>
       </Card>
     </>
   );

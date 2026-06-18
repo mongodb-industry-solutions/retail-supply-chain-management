@@ -3,7 +3,6 @@
 import { useSelector } from "react-redux";
 import { Body } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
-import SectionHeader from "../shared/SectionHeader";
 import SupplierCard from "./SupplierCard";
 import { generateAffectedSuppliers } from "../../data/suppliers";
 
