@@ -1,0 +1,472 @@
+[
+  {
+    "condition_id": "COND-BASE-LOG-001",
+    "risk_catalog_ref": "RISK-LOG-001",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Moderate vessel queuing reported at Yantian terminal \u2014 minor scheduling impact",
+    "affected_regions": [
+      "CN",
+      "HK"
+    ],
+    "condition_score": 0.38,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        114.1095,
+        22.5229
+      ]
+    },
+    "impact_radius_km": 40,
+    "detected_at": "2026-06-15T06:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-002",
+    "risk_catalog_ref": "RISK-LOG-002",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Rotterdam terminal processing times up 15% \u2014 low congestion advisory",
+    "affected_regions": [
+      "NL",
+      "DE",
+      "BE"
+    ],
+    "condition_score": 0.31,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        4.2952,
+        51.8985
+      ]
+    },
+    "impact_radius_km": 50,
+    "detected_at": "2026-06-15T07:30:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-003",
+    "risk_catalog_ref": "RISK-LOG-003",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Panama Canal water levels stable \u2014 minor booking slot delays reported",
+    "affected_regions": [
+      "MX",
+      "CO",
+      "PE",
+      "BR"
+    ],
+    "condition_score": 0.29,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -79.9193,
+        9.08
+      ]
+    },
+    "impact_radius_km": 60,
+    "detected_at": "2026-06-14T10:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-004",
+    "risk_catalog_ref": "RISK-LOG-004",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "US East Coast ports monitoring labor contract renewal talks \u2014 no disruption yet",
+    "affected_regions": [
+      "CN",
+      "VN",
+      "TW",
+      "IN",
+      "BR"
+    ],
+    "condition_score": 0.25,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -76.0128,
+        36.9468
+      ]
+    },
+    "impact_radius_km": 300,
+    "detected_at": "2026-06-13T09:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-005",
+    "risk_catalog_ref": "RISK-LOG-001",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Ho Chi Minh City port handling times slightly elevated \u2014 within normal range",
+    "affected_regions": [
+      "VN"
+    ],
+    "condition_score": 0.27,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        106.6297,
+        10.8231
+      ]
+    },
+    "impact_radius_km": 30,
+    "detected_at": "2026-06-15T11:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-006",
+    "risk_catalog_ref": "RISK-LOG-003",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Santos port Brazil \u2014 minor customs clearance backlog, 2-3 day delay advisory",
+    "affected_regions": [
+      "BR"
+    ],
+    "condition_score": 0.33,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -46.3337,
+        -23.9608
+      ]
+    },
+    "impact_radius_km": 40,
+    "detected_at": "2026-06-14T14:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-007",
+    "risk_catalog_ref": "RISK-LOG-004",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Nhava Sheva port Mumbai \u2014 seasonal monsoon prep causing minor berth delays",
+    "affected_regions": [
+      "IN"
+    ],
+    "condition_score": 0.3,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        72.95,
+        18.95
+      ]
+    },
+    "impact_radius_km": 35,
+    "detected_at": "2026-06-15T08:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-008",
+    "risk_catalog_ref": "RISK-LOG-002",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "Mediterranean shipping lanes \u2014 minor rerouting advisories, no significant delays",
+    "affected_regions": [
+      "ES",
+      "IT"
+    ],
+    "condition_score": 0.22,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        2.1686,
+        41.3874
+      ]
+    },
+    "impact_radius_km": 200,
+    "detected_at": "2026-06-14T12:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-LOG-009",
+    "risk_catalog_ref": "RISK-LOG-002",
+    "risk_type_triggered": "logistics_disruption",
+    "source": "MarineTraffic",
+    "raw_headline": "East Africa port network \u2014 Mombasa throughput stable, Durban minor delay advisory",
+    "affected_regions": [
+      "KE",
+      "ZA",
+      "EG"
+    ],
+    "condition_score": 0.28,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        39.6682,
+        -4.0435
+      ]
+    },
+    "impact_radius_km": 50,
+    "detected_at": "2026-06-15T09:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-001",
+    "risk_catalog_ref": "RISK-GEO-001",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "US-CN trade monitoring ongoing \u2014 no new tariff announcements this week",
+    "affected_regions": [
+      "CN",
+      "TW"
+    ],
+    "condition_score": 0.35,
+    "has_physical_location": false,
+    "detected_at": "2026-06-15T07:14:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-002",
+    "risk_catalog_ref": "RISK-GEO-002",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "US-VN trade talks continuing \u2014 tariff framework under review, no changes enacted",
+    "affected_regions": [
+      "VN"
+    ],
+    "condition_score": 0.28,
+    "has_physical_location": false,
+    "detected_at": "2026-06-14T08:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-003",
+    "risk_catalog_ref": "RISK-GEO-003",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "EU food safety compliance review ongoing \u2014 African and South Asian exporters monitoring",
+    "affected_regions": [
+      "MA",
+      "ZA",
+      "IN"
+    ],
+    "condition_score": 0.22,
+    "has_physical_location": false,
+    "detected_at": "2026-06-13T10:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-004",
+    "risk_catalog_ref": "RISK-GEO-001",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "Japan export controls on specialty materials under review \u2014 food packaging sector monitoring",
+    "affected_regions": [
+      "JP"
+    ],
+    "condition_score": 0.19,
+    "has_physical_location": false,
+    "detected_at": "2026-06-14T06:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-005",
+    "risk_catalog_ref": "RISK-GEO-003",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "EU single market regulatory updates \u2014 food labelling compliance deadlines extended",
+    "affected_regions": [
+      "PL",
+      "DE"
+    ],
+    "condition_score": 0.18,
+    "has_physical_location": false,
+    "detected_at": "2026-06-15T06:30:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-GEO-006",
+    "risk_catalog_ref": "RISK-GEO-002",
+    "risk_type_triggered": "geopolitical_tariff",
+    "source": "GDELT",
+    "raw_headline": "Andean trade bloc reviewing agricultural export quotas \u2014 no immediate impact",
+    "affected_regions": [
+      "CO",
+      "PE"
+    ],
+    "condition_score": 0.21,
+    "has_physical_location": false,
+    "detected_at": "2026-06-14T09:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-CLM-001",
+    "risk_catalog_ref": "RISK-CLM-001",
+    "risk_type_triggered": "climate_disruption",
+    "source": "NOAA",
+    "raw_headline": "Tropical weather system forming in Pacific \u2014 early watch, no advisory yet for Oaxaca region",
+    "affected_regions": [
+      "MX"
+    ],
+    "condition_score": 0.32,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -96.7266,
+        17.0732
+      ]
+    },
+    "impact_radius_km": 80,
+    "detected_at": "2026-06-15T05:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-CLM-002",
+    "risk_catalog_ref": "RISK-CLM-002",
+    "risk_type_triggered": "climate_disruption",
+    "source": "NOAA",
+    "raw_headline": "California drought index elevated \u2014 Central Valley irrigation restrictions in effect",
+    "affected_regions": [
+      "US"
+    ],
+    "condition_score": 0.36,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -119.4179,
+        36.7783
+      ]
+    },
+    "impact_radius_km": 200,
+    "detected_at": "2026-06-14T06:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-CLM-003",
+    "risk_catalog_ref": "RISK-CLM-003",
+    "risk_type_triggered": "climate_disruption",
+    "source": "NOAA",
+    "raw_headline": "Thailand monsoon season onset \u2014 Chao Phraya basin water levels rising, early watch",
+    "affected_regions": [
+      "TH"
+    ],
+    "condition_score": 0.34,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        100.5018,
+        13.7563
+      ]
+    },
+    "impact_radius_km": 100,
+    "detected_at": "2026-06-15T04:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-CLM-004",
+    "risk_catalog_ref": "RISK-CLM-002",
+    "risk_type_triggered": "climate_disruption",
+    "source": "NOAA",
+    "raw_headline": "North Atlantic storm pattern \u2014 Ireland and UK coastal logistics on weather watch",
+    "affected_regions": [
+      "IE"
+    ],
+    "condition_score": 0.24,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -8.2439,
+        53.4129
+      ]
+    },
+    "impact_radius_km": 120,
+    "detected_at": "2026-06-14T05:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  },
+  {
+    "condition_id": "COND-BASE-CLM-005",
+    "risk_catalog_ref": "RISK-CLM-002",
+    "risk_type_triggered": "climate_disruption",
+    "source": "NOAA",
+    "raw_headline": "Canadian prairie region \u2014 early summer heat advisory, crop stress monitoring active",
+    "affected_regions": [
+      "CA"
+    ],
+    "condition_score": 0.26,
+    "has_physical_location": true,
+    "epicentre": {
+      "type": "Point",
+      "coordinates": [
+        -106.3468,
+        52.1332
+      ]
+    },
+    "impact_radius_km": 300,
+    "detected_at": "2026-06-15T06:00:00Z",
+    "valid_until": null,
+    "is_base": true,
+    "is_demo_trigger": false,
+    "session_id": null
+  }
+]
