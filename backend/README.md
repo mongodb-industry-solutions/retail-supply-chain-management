@@ -64,6 +64,7 @@ backend/
 ├── main.py                  FastAPI app bootstrap, middleware, router registration, lifespan
 ├── pyproject.toml           Dependencies and build config (managed with uv)
 ├── .env.example             Required environment variables (never commit .env)
+├── architecture.png         Architecture diagram — ODL pattern and slice boundaries
 │
 ├── core/                    Shared infrastructure — imported by slices, never the reverse
 │   ├── config.py            Pydantic-settings Settings class and get_settings() singleton
@@ -93,11 +94,21 @@ backend/
 ├── voyageai/                Thin wrapper around MongoDB-native Voyage AI reranker
 │   └── rerank.py            rerank(query, documents, top_k) — executes inside Atlas aggregation pipeline
 │
+├── docs/
+│   └── seeds/               Seed files and Atlas setup guide
+│       ├── README.md        Step-by-step cluster setup, indexes, and replication guide
+│       ├── suppliers_seed.json
+│       ├── risk_catalog_seed.json
+│       ├── purchase_orders_seed.json
+│       ├── supplier_documents_seed.json
+│       └── external_conditions_seed.json
+│
 └── adrs/                    Architecture Decision Records
     ├── 001-architecture-overview.md
     ├── 002-async-motor.md
     ├── 003-sse-change-stream.md
-    └── 004-langgraph-checkpointing.md
+    ├── 004-langgraph-checkpointing.md
+    └── 005-operational-data-layer.md
 ```
 
 ---
@@ -185,6 +196,250 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 - [003 — SSE + Change Streams](./adrs/003-sse-change-stream.md) — includes production vs demo activation model
 - [004 — LangGraph Checkpointing](./adrs/004-langgraph-checkpointing.md)
 - [005 — Operational Data Layer](./adrs/005-operational-data-layer.md)
+
+---
+
+## API Contract
+
+Every request sends `X-Session-ID` in the header. The backend never generates or modifies the session — it uses it exclusively to scope MongoDB reads and writes.
+
+```
+X-Session-ID: <session_id>    # required on every request
+```
+
+---
+
+### Step 1 — `POST /api/simulation/start`
+
+Triggers signal ingestion. No request body needed — the backend generates the 3 signals internally from the session_id. Returns immediately with the 3 inserted documents.
+
+**Request**
+```
+POST /api/simulation/start
+X-Session-ID: sess-abc123
+```
+
+**Response** `200 OK`
+```json
+{
+  "session_id": "sess-abc123",
+  "signals": [
+    {
+      "condition_id": "COND-sess-abc1-GEO",
+      "risk_catalog_ref": "RISK-GEO-001",
+      "risk_type_triggered": "geopolitical_tariff",
+      "source": "GDELT",
+      "raw_headline": "US announces 25% tariffs on CN packaging imports — effective in 15 days",
+      "affected_regions": ["CN", "TW"],
+      "condition_score": 0.87,
+      "has_physical_location": false,
+      "detected_at": "2026-06-18T14:00:00Z",
+      "valid_until": "2026-06-20T14:00:00Z",
+      "is_base": false,
+      "is_demo_trigger": true,
+      "session_id": "sess-abc123"
+    },
+    {
+      "condition_id": "COND-sess-abc1-LOG",
+      "risk_catalog_ref": "RISK-LOG-001",
+      "risk_type_triggered": "logistics_disruption",
+      "source": "MarineTraffic",
+      "raw_headline": "Severe port congestion at Yantian/Shenzhen — vessel queuing 48–72h delays",
+      "affected_regions": ["CN", "HK"],
+      "condition_score": 0.76,
+      "has_physical_location": true,
+      "epicentre": { "type": "Point", "coordinates": [114.1095, 22.5229] },
+      "impact_radius_km": 80,
+      "detected_at": "2026-06-18T14:00:00Z",
+      "valid_until": "2026-06-20T14:00:00Z",
+      "is_base": false,
+      "is_demo_trigger": true,
+      "session_id": "sess-abc123"
+    },
+    {
+      "condition_id": "COND-sess-abc1-CLM",
+      "risk_catalog_ref": "RISK-CLM-001",
+      "risk_type_triggered": "climate_disruption",
+      "source": "NOAA",
+      "raw_headline": "Tropical storm advisory — Oaxaca Pacific coast, Category 1 landfall 72h",
+      "affected_regions": ["MX"],
+      "condition_score": 0.82,
+      "has_physical_location": true,
+      "epicentre": { "type": "Point", "coordinates": [-96.7266, 17.0732] },
+      "impact_radius_km": 120,
+      "detected_at": "2026-06-18T14:00:00Z",
+      "valid_until": "2026-06-20T14:00:00Z",
+      "is_base": false,
+      "is_demo_trigger": true,
+      "session_id": "sess-abc123"
+    }
+  ]
+}
+```
+
+**Error**
+```json
+{ "detail": "Signal generation failed" }
+```
+
+---
+
+### Step 2 — `POST /api/simulation/evaluate`
+
+Activates Agent 1 (risk_evaluator). Reads the session's signals from `external_conditions`, evaluates all 40 suppliers, and streams progress as each LangGraph node executes. The final `agent_response` event carries the full evaluation result.
+
+**Request**
+```
+POST /api/simulation/evaluate
+X-Session-ID: sess-abc123
+```
+
+**SSE stream**
+```
+data: {"type": "tool_start", "message": "Detecting external conditions..."}
+data: {"type": "tool_end",   "message": "Detecting external conditions..."}
+data: {"type": "tool_start", "message": "Matching affected suppliers..."}
+data: {"type": "tool_end",   "message": "Matching affected suppliers..."}
+data: {"type": "tool_start", "message": "Calculating dynamic RPN scores..."}
+data: {"type": "tool_end",   "message": "Calculating dynamic RPN scores..."}
+data: {"type": "tool_start", "message": "Retrieving historical memory..."}
+data: {"type": "tool_end",   "message": "Retrieving historical memory..."}
+data: {"type": "tool_start", "message": "Generating risk summary..."}
+data: {"type": "tool_end",   "message": "Generating risk summary..."}
+data: {"type": "agent_response", "data": { ... }}
+```
+
+**`agent_response` payload**
+```json
+{
+  "type": "agent_response",
+  "data": {
+    "session_id": "sess-abc123",
+    "conditions": [
+      {
+        "condition_id": "COND-sess-abc1-GEO",
+        "source": "GDELT",
+        "raw_headline": "US announces 25% tariffs on CN packaging imports — effective in 15 days",
+        "risk_type_triggered": "geopolitical_tariff",
+        "affected_regions": ["CN", "TW"],
+        "condition_score": 0.87,
+        "has_physical_location": false
+      }
+    ],
+    "suppliers": [
+      {
+        "supplier_id": "SUP-SHENZHEN-441",
+        "supplier_name": "Shenzhen Advanced Materials Co.",
+        "region": "CN",
+        "country": "China",
+        "product_categories": ["packaging_materials"],
+        "supplier_risk_level": "CRITICAL",
+        "requires_action": true,
+        "operational_context": {
+          "active_orders": 3,
+          "total_value_usd": 2400000,
+          "earliest_delivery_due": "2026-07-10",
+          "days_until_due": 22,
+          "criticality": "high"
+        },
+        "risk_scores": [
+          {
+            "risk_id": "RISK-GEO-001",
+            "condition_id": "COND-sess-abc1-GEO",
+            "rpn_base": 160,
+            "rpn_dynamic": 278,
+            "rpn_status": "CRITICAL",
+            "triggered_by": {
+              "source": "GDELT",
+              "condition_score": 0.87,
+              "historical_weight": 1.20
+            }
+          }
+        ],
+        "natural_language_summary": "SUP-SHENZHEN-441 is at CRITICAL risk. The newly announced US-CN tariffs directly impact packaging imports with an RPN of 278, well above the alert threshold of 260. Three active orders totalling $2.4M are due within 22 days. Historical memory confirms a prior tariff escalation in Q1 2025 resulted in 18-day delays and $340K cost overrun. Immediate alternative sourcing is recommended.",
+        "session_id": "sess-abc123"
+      }
+    ]
+  }
+}
+```
+
+**Error**
+```
+data: {"type": "error", "message": "Failed to calculate RPN scores"}
+```
+
+---
+
+### Step 3 — `POST /api/agent/find-alternatives`
+
+Activates Agent 2 (alternative_finder). Human-in-the-loop — called when the procurement manager decides to act on a flagged supplier. Reads evaluation context from `supplier_risk_evaluations` by session and supplier, runs hybrid search + Voyage AI reranking + validation filters, and streams progress.
+
+**Request**
+```
+POST /api/agent/find-alternatives
+X-Session-ID: sess-abc123
+Content-Type: application/json
+
+{
+  "supplier_id": "SUP-SHENZHEN-441"
+}
+```
+
+**SSE stream**
+```
+data: {"type": "tool_start", "phase": "left",  "message": "Hybrid Search: retrieving top 13 candidates"}
+data: {"type": "tool_end",   "phase": "left",  "message": "Hybrid Search: retrieving top 13 candidates"}
+data: {"type": "tool_start", "phase": "left",  "message": "Voyage Rerank: refine to top 5"}
+data: {"type": "tool_end",   "phase": "left",  "message": "Voyage Rerank: refine to top 5"}
+data: {"type": "tool_start", "phase": "right", "message": "Validating certifications"}
+data: {"type": "tool_end",   "phase": "right", "message": "Validating certifications"}
+data: {"type": "tool_start", "phase": "right", "message": "Validating lead time"}
+data: {"type": "tool_end",   "phase": "right", "message": "Validating lead time"}
+data: {"type": "tool_start", "phase": "right", "message": "Validating capacity"}
+data: {"type": "tool_end",   "phase": "right", "message": "Validating capacity"}
+data: {"type": "agent_response", "data": [ ... ]}
+```
+
+**`agent_response` payload**
+```json
+{
+  "type": "agent_response",
+  "data": [
+    {
+      "supplier_id": "SUP-GUADALAJARA-MX",
+      "rank": 1,
+      "supplier_name": "Guadalajara Packaging Co.",
+      "region": "MX",
+      "country": "Mexico",
+      "product_categories": ["packaging_materials"],
+      "rrf_score": 0.0312,
+      "certifications": ["ISO 9001", "ISO 14001"],
+      "avg_lead_time_days": 18,
+      "committed_capacity_pct": 0.45,
+      "proximity_km": 2810,
+      "proximity_note": "MX-Guadalajara → LA DC · est. 4-day transit · within delivery window",
+      "validation": {
+        "certifications_pass": true,
+        "lead_time_pass": true,
+        "capacity_pass": true
+      },
+      "evidence": [
+        "ISO 9001:2015 valid until Dec 2027 — scope includes packaging materials",
+        "Framework contract active · urgent delivery clause confirmed",
+        "Sustainability audit completed March 2025 · ISO 14064-1 verified"
+      ],
+      "gaps": ["Lead time avg 18 days · delivery window is 22 days · 4-day buffer"],
+      "session_id": "sess-abc123"
+    }
+  ]
+}
+```
+
+**Error**
+```
+data: {"type": "error", "message": "Vector search failed: index not found"}
+```
 
 ---
 
