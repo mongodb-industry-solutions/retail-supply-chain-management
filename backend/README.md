@@ -6,13 +6,15 @@ FastAPI backend for the Retail Supply Chain Risk demo. Simulates external disrup
 
 ## Architecture
 
-The backend is organised as **vertical slices** — three logical services that would be independent microservices in production, running as a single FastAPI app for demo simplicity. Slices never import from each other. The only communication between slices is via MongoDB.
+The backend is organised as **vertical slices** — three logical services that would be independent microservices in production, running as a single FastAPI app for demo simplicity. Slices never import from each other. Each service owns its collections in MongoDB — the only way services share data is by reading each other's collections, never by calling each other directly. This is the Operational Data Layer pattern documented in [ADR 005](./adrs/005-operational-data-layer.md).
+
+![Architecture diagram](./architecture.png)
 
 ```
 Frontend
    │
-   ├─ POST /api/simulation/start      → ingestion_engine   (JSON response)
-   ├─ POST /api/simulation/evaluate   → risk_evaluator     (SSE stream)
+   ├─ POST /api/simulation/start        → ingestion_engine   (JSON response)
+   ├─ POST /api/simulation/evaluate     → risk_evaluator     (SSE stream)
    └─ POST /api/agent/find-alternatives → alternative_finder (SSE stream)
 ```
 
@@ -31,7 +33,7 @@ Signal content varies per session to produce different affected suppliers across
 
 ---
 
-### `risk_evaluator` — Agent 2, RPN Risk Evaluation
+### `risk_evaluator` — Agent 1, RPN Risk Evaluation
 
 Activated by an explicit `POST /api/simulation/evaluate` from the frontend after ingestion completes. Runs a LangGraph graph that detects active conditions, matches affected suppliers, calculates dynamic RPN scores, retrieves historical memory, and generates a natural-language risk summary via Claude.
 
@@ -44,7 +46,7 @@ Streams agent progress to the frontend via SSE as each node executes.
 
 ---
 
-### `alternative_finder` — Agent 3, Alternative Supplier Search
+### `alternative_finder` — Agent 2, Alternative Supplier Search
 
 Human-in-the-loop. Activated by an explicit `POST /api/agent/find-alternatives` when the procurement manager decides to act on a flagged supplier. Runs a LangGraph graph that performs Atlas hybrid search, Voyage AI reranking, and three validation filters (certifications, lead time, capacity).
 
@@ -75,14 +77,14 @@ backend/
 │   ├── signal_generator.py  Builds 3 demo trigger documents (one per risk type)
 │   └── target_selector.py   Selects disruption scenario deterministically from session_id hash
 │
-├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation (Agent 2)
+├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation (Agent 1)
 │   ├── router.py            POST /api/simulation/evaluate → SSE stream
 │   ├── graph.py             LangGraph StateGraph definition
 │   ├── nodes.py             detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → generate_summary
 │   ├── schemas.py           RiskEvaluatorState, RiskScore, EvaluationResult
 │   └── stream_listener.py   Production reference only — Change Stream activation pattern (not used in demo)
 │
-├── alternative_finder/      Slice 3 — LangGraph alternative supplier search (Agent 3)
+├── alternative_finder/      Slice 3 — LangGraph alternative supplier search (Agent 2)
 │   ├── router.py            POST /api/agent/find-alternatives → SSE stream
 │   ├── graph.py             LangGraph StateGraph definition
 │   ├── nodes.py             hybrid_search → voyage_rerank → validate_certifications → validate_lead_time → validate_capacity
@@ -111,9 +113,9 @@ X-Session-ID: sess-abc123
 | Collection | Session-scoped | Written by | TTL |
 |---|---|---|---|
 | `external_conditions` | ✅ | ingestion_engine | 2h |
-| `supplier_risk_evaluations` | ✅ | Agent 2 | 2h |
-| `supplier_alternatives` | ✅ | Agent 3 | 2h |
-| `agent_memory` | ✅ | Agent 2 + 3 | 2h |
+| `supplier_risk_evaluations` | ✅ | Agent 1 | 2h |
+| `supplier_alternatives` | ✅ | Agent 2 | 2h |
+| `agent_memory` | ✅ | Agent 1 + 2 | 2h |
 | `suppliers` | ❌ | Seed data | — |
 | `risk_catalog` | ❌ | Seed data | — |
 | `purchase_orders` | ❌ | Seed data | — |
@@ -127,7 +129,7 @@ Demo cleanup runs via Atlas Scheduled Trigger daily at 00:00 UTC (`deleteMany({ 
 
 ## SSE Event Structure
 
-Both Agent 2 and Agent 3 use the same event pattern.
+Both Agent 1 and Agent 2 use the same event pattern.
 
 ```
 data: {"type": "tool_start", "message": "Detecting external conditions..."}
@@ -141,7 +143,7 @@ data: {"type": "error", "message": "..."}
 | `type` | string | `tool_start` \| `tool_end` \| `agent_response` \| `error` |
 | `message` | string | Human-readable step label shown in the UI |
 | `data` | object | Final payload — only present on `agent_response` |
-| `phase` | string | `left` \| `right` — Agent 3 only, for two-column UI layout |
+| `phase` | string | `left` \| `right` — Agent 2 only, for two-column UI layout |
 
 ---
 
@@ -170,8 +172,8 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 | `MONGODB_URI` | MongoDB Atlas connection string |
 | `DATABASE_NAME` | Target database (default: `retail-supply-chain-risk`) |
 | `APP_NAME` | App name tag shown in Atlas (default: `retail-supply-chain-risk`) |
-| `ANTHROPIC_API_KEY` | Anthropic API key — used by `generate_summary` node in Agent 2 |
-| `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in Agent 3 |
+| `ANTHROPIC_API_KEY` | Anthropic API key — used by `generate_summary` node in Agent 1 |
+| `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in Agent 2 |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
 
 ---
@@ -182,6 +184,7 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 - [002 — Motor Async Driver](./adrs/002-async-motor.md)
 - [003 — SSE + Change Streams](./adrs/003-sse-change-stream.md) — includes production vs demo activation model
 - [004 — LangGraph Checkpointing](./adrs/004-langgraph-checkpointing.md)
+- [005 — Operational Data Layer](./adrs/005-operational-data-layer.md)
 
 ---
 
