@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Modal } from "react-bootstrap";
+import { Code } from "@leafygreen-ui/code";
 import { H3, Body, Subtitle } from "@leafygreen-ui/typography";
 import { OrderedList, OrderedListItem } from "@leafygreen-ui/ordered-list";
 import { palette } from "@leafygreen-ui/palette";
@@ -31,9 +32,23 @@ const highlights = [
   "Power insights across your organization",
 ];
 
+const embedCodeSnippet = `// /app/api/charts-config/route.js
+export async function GET() {
+  return NextResponse.json({
+    baseUrl: process.env.ATLAS_CHARTS_BASE_URL,
+    dashboardId: process.env.ATLAS_DASHBOARD_ID,
+  });
+}
+
+// Your component
+const { baseUrl, dashboardId } = await fetch("/api/charts-config").then(r => r.json());
+const src = \`\${baseUrl}/embed/dashboards?id=\${dashboardId}&theme=light&autoRefresh=true\`;
+
+<iframe src={src} style={{ width: "100%", height: "900px", border: "none" }} />`;
+
 export default function AtlasChartsModal({ show, onHide }) {
   return (
-    <Modal show={show} onHide={onHide} centered size="lg">
+    <Modal show={show} onHide={onHide} centered size="xl">
       <Modal.Header closeButton>
         <div className="d-flex align-items-center gap-3">
           <div
@@ -65,7 +80,13 @@ export default function AtlasChartsModal({ show, onHide }) {
 
       <Modal.Body style={{ padding: spacing[600] }}>
         {/* Intro */}
-        <Body style={{ color: palette.gray.dark2, marginBottom: spacing[400], fontSize: 15 }}>
+        <Body
+          style={{
+            color: palette.gray.dark2,
+            marginBottom: spacing[400],
+            fontSize: 15,
+          }}
+        >
           Meet{" "}
           <a
             href="https://www.mongodb.com/products/platform/atlas-charts"
@@ -75,16 +96,62 @@ export default function AtlasChartsModal({ show, onHide }) {
           >
             Atlas Charts
           </a>
-          , MongoDB&apos;s built-in business intelligence and data visualization tool within Atlas.
+          , MongoDB&apos;s built-in business intelligence and data visualization
+          tool within Atlas.
         </Body>
 
         {/* Highlights */}
         <div style={{ marginBottom: spacing[600] }}>
           <OrderedList>
             {highlights.map((text, i) => (
-              <OrderedListItem key={i} description={<span style={{ fontSize: 15 }}>{text}</span>} />
+              <OrderedListItem
+                key={i}
+                description={<span style={{ fontSize: 15 }}>{text}</span>}
+              />
             ))}
           </OrderedList>
+        </div>
+
+        <hr />
+
+        {/* How it's embedded */}
+        <div style={{ marginBottom: spacing[600] }}>
+          <Body
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.07em",
+              color: palette.gray.base,
+              marginBottom: spacing[100],
+            }}
+          >
+            ⚡ How it&apos;s embedded
+          </Body>
+          <Subtitle style={{ marginBottom: spacing[300] }}>
+            One iframe is all it takes
+          </Subtitle>
+          <Body
+            style={{
+              color: palette.gray.dark2,
+              fontSize: 15,
+              marginBottom: spacing[400],
+            }}
+          >
+            Atlas Charts generates a secure embed URL for any dashboard. In this
+            app, the URL is built server-side via a Next.js API route — so the
+            base URL and dashboard ID stay out of the browser. The iframe
+            renders it directly, no extra SDK needed.
+          </Body>
+          <Code
+            language="jsx"
+            darkMode={false}
+            copyButtonAppearance="persist"
+            showLineNumbers={true}
+            highlightLines={[11, 13]}
+          >
+            {embedCodeSnippet}
+          </Code>
         </div>
 
         <hr />
@@ -131,15 +198,30 @@ export default function AtlasChartsModal({ show, onHide }) {
                     style={{ flexShrink: 0 }}
                   />
                   <div>
-                    <Body weight="medium" style={{ color: palette.gray.dark3, margin: 0, fontSize: 15 }}>
+                    <Body
+                      weight="medium"
+                      style={{
+                        color: palette.gray.dark3,
+                        margin: 0,
+                        fontSize: 15,
+                      }}
+                    >
                       {c.name}
                     </Body>
-                    <Body style={{ color: palette.gray.dark1, fontSize: 14, margin: 0 }}>
+                    <Body
+                      style={{
+                        color: palette.gray.dark1,
+                        fontSize: 14,
+                        margin: 0,
+                      }}
+                    >
                       {c.desc}
                     </Body>
                   </div>
                 </div>
-                <span style={{ color: palette.green.dark2, fontWeight: 600 }}>→</span>
+                <span style={{ color: palette.green.dark2, fontWeight: 600 }}>
+                  →
+                </span>
               </a>
             ))}
           </div>
