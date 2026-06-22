@@ -24,8 +24,6 @@ export default function DashboardAtlasCharts() {
       });
   }, []);
 
-  console.log("Dashboard URL:", dashboardUrl);
-
   return (
     <>
       <AtlasChartsModal show={modalOpen} onHide={() => setModalOpen(false)} />
@@ -66,6 +64,8 @@ export default function DashboardAtlasCharts() {
               border: "none",
               display: "block",
             }}
+            loading="lazy"
+            title="Atlas Charts Dashboard"
             src={dashboardUrl}
           />
         }

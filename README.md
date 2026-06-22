@@ -62,7 +62,7 @@ This README helps developers understand the purpose, structure, and deployment p
 retail-supply-chain-management/
 ├── frontend/               # Next.js app
 ├── backend/                # FastAPI backend (vertical slice architecture)
-├── docs/                   # Images, setup and archietcture decision records
+├── docs/                   # Images, setup and architecture decision records
 ├── docker-compose.yml      # Orchestrates services
 └── makefile                # Dev commands
 ```
