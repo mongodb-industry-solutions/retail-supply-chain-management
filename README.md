@@ -1,153 +1,168 @@
-# Demo Template: Python Backend with Next.js Frontend
+# Agentic Supplier Management – Real-Time Supply Chain Risk with AI Agents
 
-This repository provides a template for creating a web application with a Python backend and a Next.js frontend. The backend is managed using uv for dependency management, while the frontend is built with Next.js, offering a modern React-based user interface.
+This README helps developers understand the purpose, structure, and deployment process of this Demo App.
 
-## Table of Contents
+---
 
-- [Demo Template: Python Backend with Next.js Frontend](#demo-template-python-backend-with-nextjs-frontend)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Prerequisites](#prerequisites)
-  - [Getting Started](#getting-started)
-    - [Create a New Repository](#create-a-new-repository)
-    - [GitHub Desktop Setup](#github-desktop-setup)
-    - [Backend Setup](#backend-setup)
-  - [DEMO README](#demo-readme)
+## Overview
 
-## Features
+<table>
+  <tr>
+    <td width="300">
+      <img src="docs/images/overview.png" width="280" alt="Agentic Supplier Management"/>
+    </td>
+    <td>
+      This demo showcases <b>Agentic Supplier Management</b>, built on <b>MongoDB</b> to detect supply chain disruptions in real time and surface alternative suppliers using AI agents.<br><br>
+      When an external signal is detected — a geopolitical tariff, a climate event, or a logistics disruption — two LangGraph agents activate automatically: the first evaluates supplier risk using dynamic RPN scoring and historical memory, and the second finds validated alternative suppliers through hybrid search and Voyage AI reranking.<br><br>
+      MongoDB Atlas serves as the <a href="https://www.mongodb.com/resources/solutions/use-cases/implementing-an-operational-data-layer"><b>Operational Data Layer (ODL)</b></a> — a single platform where operational data, vector embeddings, and agent state all live together. By unifying data storage, search, and AI infrastructure in one place, the demo shows how retailers can build intelligent, agentic supply chain workflows without complex multi-system architectures.
+    </td>
+  </tr>
+</table>
 
-- Python backend with a RESTful API powered by [FastAPI](https://fastapi.tiangolo.com/)
-- Next.js frontend for a responsive user interface
-- Dependency management with uv ([More info](https://docs.astral.sh/uv/))
-- Easy setup and configuration
+---
 
-## Prerequisites
+## Discover in this Demo
 
-Before you begin, ensure you have met the following requirements:
+- **Real-time disruption signal ingestion**  
+  Three signal types — geopolitical tariffs, climate events, and logistics disruptions — are generated per demo session. Signal content varies each run so different suppliers enter alert or critical state, simulating real-world unpredictability.
 
-- Python >=3.13,<3.14 - If you are Mac user, you can install Python 3.13 using this [link](https://www.python.org/downloads/).
-- Node.js 22 or higher
-- uv (install via [uv's official documentation](https://docs.astral.sh/uv/getting-started/installation/))
+- **Agentic risk evaluation with RPN scoring**  
+  Agent 1 (LangGraph + Claude) detects active conditions, matches affected suppliers, calculates dynamic Risk Priority Number (RPN) scores, retrieves historical memory from prior incidents, and generates a natural-language risk summary.
 
-## Getting Started
+- **AI-powered alternative supplier discovery**  
+  Agent 2 (LangGraph + Voyage AI) is human-in-the-loop. When a procurement manager decides to act on a flagged supplier, the agent runs hybrid search, Voyage AI reranking, and three validation filters (certifications, lead time, capacity) to surface the best alternatives.
 
-Follow these steps to set up the project locally.
+- **Live streaming progress via SSE**  
+  Both agents stream step-by-step progress to the frontend in real time using Server-Sent Events — no polling, no page reloads.
 
-### Create a New Repository
+- **MongoDB as the unified operational and AI layer**  
+  Suppliers, purchase orders, risk catalogs, agent state (LangGraph checkpointing), and vector embeddings all live in MongoDB Atlas. Atlas Triggers handle automated cleanup; Atlas Vector Search powers the hybrid search used by Agent 2.
 
-1. Navigate to the repository template on GitHub and click on **Use this template**.
-2. Create a new repository.
-3. **Do not** check the "Include all branches" option.
-4. Define a repository name following the naming convention: `<industry>-<project_name>-<highlighted_feature>`. For example, `fsi-leafybank-ai-personal-assistant` (use hyphens to separate words).
-   - The **industry** and **project name** are required; you can be creative with the highlighted feature.
-5. Provide a clear description for the repository, such as: "A repository template to easily create new demos by following the same structure."
-6. Set the visibility to **Internal**.
-7. Click **Create repository**.
+---
 
-### GitHub Desktop Setup
+## 🧩 Architecture Overview
 
-1. Install GitHub Desktop if you haven't already. You can download it from [GitHub Desktop's official website](https://desktop.github.com/).
-2. Open GitHub Desktop and sign in to your GitHub account.
-3. Clone the newly created repository:
-   - Click on **File** > **Clone Repository**.
-   - Select your repository from the list and click **Clone**.
-4. Create your first branch:
-   - In the GitHub Desktop interface, click on the **Current Branch** dropdown.
-   - Select **New Branch** and name it `feature/branch01`.
-   - Click **Create Branch**.
+![Architecture Overview](docs/images/architecture_overview.png)
 
-### Backend Setup
+| Component | Description |
+|-----------|-------------|
+| **Frontend (Next.js)** | Full-stack frontend that delivers the step-by-step demo UI, manages session isolation, and streams agent progress in real time. Includes an Atlas Charts dashboard for supply chain visualization. |
+| **Backend (FastAPI)** | Cleanly architected as vertical slices — three logical services (signal ingestion, risk evaluation, alternative finder) running as a single FastAPI app for demo simplicity. Slices never import from each other. |
+| **Agent 1 — Risk Evaluator** | LangGraph graph that detects disruption signals, matches affected suppliers, calculates dynamic RPN scores, retrieves historical memory, and generates a Claude-powered natural-language summary. |
+| **Agent 2 — Alternative Finder** | Human-in-the-loop LangGraph graph that runs Atlas hybrid search, Voyage AI reranking, and three validation filters to surface the best alternative suppliers. |
+| **MongoDB Atlas** | Operational Data Layer — stores suppliers, purchase orders, risk catalog, agent memory, and LangGraph checkpoint state. Atlas Vector Search powers hybrid search; Atlas Triggers handle session data cleanup. |
 
-1. (Optional) Set your project description and author information in the `pyproject.toml` file:
-   ```toml
-   description = "Your Description"
-   authors = ["Your Name <you@example.com>"]
-2. Open the project in your preferred IDE (the standard for the team is Visual Studio Code).
-3. Open the Terminal within Visual Studio Code.
-4. Ensure you are in the root project directory where the `makefile` is located.
-5. Execute the following commands:
-  - uv initialization
-    ````bash
-    make uv_init
-    ````
-  - uv sync
-    ````bash
-    make uv_sync
-    ````
-6. Verify that the `.venv` folder has been generated within the `/backend` directory.
+👉 For technical deep dives, see the [Frontend README](./frontend/README.md) and [Backend README](./backend/README.md).
 
-### Running Backend Locally
+---
 
-After setting up the backend dependencies, you can run the development server:
-
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-
-2. Start the FastAPI development server:
-   ```bash
-   uv run uvicorn main:app --host 0.0.0.0 --port 8000
-   ```
-
-3. The backend API will be accessible at http://localhost:8000
-
-**Note**: If port 8000 is already in use (e.g., by Docker containers), either stop the containers with `make clean` or use a different port like `--port 8001`.
-
-### Frontend Setup
-
-1. Navigate to the `frontend` folder.
-2. Install dependencies by running:
-```bash
-npm install
-```
-3. Start the frontend development server with:
-````bash
-npm run dev
-````
-4. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
-
-### Git Hooks Setup (Recommended)
-
-This repository includes a pre-commit hook that automatically scans for secrets and credentials before each commit, preventing accidental exposure of sensitive data.
-
-**Setup (run once after cloning):**
+## 🗂 Folder Structure
 
 ```bash
-chmod +x setup-hooks.sh
-./setup-hooks.sh
+retail-supply-chain-management/
+├── frontend/               # Next.js app
+├── backend/                # FastAPI backend (vertical slice architecture)
+├── docs/                   # Images, setup and archietcture decision records
+├── docker-compose.yml      # Orchestrates services
+└── makefile                # Dev commands
 ```
 
-This configures Git to use the `.githooks` directory and enables the pre-commit security scanner.
+---
 
-**What it does:**
+## 🐳 Getting Started – Run the Full Demo Locally
 
-- Runs `security_check.sh` before every commit
-- Scans staged files for potential secrets (API keys, passwords, tokens, etc.)
-- Blocks the commit if security issues are detected
+### 🔧 Prerequisites
 
-**If a commit is blocked:**
+- [MongoDB Atlas account](https://www.mongodb.com/cloud/atlas/register) (M10 or higher for Vector Search)
+- Anthropic API key — used by Agent 1 to generate natural-language risk summaries
+- Voyage AI API key — used by Agent 2 for reranking alternative suppliers
+- [Atlas Charts](https://www.mongodb.com/products/charts) dashboard configured with your cluster
+- Environment configuration files (`.env`) for each service, using the example files as a template:
+  - [frontend](./frontend/EXAMPLE.env)
+  - [backend](./backend/.env.example)
+- Installed tools:
+  - Docker + Docker Compose
+  - Node.js 22 or higher (if running the frontend separately)
+  - Python 3.13 + uv (if running the backend separately — [uv install guide](https://docs.astral.sh/uv/getting-started/installation/))
 
-1. Review the security issues listed in the output
-2. Remove or properly secure the flagged credentials
-3. Re-stage your changes and commit again
+---
 
-**Bypass (not recommended):**
+### 🚀 Start Locally with Docker Compose
 
 ```bash
-git commit --no-verify
+git clone <repo-url>
+cd retail-supply-chain-management
+make build
 ```
 
-### Kanopy Deployment
+> 📝 **Note:** Once running, go to [http://localhost:3000](http://localhost:3000) for the frontend and [http://localhost:8000/docs](http://localhost:8000/docs) for the backend API docs.
 
-For deploying your demo to Kanopy (MongoDB's internal Kubernetes platform), see the [KANOPY_DEPLOYMENT_README.md](KANOPY_DEPLOYMENT_README.md) for detailed instructions on:
+#### Common Commands
 
-- Setting up Drone CI/CD pipeline
-- Configuring Kubernetes secrets
-- Choosing between separate pods vs multi-container deployments
-- Environment variables and secrets configuration
-- Resource management and troubleshooting
+| Action                  | Command      |
+|-------------------------|--------------|
+| Build & start           | `make build` |
+| Start (no rebuild)      | `make start` |
+| Stop all containers     | `make stop`  |
+| Clean containers/images | `make clean` |
 
-## DEMO README
+---
 
-<h1 style="color:red">REPLACE THE CONTENT OF THIS README WITH `README-demo.md` and DELETE THE `README-demo.md` FILE!!!!!!!!! </h1>
+## 👨‍💻 Explore the Demo
+
+The demo is structured as a step-by-step procurement workflow:
+
+1. **Dashboard** — Atlas Charts visualization of your supply chain data
+2. **Start simulation** — ingest disruption signals (geopolitical, climate, logistics)
+3. **Evaluate risk** — Agent 1 scores all suppliers and streams its reasoning live
+4. **Act on flagged suppliers** — Agent 2 finds and validates alternatives on demand
+
+Each session is fully isolated by a `session_id` generated in the browser — no state leaks between runs.
+
+---
+
+## 🍃 Why MongoDB for Agentic Supply Chain Management
+
+MongoDB Atlas is a powerful **Operational Data Layer (ODL)** for agentic workflows. It eliminates the need for separate vector databases, message queues, or state stores.
+
+### Key Advantages
+
+- **Flexible document model**  
+  Model rich supply chain data — suppliers with per-region risk profiles, purchase orders, and risk catalogs — in a single document. No rigid schemas or painful joins.
+
+- **Built-in vector and hybrid search**  
+  Atlas Vector Search powers the hybrid search used by Agent 2 to find alternative suppliers, combining semantic similarity with BM25 full-text matching — no separate search infrastructure needed.
+
+- **Native AI agent state storage**  
+  LangGraph agent checkpoints are stored directly in MongoDB. Both agents are session-isolated automatically via `thread_id = session_id`.
+
+- **Automated data lifecycle with Atlas Triggers**  
+  A scheduled Atlas Trigger runs daily to clean up session-scoped data. A second trigger (documented as a production reference) shows how Change Streams can activate the risk evaluation agent without an explicit frontend call.
+
+- **Simplified architecture**  
+  One platform for operational data, search, and AI state. No ETL pipelines between systems, no synchronization lag, no separate vector store to manage.
+
+---
+
+## 👥 Authors
+
+### Lead Authors *(Use Case Ideation & Retail Implementation)*
+
+- [**Ronan Conlon**](https://www.linkedin.com/in/ronan-conlon/) – Principal. Retail CTO
+
+### Developers & Maintainers *(Technical Design & Implementation)*
+
+- [**Florencia Arin**](https://www.linkedin.com/in/floarin/) – Developer & Maintainer
+- [**Angie Guemes**](https://www.linkedin.com/in/angelica-guemes-estrada/) – Developer & Maintainer
+
+---
+
+## MIT License
+
+Copyright (c) 2025 MongoDB
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

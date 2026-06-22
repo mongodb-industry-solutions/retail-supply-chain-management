@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@leafygreen-ui/card";
 import { Badge } from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
@@ -8,9 +8,23 @@ import Icon from "@leafygreen-ui/icon";
 import { spacing } from "@leafygreen-ui/tokens";
 import SectionHeader from "../shared/SectionHeader";
 import AtlasChartsModal from "../modals/AtlasChartsModal";
+import { createDashboardUrl } from "../../utils/atlasCharts";
 
 export default function DashboardAtlasCharts() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [dashboardUrl, setDashboardUrl] = useState("");
+
+  useEffect(() => {
+    fetch("/api/charts-config")
+      .then((res) => res.json())
+      .then(({ baseUrl, dashboardId }) => {
+        if (baseUrl && dashboardId) {
+          setDashboardUrl(createDashboardUrl(baseUrl, dashboardId));
+        }
+      });
+  }, []);
+
+  console.log("Dashboard URL:", dashboardUrl);
 
   return (
     <>
@@ -44,7 +58,17 @@ export default function DashboardAtlasCharts() {
         }
       />
       <Card style={{ padding: spacing[400], marginBottom: spacing[400] }}>
-        <div className="row g-3 m-4">Coming soon...</div>
+        { dashboardUrl &&
+          <iframe
+            style={{
+              width: "100%",
+              height: "900px",
+              border: "none",
+              display: "block",
+            }}
+            src={dashboardUrl}
+          />
+        }
       </Card>
     </>
   );
