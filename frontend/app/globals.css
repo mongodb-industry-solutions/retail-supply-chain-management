@@ -1,2 +1,12 @@
-@import "tailwindcss";
+@import "bootstrap/dist/css/bootstrap.min.css";
 
+:root {
+  --mg-green: #01684a;
+  --mg-green-light: #e6f4ef;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f7f8f7;
+  color: #1a1a1a;
+}
