@@ -76,7 +76,7 @@ backend/
 │   ├── router.py            POST /api/simulation/start → JSON response
 │   ├── service.py           Orchestrates target selection, signal generation, and MongoDB insert
 │   ├── signal_generator.py  Builds 3 demo trigger documents (one per risk type)
-│   └── target_selector.py   Selects disruption scenario deterministically from session_id hash
+│   └── target_selector.py   Shuffles active-order suppliers, matches risk_catalog by region, picks up to 3 pairs (one per risk type)
 │
 ├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation (Agent 1)
 │   ├── router.py            POST /api/simulation/evaluate → SSE stream
@@ -123,10 +123,10 @@ X-Session-ID: sess-abc123
 
 | Collection | Session-scoped | Written by | TTL |
 |---|---|---|---|
-| `external_conditions` | ✅ | ingestion_engine | 2h |
-| `supplier_risk_evaluations` | ✅ | Agent 1 | 2h |
-| `supplier_alternatives` | ✅ | Agent 2 | 2h |
-| `agent_memory` | ✅ | Agent 1 + 2 | 2h |
+| `external_conditions` | ✅ | ingestion_engine | TBD |
+| `supplier_risk_evaluations` | ✅ | Agent 1 | TBD |
+| `supplier_alternatives` | ✅ | Agent 2 | TBD |
+| `agent_memory` | ✅ | Agent 1 + 2 | TBD |
 | `suppliers` | ❌ | Seed data | — |
 | `risk_catalog` | ❌ | Seed data | — |
 | `purchase_orders` | ❌ | Seed data | — |
@@ -134,7 +134,7 @@ X-Session-ID: sess-abc123
 
 LangGraph checkpointing uses `thread_id = session_id` — both agents are automatically session-isolated.
 
-Demo cleanup runs via Atlas Scheduled Trigger daily at 00:00 UTC (`deleteMany({ is_base: false, session_id: ... })`). TTL index on session-scoped collections provides a 2h fallback.
+Demo cleanup runs via Atlas Scheduled Trigger daily at 00:00 UTC (`deleteMany({ is_base: false, session_id: ... })`). TTL strategy to be defined at end of demo development — all session-scoped documents currently use `valid_until: null`.
 
 ---
 
@@ -211,7 +211,9 @@ X-Session-ID: <session_id>    # required on every request
 
 ### Step 1 — `POST /api/simulation/start`
 
-Triggers signal ingestion. No request body needed — the backend generates the 3 signals internally from the session_id. Returns immediately with the 3 inserted documents.
+Triggers signal ingestion. No request body needed — the backend generates the 3 signals internally. Returns immediately with the 3 inserted documents.
+
+The ingestion engine is the demo's setup mechanism — its only job is to plant the right data in MongoDB so the agents have something real to reason about. In a production environment this role would be filled by real external feeds: GDELT for geopolitical signals, MarineTraffic for port disruptions, NOAA for climate events. The agents never know whether a signal came from a real feed or from the ingestion engine — the document structure is identical.
 
 **Request**
 ```
@@ -234,7 +236,7 @@ X-Session-ID: sess-abc123
       "condition_score": 0.87,
       "has_physical_location": false,
       "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": "2026-06-20T14:00:00Z",
+      "valid_until": null,
       "is_base": false,
       "is_demo_trigger": true,
       "session_id": "sess-abc123"
@@ -251,7 +253,7 @@ X-Session-ID: sess-abc123
       "epicentre": { "type": "Point", "coordinates": [114.1095, 22.5229] },
       "impact_radius_km": 80,
       "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": "2026-06-20T14:00:00Z",
+      "valid_until": null,
       "is_base": false,
       "is_demo_trigger": true,
       "session_id": "sess-abc123"
@@ -268,7 +270,7 @@ X-Session-ID: sess-abc123
       "epicentre": { "type": "Point", "coordinates": [-96.7266, 17.0732] },
       "impact_radius_km": 120,
       "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": "2026-06-20T14:00:00Z",
+      "valid_until": null,
       "is_base": false,
       "is_demo_trigger": true,
       "session_id": "sess-abc123"

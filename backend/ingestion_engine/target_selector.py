@@ -1,11 +1,34 @@
-async def select_target(session_id: str) -> dict:
-    """
-    Deterministically selects a target supplier and alert_type for the simulation.
+import random
 
-    Uses a hash of the session_id to pick from a predefined list of suppliers and
-    alert types, ensuring controlled variability across sessions without randomness
-    that could break the demo flow.
+_RISK_TYPES = {"geopolitical_tariff", "logistics_disruption", "climate_disruption"}
 
-    Returns a dict with keys: supplier_id, supplier_name, alert_type, alert_threshold_rpn.
+
+async def select_targets(db) -> list[dict]:
     """
-    return {}
+    Shuffles suppliers with active orders, matches each to a risk_catalog entry by region,
+    and returns up to one (supplier, risk) pair per risk_type.
+    """
+    suppliers = await db["suppliers"].find({"has_active_orders": True}).to_list(length=None)
+    random.shuffle(suppliers)
+
+    covered = set()
+    results = []
+
+    for supplier in suppliers:
+        remaining = _RISK_TYPES - covered
+        if not remaining:
+            break
+
+        risks = await db["risk_catalog"].find({
+            "applies_to_regions": {"$in": [supplier["region"]]},
+            "risk_type": {"$in": list(remaining)},
+        }).to_list(length=None)
+
+        if not risks:
+            continue
+
+        risk = random.choice(risks)
+        results.append({"supplier": supplier, "risk": risk})
+        covered.add(risk["risk_type"])
+
+    return results
