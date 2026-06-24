@@ -6,55 +6,13 @@ import { Body } from "@leafygreen-ui/typography";
 import { Badge } from "@leafygreen-ui/badge";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-import { conditionConfig } from "../../data/externalConditions";
+import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import DocModelModal from "../modals/DocModelModal";
 import { Card } from "@leafygreen-ui/card";
 import SectionHeader from "../shared/SectionHeader";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import IconButton from "@leafygreen-ui/icon-button";
 
-const DOC_MODELS = {
-  logistical: {
-    condition_id: "COND-20260505-0941",
-    source: "MarineTraffic",
-    raw_headline:
-      "Severe disruption reported at Red Sea corridor — vessels rerouting via Cape of Good Hope",
-    risk_type_triggered: "logistics_disruption",
-    affected_regions: ["SA", "EG", "YE", "DJ"],
-    condition_score: 0.87,
-    epicentre: { type: "Point", coordinates: [43.6229, 13.5127] },
-    impact_radius_km: 320,
-    detected_at: 'ISODate("2026-05-05T09:41:00Z")',
-    valid_until: 'ISODate("2026-05-08T09:41:00Z")', // TTL index — auto-deletes in 72h
-  },
-  geopolitical: {
-    condition_id: "COND-20260505-1134",
-    source: "Reuters / OFAC Sanctions Feed",
-    raw_headline:
-      "Expanded sanctions on cross-border freight — Eastern European trade routes restricted",
-    risk_type_triggered: "geopolitical_disruption",
-    affected_regions: ["UA", "BY", "RU", "PL"],
-    condition_score: 0.91,
-    epicentre: { type: "Point", coordinates: [30.5234, 50.4501] },
-    impact_radius_km: 500,
-    detected_at: 'ISODate("2026-05-05T11:34:00Z")',
-    valid_until: 'ISODate("2026-05-08T11:34:00Z")', // TTL index — auto-deletes in 72h
-  },
-  climate: {
-    condition_id: "COND-20260505-1408",
-    source: "NOAA National Hurricane Center",
-    raw_headline:
-      "Category 4 Hurricane Maria — landfall projected near Houston ports within 72h",
-    risk_type_triggered: "climate_disruption",
-    affected_regions: ["US-TX", "US-LA", "US-MS"],
-    condition_score: 0.94,
-    epicentre: { type: "Point", coordinates: [-95.3698, 29.7604] },
-    impact_radius_km: 180,
-    detected_at: 'ISODate("2026-05-05T14:08:00Z")',
-    "valid_until  // ← TTL index — auto-deletes in 72h":
-      'ISODate("2026-05-08T14:08:00Z")',
-  },
-};
 
 export default function ExternalConditionsCompact() {
   const loadedConditions = useSelector(
@@ -69,9 +27,8 @@ export default function ExternalConditionsCompact() {
       <DocModelModal
         show={!!modalCondition}
         onHide={() => setModalCondition(null)}
-        conditionType={modalCondition?.type}
-        title={modalCondition?.title}
-        docModel={modalCondition ? DOC_MODELS[modalCondition.type] : null}
+        title={modalCondition?.raw_headline}
+        docModel={modalCondition}
       />
 
       <SectionHeader
@@ -93,11 +50,11 @@ export default function ExternalConditionsCompact() {
 
         <div className="d-flex flex-column gap-2">
           {loadedConditions.map((condition) => {
-            const cfg = conditionConfig[condition.type];
+            const cfg = conditionConfig[RISK_TYPE_MAP[condition.risk_type_triggered]];
             if (!cfg) return null;
             return (
               <div
-                key={condition.id ?? condition.type}
+                key={condition.condition_id}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -134,13 +91,13 @@ export default function ExternalConditionsCompact() {
                     flex: 1,
                   }}
                 >
-                  {condition.title}
+                  {condition.raw_headline}
                 </Body>
 
                 <Body
                   style={{ fontSize: 13, color: palette.gray.dark1, margin: 0 }}
                 >
-                  📍 {condition.region}
+                  📍 {condition.affected_regions?.join(", ")}
                 </Body>
                 <IconButton
                   onClick={() => setModalCondition(condition)}

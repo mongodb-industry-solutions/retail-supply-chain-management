@@ -1,3 +1,9 @@
+export const RISK_TYPE_MAP = {
+  logistics_disruption: "logistical",
+  geopolitical_tariff: "geopolitical",
+  climate_disruption: "climate",
+};
+
 export const simulatedExternalConditions = [
   {
     type: "logistical",

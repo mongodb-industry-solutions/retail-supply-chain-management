@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const GlobalSlice = createSlice({
   name: "Global",
   initialState: {
+    sessionId: null,
+    externalConditions: [],
     currentStep: 1,
     maxStep: 1,
     loadedExternalConditions: [],
@@ -11,6 +13,12 @@ const GlobalSlice = createSlice({
     selectedAlertType: "logistical",
   },
   reducers: {
+    setSessionId(state, action) {
+      state.sessionId = action.payload;
+    },
+    setExternalConditions(state, action) {
+      state.externalConditions = action.payload;
+    },
     setCurrentStep(state, action) {
       state.currentStep = action.payload;
     },
@@ -38,6 +46,8 @@ const GlobalSlice = createSlice({
 });
 
 export const {
+  setSessionId,
+  setExternalConditions,
   setCurrentStep,
   setMaxStep,
   advanceToStep,

@@ -4,7 +4,7 @@ import { Body } from "@leafygreen-ui/typography";
 import { Badge } from "@leafygreen-ui/badge";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-import { conditionConfig } from "../../data/externalConditions";
+import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import { Card } from "@leafygreen-ui/card";
 
 function formatTime(timestamp) {
@@ -16,7 +16,7 @@ function formatTime(timestamp) {
 }
 
 export default function ExternalConditionCard({ condition }) {
-  const cfg = conditionConfig[condition.type];
+  const cfg = conditionConfig[RISK_TYPE_MAP[condition.risk_type_triggered]];
 
   return (
     <Card>
@@ -25,16 +25,26 @@ export default function ExternalConditionCard({ condition }) {
       </div>
 
       <Body weight="medium" style={{ color: palette.gray.dark3, fontSize: 15, marginBottom: spacing[100] }}>
-        {condition.title}
+        {condition.raw_headline}
       </Body>
 
-      <Body style={{ color: palette.gray.dark2, fontSize: 14, lineHeight: 1.6, marginBottom: spacing[200] }}>
-        {condition.description}
-      </Body>
-
-      <div className="d-flex gap-3" style={{ fontSize: 13, color: palette.gray.dark1 }}>
+      <div className="d-flex gap-3" style={{ fontSize: 13, color: palette.gray.dark1, marginBottom: spacing[200] }}>
         <span>🕐 {formatTime(condition.timestamp)}</span>
-        {condition.region && <span>📍 {condition.region}</span>}
+        {condition.affected_regions?.length > 0 && (
+          <span>📍 {condition.affected_regions.join(", ")}</span>
+        )}
+      </div>
+
+      <div className="d-flex gap-3 flex-wrap" style={{ fontSize: 12, color: palette.gray.dark1 }}>
+        <span style={{ color: palette.gray.dark2 }}>
+          <span style={{ color: palette.gray.base }}>ID</span> {condition.condition_id}
+        </span>
+        <span>
+          <span style={{ color: palette.gray.base }}>Source</span> {condition.source}
+        </span>
+        <span>
+          <span style={{ color: palette.gray.base }}>Score</span> {condition.condition_score?.toFixed(2)}
+        </span>
       </div>
     </Card>
   );
