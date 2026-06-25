@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { Body } from "@leafygreen-ui/typography";
 import Button from "@leafygreen-ui/button";
 import store from "../redux/store";
@@ -9,17 +9,16 @@ import { setSessionId, setExternalConditions } from "../redux/slices/GlobalSlice
 
 function SessionInitializer({ children }) {
   const dispatch = useDispatch();
-  const sessionId = useSelector((s) => s.Global.sessionId);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const sessionId = crypto.randomUUID();
-    dispatch(setSessionId(sessionId));
+    const newSessionId = crypto.randomUUID();
+    dispatch(setSessionId(newSessionId));
 
     fetch("/api/simulation/start", {
       method: "POST",
-      headers: { "X-Session-ID": sessionId },
+      headers: { "X-Session-ID": newSessionId },
     })
       .then((res) => {
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
