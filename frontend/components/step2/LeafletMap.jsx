@@ -60,7 +60,7 @@ export default function LeafletMap({ conditions = [], suppliers = [] }) {
             <Circle
               key={c.condition_id}
               center={[c.epicentre.coordinates[1], c.epicentre.coordinates[0]]}
-              radius={c.impact_radius_km * 1000}
+              radius={c.impact_radius_km * 2000}
               pathOptions={{
                 color: borderColor,
                 fillColor: borderColor,
