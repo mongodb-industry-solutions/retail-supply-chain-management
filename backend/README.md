@@ -109,6 +109,9 @@ The agent writes the shortlist to `supplier_alternatives` and pauses. The `appro
 
 **Endpoint:** `POST /api/agent/find-alternatives` → SSE stream
 
+> **Status**: Agent 2 is not yet wired into the server. The router is commented out in
+> `main.py` and will return 404. Implementation is in progress.
+
 ---
 
 ## Folder structure
@@ -188,6 +191,11 @@ Eight MongoDB collections divided into two groups:
 | `agent_memory` | Agent 1 + 2 | Historical risk episodes. Each episode records what happened, whether the disruption materialised, what it cost, and how it was resolved. Voyage AI embeddings enable semantic retrieval — "tariff escalation affecting CN packaging supplier" retrieves the relevant episode regardless of exact wording. |
 | `supplier_alternatives` | Agent 2 | The shortlist Agent 2 produces. Paused until the manager approves — `approved_supplier_id: null` means the ERP integration has not fired. |
 
+> **Setup required**: the `agent_memory_autoembed_index` vector search index must be
+> created in Atlas before memory retrieval works. Without it, the `retrieve_memory` node
+> falls back to `historical_weight = 1.0` silently. Index setup is covered in
+> `dataset/seeds_README.md`.
+
 ---
 
 ## Session model
@@ -215,19 +223,34 @@ data: {"type": "error", "message": "..."}
 
 Agent 2 adds a `phase` field (`"left"` or `"right"`) to support the two-column UI layout showing retrieval and validation side by side.
 
+**Testing the SSE stream with curl:**
+```bash
+# Step 1 — generate signals
+curl -s -X POST http://localhost:8000/api/simulation/start \
+  -H "X-Session-ID: my-session-001" | python3 -m json.tool
+
+# Step 2 — run the agent (SSE stream)
+curl -N -X POST http://localhost:8000/api/simulation/evaluate \
+  -H "X-Session-ID: my-session-001"
+```
+The `-N` flag disables curl buffering so SSE events appear in real time.
+
 ---
 
 ## Running locally
 
+### Prerequisites
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) — install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- MongoDB Atlas cluster with the seed data loaded — follow `backend/dataset/seeds_README.md` before starting the server
+
+### Setup
 ```bash
-# Install dependencies
+# From the backend/ directory
+cd backend
 uv sync
-
-# Copy and fill in environment variables
 cp .env.example .env
-# Edit .env with your MongoDB URI and API keys
-
-# Start the server
+# Edit .env with your credentials — see Environment Variables section below
 uv run uvicorn main:app --reload
 ```
 
@@ -243,7 +266,7 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 | `DATABASE_NAME` | Target database (default: `retail-supply-chain-risk`) |
 | `APP_NAME` | App name tag shown in Atlas (default: `retail-supply-chain-risk`) |
 | `LLM_API_KEY`       | API key for the LLM gateway                                        |
-| `LLM_BASE_URL`      | LLM gateway base URL (Azure API Management endpoint)               |
+| `LLM_BASE_URL`      | Base URL for the LLM endpoint. Use `https://api.anthropic.com` for direct Anthropic access, or your organization's gateway URL. |
 | `ANTHROPIC_MODEL`   | Claude model name (e.g. claude-opus-4-7)                           |
 | `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in Agent 2 |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
@@ -264,6 +287,11 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 
 Every request sends `X-Session-ID` in the header. The backend never generates or modifies the session — it uses it exclusively to scope MongoDB reads and writes.
 
+> **Important**: the two endpoints must be called in order. Call `/api/simulation/start`
+> first to generate the risk signals for the session. Only then call
+> `/api/simulation/evaluate` — it reads the signals inserted by the previous step.
+> Calling evaluate before start will return an empty result.
+
 ### `POST /api/simulation/start`
 
 No request body. Returns the 3 inserted signal documents as JSON.
@@ -280,4 +308,3 @@ No request body. Returns an SSE stream. Final event is `agent_response` with the
 
 Returns an SSE stream. Final event is `agent_response` with the ranked shortlist of alternative suppliers including validation results and cited evidence.
 
-Full request/response examples for all three endpoints are in the [original API contract document](./docs/api-contract.md).
