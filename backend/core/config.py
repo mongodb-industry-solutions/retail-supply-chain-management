@@ -6,7 +6,9 @@ class Settings(BaseSettings):
     mongodb_uri: str
     database_name: str = "retail-supply-chain-risk"
     app_name: str = "retail-supply-chain-risk"
-    anthropic_api_key: str
+    llm_api_key: str
+    llm_base_url: str
+    anthropic_model: str
     voyage_api_key: str
     cors_origins: list[str] = ["*"]
 

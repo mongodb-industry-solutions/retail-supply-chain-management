@@ -242,7 +242,9 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 | `MONGODB_URI` | MongoDB Atlas connection string |
 | `DATABASE_NAME` | Target database (default: `retail-supply-chain-risk`) |
 | `APP_NAME` | App name tag shown in Atlas (default: `retail-supply-chain-risk`) |
-| `ANTHROPIC_API_KEY` | Anthropic API key — used by `generate_summary` node in Agent 1 |
+| `LLM_API_KEY`       | API key for the LLM gateway                                        |
+| `LLM_BASE_URL`      | LLM gateway base URL (Azure API Management endpoint)               |
+| `ANTHROPIC_MODEL`   | Claude model name (e.g. claude-opus-4-7)                           |
 | `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in Agent 2 |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
 

@@ -38,6 +38,7 @@ from math import atan2, cos, radians, sin, sqrt
 from bson import ObjectId
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.runnables import RunnableConfig
 
 from core.config import get_settings
 from core.db import get_database
@@ -86,12 +87,12 @@ def _rpn_status(rpn_dynamic: float, alert_threshold_rpn: float) -> str:
     return "OK"
 
 
-async def detect_conditions(state: RiskEvaluatorState, config: dict) -> dict:
+async def detect_conditions(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
     """
     Queries external_conditions for documents matching session_id and is_demo_trigger=True.
     Adds the list of triggered conditions to graph state.
     """
-    queue = config["configurable"]["queue"]
+    queue = config.get("configurable", {}).get("queue")
     await queue.put({"type": "tool_start", "message": "Detecting active risk signals..."})
 
     db = await get_database()
@@ -105,12 +106,12 @@ async def detect_conditions(state: RiskEvaluatorState, config: dict) -> dict:
     return {"conditions": conditions}
 
 
-async def match_suppliers(state: RiskEvaluatorState, config: dict) -> dict:
+async def match_suppliers(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
     """
     For each triggered condition, queries suppliers by geo-search or region match,
     enriches each with operational context from purchase_orders, and deduplicates by supplier_id.
     """
-    queue = config["configurable"]["queue"]
+    queue = config.get("configurable", {}).get("queue")
     await queue.put({"type": "tool_start", "message": "Matching exposed suppliers..."})
 
     if not state["conditions"]:
@@ -177,12 +178,12 @@ async def match_suppliers(state: RiskEvaluatorState, config: dict) -> dict:
     return {"exposed_suppliers": exposed}
 
 
-async def calculate_rpn(state: RiskEvaluatorState, config: dict) -> dict:
+async def calculate_rpn(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
     """
     Computes rpn_dynamic for each supplier-signal pair, applies haversine distance
     decay for geo-located signals, and assigns CRITICAL/ALERT/WATCH/OK status.
     """
-    queue = config["configurable"]["queue"]
+    queue = config.get("configurable", {}).get("queue")
     await queue.put({"type": "tool_start", "message": "Calculating dynamic RPN scores..."})
 
     if not state["exposed_suppliers"]:
@@ -247,12 +248,12 @@ async def calculate_rpn(state: RiskEvaluatorState, config: dict) -> dict:
     return {"risk_scores": risk_scores}
 
 
-async def retrieve_memory(state: RiskEvaluatorState, config: dict) -> dict:
+async def retrieve_memory(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
     """
     Runs a vector search on agent_memory for each supplier with a non-OK risk score,
     derives historical_weight from prior episode outcomes, and adjusts rpn_dynamic.
     """
-    queue = config["configurable"]["queue"]
+    queue = config.get("configurable", {}).get("queue")
     await queue.put({"type": "tool_start", "message": "Retrieving historical memory..."})
 
     if not state["risk_scores"]:
@@ -330,18 +331,20 @@ async def retrieve_memory(state: RiskEvaluatorState, config: dict) -> dict:
     return {"risk_scores": updated_scores, "memory_episodes": memory_episodes}
 
 
-async def generate_summary(state: RiskEvaluatorState, config: dict) -> dict:
+async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
     """
     Calls Claude to produce a natural-language risk summary per supplier, inserts
     evaluation documents into supplier_risk_evaluations, and closes the SSE stream.
     """
-    queue = config["configurable"]["queue"]
+    queue = config.get("configurable", {}).get("queue")
     await queue.put({"type": "tool_start", "message": "Generating risk summary..."})
 
     db = await get_database()
     llm = ChatAnthropic(
-        model="claude-sonnet-4-6",
-        api_key=get_settings().anthropic_api_key,
+        model=get_settings().anthropic_model,
+        api_key="placeholder",
+        base_url=get_settings().llm_base_url,
+        default_headers={"api-key": get_settings().llm_api_key},
     )
 
     _ALERT_STATUSES = {"CRITICAL", "ALERT", "WATCH"}
