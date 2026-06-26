@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "@leafygreen-ui/button";
 import { spacing } from "@leafygreen-ui/tokens";
 import {
   advanceToStep,
   setSelectedSupplier,
   setSelectedAlertType,
+  setAffectedSuppliers,
 } from "../../redux/slices/GlobalSlice";
 import SectionHeader from "../shared/SectionHeader";
 import ReActAgent from "../shared/ReActAgent";
@@ -99,7 +100,52 @@ const GEO_QUERY = `db.suppliers.aggregate([
 
 export default function Step2() {
   const dispatch = useDispatch();
+  const sessionId = useSelector((s) => s.Global.sessionId);
+  const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers);
   const [agentDone, setAgentDone] = useState(false);
+
+  useEffect(() => {
+    if (affectedSuppliers.length > 0) return;
+
+    const controller = new AbortController();
+
+    async function runEvaluate() {
+      try {
+        const response = await fetch("/api/simulation/evaluate", {
+          method: "POST",
+          headers: { "X-Session-ID": sessionId },
+          signal: controller.signal,
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const frames = buffer.split("\n\n");
+          buffer = frames.pop();
+          for (const frame of frames) {
+            const line = frame.trim();
+            if (line.startsWith("data:")) {
+              const event = JSON.parse(line.slice(5).trim());
+              console.log("[evaluate]", event);
+              if (event.type === "agent_response") {
+                dispatch(setAffectedSuppliers(event.data.suppliers));
+              }
+            }
+          }
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") console.error("[evaluate] stream error", err);
+      }
+    }
+
+    runEvaluate();
+    return () => controller.abort();
+  }, []);
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
 
