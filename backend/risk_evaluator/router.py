@@ -43,9 +43,20 @@ router = APIRouter(prefix="/api/simulation", tags=["risk_evaluator"])
 
 @router.post("/evaluate")
 async def evaluate(session_id: str = Depends(get_session_id)):
-    """
-    Triggers the risk evaluator graph for the given session and streams
-    progress and results back to the client as Server-Sent Events.
+    """Trigger the risk evaluator graph and stream progress as Server-Sent Events.
+
+    Creates an ``asyncio.Queue`` that acts as the communication channel between the
+    graph (running as a background task) and this SSE generator (running in the
+    foreground).  The queue decouples producer speed from consumer speed: the graph
+    writes events as fast as each node completes; the generator yields them as fast
+    as the HTTP connection allows, with natural async back-pressure.
+
+    ``json.dumps(..., default=str)`` handles any remaining datetime or ObjectId values
+    that ``_serialize_doc`` in nodes.py may have missed, preventing the SSE encoder
+    from crashing on non-serialisable types.
+
+    The ``None`` sentinel placed on the queue by ``generate_summary`` terminates the
+    ``while True`` loop and lets ``EventSourceResponse`` close the stream gracefully.
     """
     async def event_generator():
         queue: asyncio.Queue = asyncio.Queue()

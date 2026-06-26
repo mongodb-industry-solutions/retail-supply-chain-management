@@ -27,15 +27,32 @@ from pydantic import BaseModel, ConfigDict
 
 
 class RiskEvaluatorState(TypedDict):
+    """Mutable state dict carried through every node of the LangGraph pipeline.
+
+    Uses TypedDict (not Pydantic) because LangGraph treats state as a plain dict
+    internally — type hints are for IDE safety only and are never enforced at runtime.
+    """
+
     session_id: str
     conditions: list[dict]        # active signals from external_conditions
     exposed_suppliers: dict       # {supplier_id: supplier_doc + operational_context}
     risk_scores: dict             # {supplier_id: list[RiskScore]}
     memory_episodes: dict         # {supplier_id: list[episode_doc]}
     evaluations: list[dict]       # documents written to supplier_risk_evaluations
+    agent_thoughts: list[str]
+    atlas_operations: list[dict]
 
 
 class TriggeredBy(BaseModel):
+    """Records the multipliers that produced a supplier's rpn_dynamic.
+
+    ``source`` is the data provider (e.g. USGS, news feed).  ``condition_score`` is the
+    signal magnitude set by the ingestion step.  ``historical_weight`` is set by
+    ``reason_and_retrieve`` (>1.0 amplifies risk, <1.0 attenuates, 1.0 is neutral).
+    ``distance_decay`` is only present for physical conditions that carry an epicentre
+    coordinate; it is ``None`` for region-based conditions.
+    """
+
     source: str
     condition_score: float
     historical_weight: float
@@ -43,6 +60,15 @@ class TriggeredBy(BaseModel):
 
 
 class RiskScore(BaseModel):
+    """One risk assessment for a single (supplier, condition) pair.
+
+    ``rpn_base`` is the static catalog baseline calculated from catalog fields alone.
+    ``rpn_dynamic`` is the live score after ``condition_score``, ``distance_decay``,
+    and ``historical_weight`` are applied.  ``rpn_status`` is one of CRITICAL / ALERT /
+    WATCH / OK, derived by comparing ``rpn_dynamic`` against the catalog's
+    ``alert_threshold_rpn``.
+    """
+
     risk_id: str
     condition_id: str
     rpn_base: float
@@ -52,6 +78,13 @@ class RiskScore(BaseModel):
 
 
 class OperationalContext(BaseModel):
+    """Active order exposure for a supplier at evaluation time.
+
+    Sourced from ``purchase_orders`` in ``match_suppliers``.  ``criticality`` is the
+    highest order criticality across all active orders (high > medium > low), determined
+    by mapping string labels to numeric ranks via ``_CRITICALITY_RANK``.
+    """
+
     active_orders: int
     total_value_usd: float
     earliest_delivery_due: str
@@ -60,6 +93,14 @@ class OperationalContext(BaseModel):
 
 
 class SupplierEvaluation(BaseModel):
+    """Full risk profile for one supplier, as sent in the ``agent_response`` SSE event
+    and persisted in ``supplier_risk_evaluations``.
+
+    ``supplier_risk_level`` is the highest ``rpn_status`` across all ``risk_scores``,
+    selected using ``_STATUS_RANK`` in ``generate_summary``.  ``requires_action`` is
+    ``True`` when at least one score is CRITICAL or ALERT.
+    """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     supplier_id: str
@@ -76,8 +117,30 @@ class SupplierEvaluation(BaseModel):
 
 
 class EvaluationResult(BaseModel):
+    """Top-level payload of the ``agent_response`` SSE event.
+
+    ``conditions`` are the raw ``external_conditions`` documents that triggered this
+    evaluation run.  ``suppliers`` contains only suppliers with at least one non-OK
+    score; OK-only suppliers are filtered out in ``generate_summary``.
+    """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     session_id: str
     conditions: list[dict]
     suppliers: list[SupplierEvaluation]
+
+
+class AtlasOperation(BaseModel):
+    """Schema for an ``atlas_operation`` SSE event.
+
+    Emitted by each node when it issues a MongoDB query so the frontend can render a
+    live "Atlas features in use" panel.  ``feature`` is one of: Query, Geospatial,
+    Vector Search, Aggregation — each mapping to a distinct MongoDB capability.
+    """
+
+    feature: str
+    collection: str
+    detail: str
+    supplier_id: str | None = None
+    result_count: int | None = None

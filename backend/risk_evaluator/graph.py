@@ -34,7 +34,7 @@ from risk_evaluator.nodes import (
     detect_conditions,
     generate_summary,
     match_suppliers,
-    retrieve_memory,
+    reason_and_retrieve,
 )
 from risk_evaluator.schemas import RiskEvaluatorState
 
@@ -43,21 +43,43 @@ builder = StateGraph(RiskEvaluatorState)
 builder.add_node("detect_conditions", detect_conditions)
 builder.add_node("match_suppliers", match_suppliers)
 builder.add_node("calculate_rpn", calculate_rpn)
-builder.add_node("retrieve_memory", retrieve_memory)
+builder.add_node("reason_and_retrieve", reason_and_retrieve)
 builder.add_node("generate_summary", generate_summary)
 
+# Pipeline sequence (linear — no conditional branches):
+#   START
+#     → detect_conditions   : Atlas Query      — find active signals for this session
+#     → match_suppliers     : Atlas Geospatial / Query — find exposed suppliers
+#     → calculate_rpn       : Atlas Query      — score each supplier–signal pair
+#     → reason_and_retrieve : LLM ReAct loop   — query Atlas memory, derive weights
+#     → generate_summary    : LLM + write      — narrate risk and persist results
+#   END
 builder.add_edge(START, "detect_conditions")
 builder.add_edge("detect_conditions", "match_suppliers")
 builder.add_edge("match_suppliers", "calculate_rpn")
-builder.add_edge("calculate_rpn", "retrieve_memory")
-builder.add_edge("retrieve_memory", "generate_summary")
+builder.add_edge("calculate_rpn", "reason_and_retrieve")
+builder.add_edge("reason_and_retrieve", "generate_summary")
 builder.add_edge("generate_summary", END)
 
 graph = builder.compile()
 
 
 async def run_graph_task(session_id: str, queue: asyncio.Queue, config: dict) -> None:
-    """Invokes the risk evaluator graph and forwards any fatal error to the SSE queue."""
+    """Invoke the risk evaluator graph as a background coroutine and relay errors to SSE.
+
+    Called by the FastAPI router via ``asyncio.create_task`` so it runs concurrently
+    with the SSE generator that drains the queue — the two coroutines communicate
+    through ``queue`` without blocking each other.
+
+    Initialises the LangGraph state with empty collections for each field; nodes
+    accumulate data into those fields as the pipeline progresses, with each node
+    returning only the keys it modifies (LangGraph merges partial updates back into
+    the shared state dict automatically).
+
+    On any unhandled exception, puts an ``{"type": "error", ...}`` frame followed by
+    ``None`` onto the queue so the SSE stream closes cleanly instead of hanging open
+    while the client waits for more events that will never arrive.
+    """
     try:
         await graph.ainvoke(
             {
@@ -67,6 +89,8 @@ async def run_graph_task(session_id: str, queue: asyncio.Queue, config: dict) ->
                 "risk_scores": {},
                 "memory_episodes": {},
                 "evaluations": [],
+                "agent_thoughts": [],
+                "atlas_operations": [],
             },
             config,
         )
