@@ -1,14 +1,39 @@
 # Retail Supply Chain Risk — Backend
 
-FastAPI backend for the Retail Supply Chain Risk demo. Simulates external disruption signals, evaluates supplier risk in real time using a LangGraph agent, and surfaces alternative suppliers through a second agentic flow — both agents stream progress to the frontend via Server-Sent Events. MongoDB Atlas is the operational database, vector search index, and LangGraph state checkpointer.
+FastAPI backend for the Retail Supply Chain Risk demo. Detects external disruption signals, evaluates supplier exposure in real time using a LangGraph agent, and surfaces alternative suppliers through a second agentic flow — both agents stream their reasoning to the frontend via Server-Sent Events. MongoDB Atlas is the operational database, vector search index, and LangGraph state store.
+
+---
+
+## What this system does
+
+A procurement manager at a retail company sources from 40+ suppliers across 18 countries. When the world changes — a tariff announcement, a port closure, a tropical storm — the manager needs to know within seconds: which suppliers are exposed, how seriously, and what orders are at risk.
+
+This system does that automatically. It monitors external signals, calculates a dynamic risk score per supplier (the RPN — Risk Priority Number), and when a supplier crosses the critical threshold it pre-populates a shortlist of alternatives ready for the manager to review and approve. The manager never initiates a search — the system surfaces the situation and the manager decides whether to act.
+
+**The core design principle**: the system informs, never acts. Every write to the ERP or supplier system requires explicit human approval. The agents reason and recommend; the human decides.
+
+---
+
+## How the risk score works
+
+The RPN formula is borrowed from FMEA (Failure Mode and Effects Analysis):
+
+```
+rpn_base    = severity × occurrence_base × detection
+rpn_dynamic = severity × (occurrence_base × condition_score) × detection × historical_weight
+```
+
+- `severity` and `detection` are fixed properties of the risk type — encoded once in `risk_catalog` by the procurement team
+- `condition_score` comes from the live signal — how strongly does this event indicate actual disruption (0.0–1.0)
+- `historical_weight` comes from `agent_memory` — did this supplier fail under similar conditions before? (amplifies or dampens the score)
+
+A supplier breaches ALERT or CRITICAL when the dynamic RPN exceeds the threshold defined for that risk type. Fresh produce thresholds are tighter than packaged goods thresholds — a delayed avocado shipment has no buffer; a delayed cereal shipment does.
 
 ---
 
 ## Architecture
 
-The backend is organised as **vertical slices** — three logical services that would be independent microservices in production, running as a single FastAPI app for demo simplicity. Slices never import from each other. Each service owns its collections in MongoDB — the only way services share data is by reading each other's collections, never by calling each other directly. This is the Operational Data Layer pattern documented in [ADR 005](./adrs/005-operational-data-layer.md).
-
-![Architecture diagram](./architecture.png)
+The backend is organised as **vertical slices** — three logical services that would be independent microservices in production, running as a single FastAPI app for demo simplicity. Slices never import from each other. Each service reads from MongoDB collections it does not own — never calls other slices directly. This is the Operational Data Layer pattern documented in [ADR 005](./adrs/005-operational-data-layer.md).
 
 ```
 Frontend
@@ -20,44 +45,73 @@ Frontend
 
 ---
 
-## The Three Slices
+## The three slices
 
-### `ingestion_engine` — Signal Ingestion
+### `ingestion_engine` — Demo signal setup
 
-Accepts `POST /api/simulation/start`. Generates 3 demo trigger documents — one per risk type (geopolitical, climate, logistics) — and inserts them into `external_conditions`. Returns all 3 inserted documents as a JSON response.
+Not an agent. Its only job is to plant the right data in MongoDB so the agents have something real to reason about when the manager clicks "Activate Demo".
 
-Signal content varies per session to produce different affected suppliers across demo runs. Which suppliers enter alert or critical state is determined entirely by the signal content (affected regions, epicentre coordinates, impact radius) — no supplier is hardcoded.
+It selects up to 3 suppliers at random (those with active orders), picks matching base signals from `external_conditions` (one per risk type: geopolitical, logistics, climate), and calculates a `condition_score` calibrated to guarantee at least one supplier reaches CRITICAL when Agent 1 runs. The calibration formula is:
 
-**Endpoint:** `POST /api/simulation/start`
-**Response:** `{ session_id, signals: [{...}, {...}, {...}] }`
+```
+condition_score = (alert_threshold_rpn / (severity × occurrence_base × 1.0 × detection)) × 1.15
+```
 
----
+The 1.15 safety margin means the result is robust — Agent 1's memory retrieval can amplify or dampen the score without accidentally dropping below the alert threshold. The signals inserted are structurally identical to what a real feed (GDELT, MarineTraffic, NOAA) would produce — the agents never know the difference.
 
-### `risk_evaluator` — Agent 1, RPN Risk Evaluation
-
-Activated by an explicit `POST /api/simulation/evaluate` from the frontend after ingestion completes. Runs a LangGraph graph that detects active conditions, matches affected suppliers, calculates dynamic RPN scores, retrieves historical memory, and generates a natural-language risk summary via Claude.
-
-Streams agent progress to the frontend via SSE as each node executes.
-
-**Endpoint:** `POST /api/simulation/evaluate`
-**Response:** SSE stream → `tool_start` / `tool_end` / `agent_response` / `error` events
-
-> **Production note:** In a production system this agent would be activated by a MongoDB Change Stream watching `external_conditions` for `is_demo_trigger: true` inserts — eliminating the explicit frontend call. The Change Stream activation pattern is documented in `stream_listener.py` and ADR 003 as an educational reference.
+**Endpoint:** `POST /api/simulation/start` → JSON response
 
 ---
 
-### `alternative_finder` — Agent 2, Alternative Supplier Search
+### `risk_evaluator` — Agent 1, RPN evaluation
 
-Human-in-the-loop. Activated by an explicit `POST /api/agent/find-alternatives` when the procurement manager decides to act on a flagged supplier. Runs a LangGraph graph that performs Atlas hybrid search, Voyage AI reranking, and three validation filters (certifications, lead time, capacity).
+A LangGraph workflow with 5 linear nodes. Activated by the frontend after ingestion completes. Streams its progress step by step via SSE so the UI shows the agent reasoning in real time.
 
-Streams agent progress to the frontend via SSE as each node executes.
+```
+detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → generate_summary
+```
 
-**Endpoint:** `POST /api/agent/find-alternatives`
-**Response:** SSE stream → `tool_start` / `tool_end` / `agent_response` / `error` events
+**detect_conditions** — reads the session's active signals from `external_conditions`.
+
+**match_suppliers** — for each signal, finds exposed suppliers. Signals with a physical location (port congestion, storms) use a `$geoWithin $centerSphere` query on `suppliers.location` — two suppliers in the same country receive different scores depending on how far they are from the epicentre. Signals without a physical location (tariff announcements) match by region string. Crosses with `purchase_orders` to build the operational context: how many orders, how much money, how many days until the nearest due date.
+
+**calculate_rpn** — applies the RPN formula for each (supplier, signal) pair. Applies distance decay for physical signals. Determines `rpn_status` against the risk catalog thresholds.
+
+**retrieve_memory** — vector search on `agent_memory` for semantically similar past episodes. If a supplier failed under comparable conditions before, `historical_weight = 1.20` amplifies the RPN. If they navigated it successfully, `historical_weight = 0.90` dampens it. No prior memory defaults to `1.0` — consistent with the ingestion engine's calibration assumption. Memory failure is caught silently and never breaks the graph.
+
+**generate_summary** — calls Claude to write a concise natural-language summary per supplier for the procurement manager. Inserts the full evaluation document into `supplier_risk_evaluations`. Emits the final `agent_response` SSE event.
+
+**Endpoint:** `POST /api/simulation/evaluate` → SSE stream
+
+> **Production note:** In a real deployment this agent would be triggered by a MongoDB Change Stream watching `external_conditions` for new `is_demo_trigger: true` inserts — eliminating the explicit frontend call. The pattern is documented in `stream_listener.py` and [ADR 003](./adrs/003-sse-change-stream.md).
 
 ---
 
-## Folder Structure
+### `alternative_finder` — Agent 2, alternative supplier search
+
+Human-in-the-loop. Only runs when the procurement manager explicitly clicks "Find alternatives" on a flagged supplier. Takes the `supplier_risk_evaluations` document as its brief and runs a structured search pipeline:
+
+```
+hybrid_search → voyage_rerank → validate_certifications → validate_lead_time → validate_capacity
+```
+
+**hybrid_search** — combines vector search (semantic similarity on supplier profiles) and BM25 full-text search on `supplier_documents` (contracts, certificates, audit reports), merged with Reciprocal Rank Fusion.
+
+**voyage_rerank** — reranks the hybrid search results using Voyage AI's reranking model running natively inside Atlas.
+
+**validate_certifications** — reads `supplier_documents` chunks to verify that candidate certifications are valid and in scope for the product category. Candidates with expired or out-of-scope certifications are discarded with cited evidence.
+
+**validate_lead_time** — compares each candidate's `avg_lead_time_days` against the `days_until_due` of the at-risk orders. Flags candidates where the lead time would cause a late delivery.
+
+**validate_capacity** — checks `committed_capacity_pct` to confirm the candidate has headroom to absorb additional volume.
+
+The agent writes the shortlist to `supplier_alternatives` and pauses. The `approved_supplier_id` field is null — the ERP integration does not fire until the manager explicitly approves a candidate.
+
+**Endpoint:** `POST /api/agent/find-alternatives` → SSE stream
+
+---
+
+## Folder structure
 
 ```
 backend/
@@ -76,7 +130,7 @@ backend/
 │   ├── router.py            POST /api/simulation/start → JSON response
 │   ├── service.py           Orchestrates target selection, signal generation, and MongoDB insert
 │   ├── signal_generator.py  Builds 3 demo trigger documents (one per risk type)
-│   └── target_selector.py   Shuffles active-order suppliers, matches risk_catalog by region, picks up to 3 pairs (one per risk type)
+│   └── target_selector.py   Shuffles active-order suppliers, matches risk_catalog by region, picks up to 3 pairs
 │
 ├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation (Agent 1)
 │   ├── router.py            POST /api/simulation/evaluate → SSE stream
@@ -94,14 +148,13 @@ backend/
 ├── voyageai/                Thin wrapper around MongoDB-native Voyage AI reranker
 │   └── rerank.py            rerank(query, documents, top_k) — executes inside Atlas aggregation pipeline
 │
-├── docs/
-│   └── seeds/               Seed files and Atlas setup guide
-│       ├── README.md        Step-by-step cluster setup, indexes, and replication guide
-│       ├── suppliers_seed.json
-│       ├── risk_catalog_seed.json
-│       ├── purchase_orders_seed.json
-│       ├── supplier_documents_seed.json
-│       └── external_conditions_seed.json
+├── dataset/                 Seed files and setup guide
+│   ├── seeds_README.md      Step-by-step cluster setup, indexes, and replication guide
+│   ├── suppliers_seed.json
+│   ├── risk_catalog_seed.json
+│   ├── purchase_orders_seed.json
+│   ├── supplier_documents_seed.json
+│   └── external_conditions_seed.json
 │
 └── adrs/                    Architecture Decision Records
     ├── 001-architecture-overview.md
@@ -113,52 +166,58 @@ backend/
 
 ---
 
-## Session Model
+## Data model overview
 
-Every demo run is isolated by a `session_id`. The frontend generates it with `crypto.randomUUID()` on "Start Simulation" click and sends it on every request via the `X-Session-ID` header. The backend never generates or transforms it — it receives, validates (non-empty), and uses it to scope all MongoDB reads and writes.
+Eight MongoDB collections divided into two groups:
+
+**Fixed seed data** — never written by agents, never deleted on demo reset:
+
+| Collection | Purpose |
+|---|---|
+| `suppliers` | Master supplier register. 40 suppliers across 18 countries. Polymorphic document model — CN/TW suppliers carry `tariff_exposure_rating`, fresh produce suppliers carry `cold_chain_certified`. GeoJSON `location` field powers geo queries. |
+| `risk_catalog` | FMEA scores per risk type. Encodes procurement expertise: severity, occurrence, detection, and alert/critical thresholds. Maintained by the procurement team, never by agents. |
+| `purchase_orders` | 620 active orders across all suppliers. Provides the financial and timing context that makes a risk score meaningful — which orders are at stake, how much value, how many days until due. |
+| `supplier_documents` | 146 document chunks (contracts, certificates, audit reports, sustainability reports, emails). Chunked at 400–600 tokens with overlap. Hybrid Search index (vector + BM25) powers Agent 2's certification validation. |
+
+**Session-scoped data** — written by agents during a demo run, cleaned up on reset:
+
+| Collection | Written by | Purpose |
+|---|---|---|
+| `external_conditions` | ingestion_engine | Active risk signals. Base signals (pre-loaded, always green) plus demo trigger signals (inserted at runtime, calibrated to push suppliers into CRITICAL). TTL index auto-expires demo triggers. |
+| `supplier_risk_evaluations` | Agent 1 | One document per evaluated supplier per session. Contains the dynamic RPN, which signals caused it, the operational context, and the natural-language summary Claude generated. This is what the manager reads on the dashboard. |
+| `agent_memory` | Agent 1 + 2 | Historical risk episodes. Each episode records what happened, whether the disruption materialised, what it cost, and how it was resolved. Voyage AI embeddings enable semantic retrieval — "tariff escalation affecting CN packaging supplier" retrieves the relevant episode regardless of exact wording. |
+| `supplier_alternatives` | Agent 2 | The shortlist Agent 2 produces. Paused until the manager approves — `approved_supplier_id: null` means the ERP integration has not fired. |
+
+---
+
+## Session model
+
+Every demo run is isolated by a `session_id`. The frontend generates it with `crypto.randomUUID()` on "Start Simulation" click and sends it on every request via the `X-Session-ID` header. The backend never generates or transforms it.
 
 ```
 X-Session-ID: sess-abc123
 ```
 
-| Collection | Session-scoped | Written by | TTL |
-|---|---|---|---|
-| `external_conditions` | ✅ | ingestion_engine | TBD |
-| `supplier_risk_evaluations` | ✅ | Agent 1 | TBD |
-| `supplier_alternatives` | ✅ | Agent 2 | TBD |
-| `agent_memory` | ✅ | Agent 1 + 2 | TBD |
-| `suppliers` | ❌ | Seed data | — |
-| `risk_catalog` | ❌ | Seed data | — |
-| `purchase_orders` | ❌ | Seed data | — |
-| `supplier_documents` | ❌ | Seed data | — |
-
-LangGraph checkpointing uses `thread_id = session_id` — both agents are automatically session-isolated.
-
-Demo cleanup runs via Atlas Scheduled Trigger daily at 00:00 UTC (`deleteMany({ is_base: false, session_id: ... })`). TTL strategy to be defined at end of demo development — all session-scoped documents currently use `valid_until: null`.
+LangGraph checkpointing uses `thread_id = session_id` — both agents are automatically session-isolated. Demo cleanup runs via Atlas Scheduled Trigger daily at 00:00 UTC (`deleteMany({ is_base: false, session_id: "..." })`).
 
 ---
 
-## SSE Event Structure
+## SSE event structure
 
-Both Agent 1 and Agent 2 use the same event pattern.
+Both agents use the same event pattern:
 
 ```
-data: {"type": "tool_start", "message": "Detecting external conditions..."}
-data: {"type": "tool_end",   "message": "Detecting external conditions..."}
+data: {"type": "tool_start", "message": "Detecting active risk signals..."}
+data: {"type": "tool_end",   "message": "Detecting active risk signals..."}
 data: {"type": "agent_response", "data": { ... }}
 data: {"type": "error", "message": "..."}
 ```
 
-| Field | Type | Description |
-|---|---|---|
-| `type` | string | `tool_start` \| `tool_end` \| `agent_response` \| `error` |
-| `message` | string | Human-readable step label shown in the UI |
-| `data` | object | Final payload — only present on `agent_response` |
-| `phase` | string | `left` \| `right` — Agent 2 only, for two-column UI layout |
+Agent 2 adds a `phase` field (`"left"` or `"right"`) to support the two-column UI layout showing retrieval and validation side by side.
 
 ---
 
-## Running Locally
+## Running locally
 
 ```bash
 # Install dependencies
@@ -176,7 +235,7 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 
 ---
 
-## Environment Variables
+## Environment variables
 
 | Variable | Description |
 |---|---|
@@ -193,258 +252,30 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 
 - [001 — Vertical Slice Architecture](./adrs/001-architecture-overview.md)
 - [002 — Motor Async Driver](./adrs/002-async-motor.md)
-- [003 — SSE + Change Streams](./adrs/003-sse-change-stream.md) — includes production vs demo activation model
+- [003 — SSE + Change Streams](./adrs/003-sse-change-stream.md)
 - [004 — LangGraph Checkpointing](./adrs/004-langgraph-checkpointing.md)
 - [005 — Operational Data Layer](./adrs/005-operational-data-layer.md)
 
 ---
 
-## API Contract
+## API contract
 
 Every request sends `X-Session-ID` in the header. The backend never generates or modifies the session — it uses it exclusively to scope MongoDB reads and writes.
 
-```
-X-Session-ID: <session_id>    # required on every request
-```
+### `POST /api/simulation/start`
 
----
+No request body. Returns the 3 inserted signal documents as JSON.
 
-### Step 1 — `POST /api/simulation/start`
+### `POST /api/simulation/evaluate`
 
-Triggers signal ingestion. No request body needed — the backend generates the 3 signals internally. Returns immediately with the 3 inserted documents.
+No request body. Returns an SSE stream. Final event is `agent_response` with the full evaluation result including all suppliers, their risk scores, and natural-language summaries.
 
-The ingestion engine is the demo's setup mechanism — its only job is to plant the right data in MongoDB so the agents have something real to reason about. In a production environment this role would be filled by real external feeds: GDELT for geopolitical signals, MarineTraffic for port disruptions, NOAA for climate events. The agents never know whether a signal came from a real feed or from the ingestion engine — the document structure is identical.
+### `POST /api/agent/find-alternatives`
 
-**Request**
-```
-POST /api/simulation/start
-X-Session-ID: sess-abc123
-```
-
-**Response** `200 OK`
 ```json
-{
-  "session_id": "sess-abc123",
-  "signals": [
-    {
-      "condition_id": "COND-sess-abc1-GEO",
-      "risk_catalog_ref": "RISK-GEO-001",
-      "risk_type_triggered": "geopolitical_tariff",
-      "source": "GDELT",
-      "raw_headline": "US announces 25% tariffs on CN packaging imports — effective in 15 days",
-      "affected_regions": ["CN", "TW"],
-      "condition_score": 0.87,
-      "has_physical_location": false,
-      "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": null,
-      "is_base": false,
-      "is_demo_trigger": true,
-      "session_id": "sess-abc123"
-    },
-    {
-      "condition_id": "COND-sess-abc1-LOG",
-      "risk_catalog_ref": "RISK-LOG-001",
-      "risk_type_triggered": "logistics_disruption",
-      "source": "MarineTraffic",
-      "raw_headline": "Severe port congestion at Yantian/Shenzhen — vessel queuing 48–72h delays",
-      "affected_regions": ["CN", "HK"],
-      "condition_score": 0.76,
-      "has_physical_location": true,
-      "epicentre": { "type": "Point", "coordinates": [114.1095, 22.5229] },
-      "impact_radius_km": 80,
-      "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": null,
-      "is_base": false,
-      "is_demo_trigger": true,
-      "session_id": "sess-abc123"
-    },
-    {
-      "condition_id": "COND-sess-abc1-CLM",
-      "risk_catalog_ref": "RISK-CLM-001",
-      "risk_type_triggered": "climate_disruption",
-      "source": "NOAA",
-      "raw_headline": "Tropical storm advisory — Oaxaca Pacific coast, Category 1 landfall 72h",
-      "affected_regions": ["MX"],
-      "condition_score": 0.82,
-      "has_physical_location": true,
-      "epicentre": { "type": "Point", "coordinates": [-96.7266, 17.0732] },
-      "impact_radius_km": 120,
-      "detected_at": "2026-06-18T14:00:00Z",
-      "valid_until": null,
-      "is_base": false,
-      "is_demo_trigger": true,
-      "session_id": "sess-abc123"
-    }
-  ]
-}
+{ "supplier_id": "SUP-SHENZHEN-441" }
 ```
 
-**Error**
-```json
-{ "detail": "Signal generation failed" }
-```
+Returns an SSE stream. Final event is `agent_response` with the ranked shortlist of alternative suppliers including validation results and cited evidence.
 
----
-
-### Step 2 — `POST /api/simulation/evaluate`
-
-Activates Agent 1 (risk_evaluator). Reads the session's signals from `external_conditions`, evaluates all 40 suppliers, and streams progress as each LangGraph node executes. The final `agent_response` event carries the full evaluation result.
-
-**Request**
-```
-POST /api/simulation/evaluate
-X-Session-ID: sess-abc123
-```
-
-**SSE stream**
-```
-data: {"type": "tool_start", "message": "Detecting external conditions..."}
-data: {"type": "tool_end",   "message": "Detecting external conditions..."}
-data: {"type": "tool_start", "message": "Matching affected suppliers..."}
-data: {"type": "tool_end",   "message": "Matching affected suppliers..."}
-data: {"type": "tool_start", "message": "Calculating dynamic RPN scores..."}
-data: {"type": "tool_end",   "message": "Calculating dynamic RPN scores..."}
-data: {"type": "tool_start", "message": "Retrieving historical memory..."}
-data: {"type": "tool_end",   "message": "Retrieving historical memory..."}
-data: {"type": "tool_start", "message": "Generating risk summary..."}
-data: {"type": "tool_end",   "message": "Generating risk summary..."}
-data: {"type": "agent_response", "data": { ... }}
-```
-
-**`agent_response` payload**
-```json
-{
-  "type": "agent_response",
-  "data": {
-    "session_id": "sess-abc123",
-    "conditions": [
-      {
-        "condition_id": "COND-sess-abc1-GEO",
-        "source": "GDELT",
-        "raw_headline": "US announces 25% tariffs on CN packaging imports — effective in 15 days",
-        "risk_type_triggered": "geopolitical_tariff",
-        "affected_regions": ["CN", "TW"],
-        "condition_score": 0.87,
-        "has_physical_location": false
-      }
-    ],
-    "suppliers": [
-      {
-        "supplier_id": "SUP-SHENZHEN-441",
-        "supplier_name": "Shenzhen Advanced Materials Co.",
-        "region": "CN",
-        "country": "China",
-        "product_categories": ["packaging_materials"],
-        "supplier_risk_level": "CRITICAL",
-        "requires_action": true,
-        "operational_context": {
-          "active_orders": 3,
-          "total_value_usd": 2400000,
-          "earliest_delivery_due": "2026-07-10",
-          "days_until_due": 22,
-          "criticality": "high"
-        },
-        "risk_scores": [
-          {
-            "risk_id": "RISK-GEO-001",
-            "condition_id": "COND-sess-abc1-GEO",
-            "rpn_base": 160,
-            "rpn_dynamic": 278,
-            "rpn_status": "CRITICAL",
-            "triggered_by": {
-              "source": "GDELT",
-              "condition_score": 0.87,
-              "historical_weight": 1.20
-            }
-          }
-        ],
-        "natural_language_summary": "SUP-SHENZHEN-441 is at CRITICAL risk. The newly announced US-CN tariffs directly impact packaging imports with an RPN of 278, well above the alert threshold of 260. Three active orders totalling $2.4M are due within 22 days. Historical memory confirms a prior tariff escalation in Q1 2025 resulted in 18-day delays and $340K cost overrun. Immediate alternative sourcing is recommended.",
-        "session_id": "sess-abc123"
-      }
-    ]
-  }
-}
-```
-
-**Error**
-```
-data: {"type": "error", "message": "Failed to calculate RPN scores"}
-```
-
----
-
-### Step 3 — `POST /api/agent/find-alternatives`
-
-Activates Agent 2 (alternative_finder). Human-in-the-loop — called when the procurement manager decides to act on a flagged supplier. Reads evaluation context from `supplier_risk_evaluations` by session and supplier, runs hybrid search + Voyage AI reranking + validation filters, and streams progress.
-
-**Request**
-```
-POST /api/agent/find-alternatives
-X-Session-ID: sess-abc123
-Content-Type: application/json
-
-{
-  "supplier_id": "SUP-SHENZHEN-441"
-}
-```
-
-**SSE stream**
-```
-data: {"type": "tool_start", "phase": "left",  "message": "Hybrid Search: retrieving top 13 candidates"}
-data: {"type": "tool_end",   "phase": "left",  "message": "Hybrid Search: retrieving top 13 candidates"}
-data: {"type": "tool_start", "phase": "left",  "message": "Voyage Rerank: refine to top 5"}
-data: {"type": "tool_end",   "phase": "left",  "message": "Voyage Rerank: refine to top 5"}
-data: {"type": "tool_start", "phase": "right", "message": "Validating certifications"}
-data: {"type": "tool_end",   "phase": "right", "message": "Validating certifications"}
-data: {"type": "tool_start", "phase": "right", "message": "Validating lead time"}
-data: {"type": "tool_end",   "phase": "right", "message": "Validating lead time"}
-data: {"type": "tool_start", "phase": "right", "message": "Validating capacity"}
-data: {"type": "tool_end",   "phase": "right", "message": "Validating capacity"}
-data: {"type": "agent_response", "data": [ ... ]}
-```
-
-**`agent_response` payload**
-```json
-{
-  "type": "agent_response",
-  "data": [
-    {
-      "supplier_id": "SUP-GUADALAJARA-MX",
-      "rank": 1,
-      "supplier_name": "Guadalajara Packaging Co.",
-      "region": "MX",
-      "country": "Mexico",
-      "product_categories": ["packaging_materials"],
-      "rrf_score": 0.0312,
-      "certifications": ["ISO 9001", "ISO 14001"],
-      "avg_lead_time_days": 18,
-      "committed_capacity_pct": 0.45,
-      "proximity_km": 2810,
-      "proximity_note": "MX-Guadalajara → LA DC · est. 4-day transit · within delivery window",
-      "validation": {
-        "certifications_pass": true,
-        "lead_time_pass": true,
-        "capacity_pass": true
-      },
-      "evidence": [
-        "ISO 9001:2015 valid until Dec 2027 — scope includes packaging materials",
-        "Framework contract active · urgent delivery clause confirmed",
-        "Sustainability audit completed March 2025 · ISO 14064-1 verified"
-      ],
-      "gaps": ["Lead time avg 18 days · delivery window is 22 days · 4-day buffer"],
-      "session_id": "sess-abc123"
-    }
-  ]
-}
-```
-
-**Error**
-```
-data: {"type": "error", "message": "Vector search failed: index not found"}
-```
-
----
-
-## Frontend
-
-Maintained separately. See [`/frontend`](../frontend/).
+Full request/response examples for all three endpoints are in the [original API contract document](./docs/api-contract.md).
