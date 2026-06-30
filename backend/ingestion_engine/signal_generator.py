@@ -1,8 +1,11 @@
+import logging
 import random
 from datetime import datetime, timezone
 from uuid import uuid4
 
 from core.exceptions import SignalGenerationError
+
+logger = logging.getLogger(__name__)
 
 # DEMO SIMPLIFICATION: in production this comes from agent_memory Vector Search
 # on (supplier_id, risk_type). Hardcoded neutral for demo — any memory Agent 1
@@ -51,6 +54,13 @@ async def generate_and_insert_signals(db, session_id: str, targets: list[dict]) 
             f"COND-{session_id[:8].upper()}-"
             f"{risk['risk_type'][:3].upper()}-"
             f"{uuid4().hex[:6].upper()}"
+        )
+        logger.info(
+            "[%s] condition_id=%s  risk_catalog_ref=%s  risk_type=%s",
+            session_id,
+            doc["condition_id"],
+            doc.get("risk_catalog_ref", "?"),
+            doc.get("risk_type_triggered", "?"),
         )
         doc["detected_at"] = datetime.now(timezone.utc)
         doc["valid_until"] = None

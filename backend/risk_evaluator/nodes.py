@@ -415,6 +415,8 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
             logger.warning("reason_and_retrieve: tool '%s' failed — %s", action_str, exc)
 
         for _new_op in atlas_ops_sink[_sink_len_before:]:
+            if _new_op.get("type") == "atlas_operation":
+                logger.info("[%s] atlas_op %s %s — %s", state["session_id"], _new_op["feature"], _new_op["collection"], _new_op["detail"])
             await queue.put(_new_op)
 
         # Feed the tool result back as a Human message so Claude can reason about
@@ -447,6 +449,7 @@ async def detect_conditions(state: RiskEvaluatorState, config: RunnableConfig) -
     feature was used and how many conditions were found.
     """
     queue = config.get("configurable", {}).get("queue")
+    logger.info("[%s] evaluate — pipeline started", state["session_id"])
     await queue.put({"type": "tool_start", "message": "Detecting active risk signals..."})
 
     db = await get_database()
@@ -463,6 +466,7 @@ async def detect_conditions(state: RiskEvaluatorState, config: RunnableConfig) -
         "detail": f"{len(conditions)} active conditions found for session {state['session_id']}",
     }
     state["atlas_operations"].append(_op)
+    logger.info("[%s] atlas_op %s %s — %s", state["session_id"], _op["feature"], _op["collection"], _op["detail"])
     await queue.put(_op)
 
     await queue.put({"type": "tool_end", "message": "Detecting active risk signals..."})
@@ -523,6 +527,7 @@ async def match_suppliers(state: RiskEvaluatorState, config: RunnableConfig) -> 
                 ),
             }
             state["atlas_operations"].append(_op)
+            logger.info("[%s] atlas_op %s %s — %s", state["session_id"], _op["feature"], _op["collection"], _op["detail"])
             await queue.put(_op)
 
         for raw_supplier in matched:
@@ -613,6 +618,7 @@ async def calculate_rpn(state: RiskEvaluatorState, config: RunnableConfig) -> di
                 ),
             }
             state["atlas_operations"].append(_op)
+            logger.info("[%s] atlas_op %s %s — %s", state["session_id"], _op["feature"], _op["collection"], _op["detail"])
             await queue.put(_op)
 
             condition_score = signal["condition_score"]
@@ -920,6 +926,14 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
 
     await queue.put({"type": "tool_end", "message": "Generating risk summary..."})
     await queue.put({"type": "agent_response", "data": result.model_dump()})
+    for _sup in evaluated_suppliers:
+        _score_str = ", ".join(
+            f"{s.risk_id}:{s.rpn_status}={s.rpn_dynamic}" for s in _sup.risk_scores
+        )
+        logger.info(
+            "[%s] agent_response  supplier=%s  risk_level=%s  scores=[%s]",
+            state["session_id"], _sup.supplier_id, _sup.supplier_risk_level, _score_str,
+        )
     await queue.put(None)
 
     return {"evaluations": evaluations}
