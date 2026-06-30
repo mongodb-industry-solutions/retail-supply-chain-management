@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 export async function POST(request) {
   const sessionId = request.headers.get("X-Session-ID");
   if (!sessionId) {
@@ -27,7 +29,24 @@ export async function POST(request) {
     });
   }
 
-  return new Response(res.body, {
+  const upstream = res.body.getReader();
+  const stream = new ReadableStream({
+    async pull(controller) {
+      const { done, value } = await upstream.read();
+      if (done) {
+        console.log("upstream stream closed");
+        controller.close();
+      } else {
+        console.log("upstream stream received");
+        controller.enqueue(value);
+      }
+    },
+    cancel() {
+      upstream.cancel();
+    },
+  });
+
+  return new Response(stream, {
     status: 200,
     headers: {
       "Content-Type": "text/event-stream",
