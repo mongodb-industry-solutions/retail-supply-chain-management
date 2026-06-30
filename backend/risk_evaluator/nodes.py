@@ -173,7 +173,7 @@ async def search_supplier_memory(
         {
             "$vectorSearch": {
                 "index": "agent_memory_autoembed_index",
-                "queryText": query_text,
+                "query": {"text": query_text},
                 "path": "auto_embed_text",
                 "filter": {"supplier_id": {"$eq": supplier_id}},
                 "numCandidates": 50,
@@ -248,7 +248,7 @@ async def search_combined_episodes(
         {
             "$vectorSearch": {
                 "index": "agent_memory_autoembed_index",
-                "queryText": query_text,
+                "query": {"text": query_text},
                 "path": "auto_embed_text",
                 "filter": {"risk_type": {"$in": risk_types}},
                 "numCandidates": 100,
@@ -715,7 +715,7 @@ async def retrieve_memory(state: RiskEvaluatorState, config: RunnableConfig) -> 
                 {
                     "$vectorSearch": {
                         "index": "agent_memory_autoembed_index",
-                        "queryText": query_text,
+                        "query": {"text": query_text},
                         "path": "auto_embed_text",
                         "numCandidates": 20,
                         "limit": 5,
