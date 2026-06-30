@@ -68,22 +68,6 @@ const ALL_SUPPLIERS = [
   
 ];
 
-export function generateAffectedSuppliers(loadedConditions) {
-  if (!loadedConditions?.length) return [];
-  const activeTypes = new Set(loadedConditions.map((c) => c.type));
-
-  return ALL_SUPPLIERS.filter((s) => s.conditionTypes.some((t) => activeTypes.has(t)))
-    .map((s) => ({
-      ...s,
-      affectedConditions: s.conditionTypes.filter((t) => activeTypes.has(t)),
-    }))
-    .sort((a, b) => {
-      if (a.severity === "critical" && b.severity !== "critical") return -1;
-      if (a.severity !== "critical" && b.severity === "critical") return 1;
-      return b.riskScore - a.riskScore;
-    });
-}
-
 export const simulatedAffectedSuppliers = ALL_SUPPLIERS.map((s) => ({
   ...s,
   affectedConditions: s.conditionTypes,
