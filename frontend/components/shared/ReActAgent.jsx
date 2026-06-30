@@ -40,13 +40,17 @@ export default function ReActAgent({
   title,
   subtitle,
   onComplete,
+  onDoneChange,
   onViewLogs,
 }) {
   const hasLiveEvents = phasesNew?.some((p) => p.steps?.length > 0);
   const completedRef = useRef(false);
 
   const isDone = hasLiveEvents
-    ? phasesNew.some((p) => p.steps?.some((e) => e.type === "agent_response"))
+    ? phasesNew.every((p) => {
+        const steps = buildDisplayItems(p.steps ?? []).filter((i) => i.type === "step");
+        return steps.length > 0 && steps.every((i) => i.status === "completed");
+      })
     : false;
 
   useEffect(() => {
@@ -55,6 +59,10 @@ export default function ReActAgent({
       onComplete?.();
     }
   }, [isDone, onComplete]);
+
+  useEffect(() => {
+    onDoneChange?.(isDone);
+  }, [isDone, onDoneChange]);
 
   // Fallback: timer-driven animation when no live events yet
   const allSteps = phases.flatMap((p) => p.steps);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@leafygreen-ui/card";
 import { Body } from "@leafygreen-ui/typography";
@@ -38,8 +39,9 @@ function ConditionBadgeWithRPN({ risk, triggeredBy }) {
 
 export default function SupplierCard({ supplier, onFindAlternatives }) {
   const dispatch = useDispatch();
-  const selectedId = useSelector((s) => s.Global.selectedSupplier?.id);
-  const isSelected = selectedId === supplier.id;
+  const selectedId = useSelector((s) => s.Global.selectedSupplier?.supplier_id);
+  const isSelected = selectedId === supplier.supplier_id;
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
 
   return (
     <div
@@ -115,16 +117,28 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
 
         {/* Impact reason (short, bolded) */}
         {supplier.natural_language_summary && (
-          <Body
-            weight="medium"
-            style={{
-              fontSize: 14,
-              color: palette.gray.dark2,
-              marginBottom: spacing[100],
-            }}
-          >
-            {supplier.natural_language_summary}
-          </Body>
+          <div style={{ marginBottom: spacing[100] }}>
+            <Body
+              weight="medium"
+              style={{
+                fontSize: 14,
+                color: palette.gray.dark2,
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: summaryExpanded ? "unset" : 1,
+              }}
+            >
+              {supplier.natural_language_summary}
+            </Body>
+            <span
+              role="button"
+              onClick={(e) => { e.stopPropagation(); setSummaryExpanded((v) => !v); }}
+              style={{ fontSize: 13, color: palette.blue.base, cursor: "pointer", userSelect: "none" }}
+            >
+              {summaryExpanded ? "Read less" : "Read more"}
+            </span>
+          </div>
         )}
 
         {/* Condition badges with RPN delta */}
@@ -162,11 +176,12 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
           </span>
         </div>
 
-        {/* Find alternative suppliers — critical severity only */}
-        {supplier.severity === "critical" && onFindAlternatives && (
+        {/* Find alternative suppliers — high severity only */}
+        {supplier.operational_context.criticality === "high" && onFindAlternatives && (
           <div
             onClick={(e) => e.stopPropagation()}
             style={{ marginTop: spacing[200] }}
+            className="w-100 d-flex flex-row-reverse"
           >
             <Button
               variant="primary"

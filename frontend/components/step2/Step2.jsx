@@ -187,7 +187,7 @@ export default function Step2() {
           },
         ]}
         agentCurrentThought={agentCurrentThought}
-        onComplete={() => setAgentDone(true)}
+        onDoneChange={(done) => setAgentDone(done)}
         onViewLogs={() => setLogsOpen(true)}
       />
 

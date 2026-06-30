@@ -21,7 +21,7 @@ export default function SupplierGrid({ onFindAlternatives }) {
       <div className="d-flex flex-column gap-3">
         {affectedSuppliers.map((supplier) => (
           <SupplierCard
-            key={supplier.id}
+            key={supplier.supplier_id}
             supplier={supplier}
             onFindAlternatives={onFindAlternatives}
           />
