@@ -39,7 +39,7 @@ Create a `.env` file in the `backend/` directory with the following variables (n
 | Collection | Purpose |
 |---|---|
 | `suppliers` | Supplier master data with `location` (GeoJSON Point) and `region` fields |
-| `risk_catalog` | Risk rules: `severity`, `occurrence_base`, `detection`, `alert_threshold_rpn` |
+| `risk_catalog` | Risk rules: `risk_type`, `severity`, `occurrence_base`, `detection`, `alert_threshold_rpn` |
 | `purchase_orders` | Active orders per supplier |
 | `external_conditions` | Base condition documents seeded with `is_base: true` |
 | `agent_memory` | Historical risk episodes used by Vector Search |
@@ -204,7 +204,24 @@ Emitted exactly once, after `generate_summary` completes. This is the final stru
   "data": {
     "session_id": "string",
     "conditions": [
-      { /* raw external_conditions document */ }
+      {
+        "_id": "string — Mongo ObjectId, serialized to string",
+        "condition_id": "COND-ABCD1234-EAR-F3A9B2",
+        "risk_catalog_ref": "string",
+        "risk_type_triggered": "string",
+        "source": "string",
+        "raw_headline": "string",
+        "affected_regions": ["string"],
+        "condition_score": 1.38,
+        "has_physical_location": true,
+        "epicentre": { "type": "Point", "coordinates": [longitude, latitude] },
+        "impact_radius_km": 100,
+        "detected_at": "string",
+        "valid_until": null,
+        "is_base": false,
+        "is_demo_trigger": true,
+        "session_id": "string"
+      }
     ],
     "suppliers": [
       {
@@ -213,13 +230,13 @@ Emitted exactly once, after `generate_summary` completes. This is the final stru
         "region": "string",
         "country": "string",
         "product_categories": ["string"],
+        "location": { "type": "Point", "coordinates": [longitude, latitude] },
         "supplier_risk_level": "CRITICAL",
         "requires_action": true,
-        "session_id": "string",
         "operational_context": {
           "active_orders": 3,
           "total_value_usd": 120000.0,
-          "earliest_delivery_due": "2026-07-04T00:00:00",
+          "earliest_delivery_due": "2026-07-04",
           "days_until_due": 8,
           "criticality": "high"
         },
@@ -234,11 +251,13 @@ Emitted exactly once, after `generate_summary` completes. This is the final stru
               "source": "USGS",
               "condition_score": 1.38,
               "historical_weight": 1.2,
-              "distance_decay": 0.85
+              "distance_decay": 0.85,
+              "risk_type_triggered": "climate_disruption"
             }
           }
         ],
-        "natural_language_summary": "string — 3-5 sentence narrative written by the LLM"
+        "natural_language_summary": "string — 3-5 sentence narrative written by the LLM",
+        "session_id": "string"
       }
     ]
   }
@@ -248,7 +267,10 @@ Emitted exactly once, after `generate_summary` completes. This is the final stru
 `rpn_status` is one of `"CRITICAL"`, `"ALERT"`, `"WATCH"`, `"OK"`.  
 `supplier_risk_level` is the highest `rpn_status` across all scores for that supplier.  
 `requires_action` is `true` when at least one score is `CRITICAL` or `ALERT`.  
-`distance_decay` is `null` for region-based (non-physical) conditions.
+`distance_decay` is `null` for region-based (non-physical) conditions.  
+`operational_context.criticality` is constrained to exactly `"high"`, `"medium"`, or `"low"`.  
+`location` is copied as-is from the supplier's `location` field in the `suppliers` collection (GeoJSON Point).  
+`risk_scores[].triggered_by.risk_type_triggered` comes from the **`risk_catalog`** document's own `risk_type` field for that `risk_id` (e.g. `"geopolitical_tariff"`, `"climate_disruption"`, `"logistics_disruption"`) — it is a different value from the `risk_type_triggered` field on the `external_conditions` document shown under `conditions` above.
 
 > **Note on Insomnia vs. browser:** Insomnia displays the full raw SSE stream including all intermediate events. A browser `EventSource` object receives the same bytes but fires separate `onmessage` callbacks per frame — you will not see a single combined response body.
 

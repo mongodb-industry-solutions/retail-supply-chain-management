@@ -664,6 +664,9 @@ async def calculate_rpn(state: RiskEvaluatorState, config: RunnableConfig) -> di
                         condition_score=condition_score,
                         historical_weight=1.0,
                         distance_decay=distance_decay,
+                        # Sourced from the risk_catalog document's own risk_type, not the
+                        # condition's risk_type_triggered — the two can differ in principle.
+                        risk_type_triggered=catalog["risk_type"],
                     ),
                 )
             )
@@ -909,6 +912,7 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
                 region=supplier["region"],
                 country=supplier["country"],
                 product_categories=supplier["product_categories"],
+                location=supplier["location"],
                 supplier_risk_level=supplier_risk_level,
                 requires_action=requires_action,
                 operational_context=OperationalContext(**op_ctx),
