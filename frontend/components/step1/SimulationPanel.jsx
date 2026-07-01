@@ -17,9 +17,17 @@ import { Card } from "@leafygreen-ui/card";
 
 export default function SimulationPanel() {
   const dispatch = useDispatch();
+  const sessionId = useSelector((s) => s.Global.sessionId);
   const externalConditions = useSelector((s) => s.Global.externalConditions);
+  const loadedExternalConditions = useSelector(
+    (s) => s.Global.loadedExternalConditions,
+  );
   const [isSimulating, setIsSimulating] = useState(false);
-  const [conditions, setConditions] = useState([]);
+  const [conditions, setConditions] = useState(() =>
+    sessionId && loadedExternalConditions.length > 0
+      ? loadedExternalConditions
+      : [],
+  );
   const [progress, setProgress] = useState(0);
 
   const startSimulation = useCallback(() => {

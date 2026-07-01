@@ -21,7 +21,7 @@ cross system boundaries.  Keeping these concerns separate makes it easy to evolv
 internal state shape without breaking the external contract.
 """
 
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict
 
@@ -50,13 +50,18 @@ class TriggeredBy(BaseModel):
     signal magnitude set by the ingestion step.  ``historical_weight`` is set by
     ``reason_and_retrieve`` (>1.0 amplifies risk, <1.0 attenuates, 1.0 is neutral).
     ``distance_decay`` is only present for physical conditions that carry an epicentre
-    coordinate; it is ``None`` for region-based conditions.
+    coordinate; it is ``None`` for region-based conditions.  ``risk_type_triggered`` is
+    the ``risk_type`` of the ``risk_catalog`` document identified by the parent
+    ``RiskScore``'s ``risk_id`` (e.g. ``"geopolitical_tariff"``) — not to be confused
+    with the ``risk_type_triggered`` field on the originating ``external_conditions``
+    document, which is a separate value.
     """
 
     source: str
     condition_score: float
     historical_weight: float
     distance_decay: float | None = None
+    risk_type_triggered: str
 
 
 class RiskScore(BaseModel):
@@ -77,19 +82,27 @@ class RiskScore(BaseModel):
     triggered_by: TriggeredBy
 
 
+class GeoPoint(BaseModel):
+    """GeoJSON Point, reusing the exact shape stored on ``suppliers.location``."""
+
+    type: Literal["Point"] = "Point"
+    coordinates: list[float]       # [lng, lat]
+
+
 class OperationalContext(BaseModel):
     """Active order exposure for a supplier at evaluation time.
 
     Sourced from ``purchase_orders`` in ``match_suppliers``.  ``criticality`` is the
     highest order criticality across all active orders (high > medium > low), determined
-    by mapping string labels to numeric ranks via ``_CRITICALITY_RANK``.
+    by mapping string labels to numeric ranks via ``_CRITICALITY_RANK``.  Constrained to
+    exactly the three levels ``_CRITICALITY_RANK`` and ``_RANK_TO_CRITICALITY`` support.
     """
 
     active_orders: int
     total_value_usd: float
     earliest_delivery_due: str
     days_until_due: int
-    criticality: str
+    criticality: Literal["high", "medium", "low"]
 
 
 class SupplierEvaluation(BaseModel):
@@ -98,7 +111,9 @@ class SupplierEvaluation(BaseModel):
 
     ``supplier_risk_level`` is the highest ``rpn_status`` across all ``risk_scores``,
     selected using ``_STATUS_RANK`` in ``generate_summary``.  ``requires_action`` is
-    ``True`` when at least one score is CRITICAL or ALERT.
+    ``True`` when at least one score is CRITICAL or ALERT.  ``location`` is copied as-is
+    from the supplier's ``location`` field in the ``suppliers`` collection (already a
+    GeoJSON Point there).
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -108,6 +123,7 @@ class SupplierEvaluation(BaseModel):
     region: str
     country: str
     product_categories: list[str]
+    location: GeoPoint
     supplier_risk_level: str
     requires_action: bool
     operational_context: OperationalContext

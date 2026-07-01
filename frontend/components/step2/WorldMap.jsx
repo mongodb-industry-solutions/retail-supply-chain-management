@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { Card } from "@leafygreen-ui/card";
 import { palette } from "@leafygreen-ui/palette";
 import SectionHeader from "../shared/SectionHeader";
-import { simulatedAffectedSuppliers } from "../../data/suppliers";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import Icon from "@leafygreen-ui/icon";
 import { Overline } from "@leafygreen-ui/typography";
@@ -14,16 +13,19 @@ const LeafletMap = dynamic(() => import("./LeafletMap"), { ssr: false });
 
 export default function WorldMap() {
   const externalConditions = useSelector((s) => s.Global.externalConditions);
-
+  const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers) || [];
+  const selectedSupplier = useSelector((s) => s.Global.selectedSupplier);
+  
   return (
     <Card>
       <SectionHeader
         title="Impact zones"
-        subtitle={`${externalConditions.length} active external conditions · ${simulatedAffectedSuppliers.length} affected suppliers`}
+        subtitle={`${externalConditions.length} active external conditions · ${affectedSuppliers.length} affected suppliers`}
       />
       <LeafletMap
         conditions={externalConditions}
-        suppliers={simulatedAffectedSuppliers}
+        suppliers={affectedSuppliers}
+        selectedSupplier={selectedSupplier}
       />
       <div className="mt-2">
         <div className="d-flex align-items-center gap-2">
