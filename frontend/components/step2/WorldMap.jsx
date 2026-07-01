@@ -14,6 +14,7 @@ const LeafletMap = dynamic(() => import("./LeafletMap"), { ssr: false });
 export default function WorldMap() {
   const externalConditions = useSelector((s) => s.Global.externalConditions);
   const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers) || [];
+  const selectedSupplier = useSelector((s) => s.Global.selectedSupplier);
   
   return (
     <Card>
@@ -24,6 +25,7 @@ export default function WorldMap() {
       <LeafletMap
         conditions={externalConditions}
         suppliers={affectedSuppliers}
+        selectedSupplier={selectedSupplier}
       />
       <div className="mt-2">
         <div className="d-flex align-items-center gap-2">

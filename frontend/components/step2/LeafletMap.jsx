@@ -25,6 +25,16 @@ function supplierIcon() {
   });
 }
 
+function FlyToSelected({ selectedSupplier }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!selectedSupplier?.location?.coordinates) return;
+    const [lng, lat] = selectedSupplier.location.coordinates;
+    map.flyTo([lat, lng], 6, { duration: 1.2 });
+  }, [selectedSupplier]);
+  return null;
+}
+
 function FitBounds({ conditions, suppliers }) {
   const map = useMap();
 
@@ -44,7 +54,7 @@ function FitBounds({ conditions, suppliers }) {
   return null;
 }
 
-export default function LeafletMap({ conditions = [], suppliers = [] }) {
+export default function LeafletMap({ conditions = [], suppliers = [], selectedSupplier }) {
   return (
     <MapContainer
       center={[20, 10]}
@@ -57,6 +67,7 @@ export default function LeafletMap({ conditions = [], suppliers = [] }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitBounds conditions={conditions} suppliers={suppliers} />
+      <FlyToSelected selectedSupplier={selectedSupplier} />
 
       {conditions
         .filter((c) => c.has_physical_location && c.epicentre)
@@ -83,14 +94,14 @@ export default function LeafletMap({ conditions = [], suppliers = [] }) {
         .filter((s) => s?.location?.coordinates)
         .map((s) => (
           <Marker
-            key={s.id}
+            key={s.supplier_id}
             position={[s.location?.coordinates[1], s.location?.coordinates[0]]}
             icon={supplierIcon()}
           >
             <Popup>
               <strong style={{ fontSize: 13 }}>{s.supplier_id}</strong>
               <br />
-              <span style={{ fontSize: 12, color: "#dc2626" }}>{s.supplier_name}</span>
+              <span style={{ fontSize: 12, color: "#3516b4" }}>{s.supplier_name}</span>
               <br />
               <span style={{ fontSize: 12, color: "#555" }}>
                 {s.region} - Coords: [{s.location?.coordinates[1]},{" "}

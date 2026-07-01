@@ -75,29 +75,23 @@ const AGENT_LOG_PHASES = [
   },
 ];
 
-const GEO_QUERY = `db.suppliers.aggregate([
-  {
-    $match: {
-      "location.geopoint": {
-        $geoWithin: {
-          $centerSphere: [
-            [43.6229, 13.5127],   // Red Sea epicentre (lon, lat)
-            320 / 6378.1          // 320 km radius in radians
-          ]
-        }
+const GEO_QUERY = `
+  # geospatial path: conditions with a physical epicentre (e.g. earthquakes, port closures)
+  if external_condition.get("has_physical_location"):
+      lng, lat = external_condition["epicentre"]["coordinates"]
+      # convert km to radians using Earth's radius (~6378.1 km) for $centerSphere
+      radius_radians = external_condition["impact_radius_km"] / 6378.1
+      supplier_query = {
+          "location": {
+              "$geoWithin": {"$centerSphere": [[lng, lat], radius_radians]}
+          }
       }
-    }
-  },
-  {
-    $addFields: {
-      riskScore: {
-        $multiply: ["$rpnBase", "$condition.severity_weight"]
-      }
-    }
-  },
-  { $sort: { riskScore: -1 } },
-  { $limit: 10 }
-])`;
+  # region path: non-physical conditions (e.g. trade or regulatory changes)
+  else:
+      supplier_query = {"region": {"$in": external_condition["affected_regions"]}}
+
+  matched = await db["suppliers"].find(supplier_query).to_list(length=None)
+`;
 
 export default function Step2() {
   const dispatch = useDispatch();
@@ -138,18 +132,6 @@ export default function Step2() {
               }
               console.log("[atlas_operation]", event);
               dispatch(appendAffectedSuppliersAgentReasoning(event));
-              // if (event.type === "tool_start") {
-                
-              // }
-              // if (event.type === "tool_end") {
-              //   console.log("[atlas_operation]", event);
-              // }
-              // if (event.type === "atlas_operation") {
-              //   console.log("[atlas_operation]", event);
-              // }
-              // if (event.type === "agent_thought") {
-              //   console.log("[atlas_operation]", event);
-              // }
             }
           }
         }
@@ -221,10 +203,11 @@ export default function Step2() {
               style={{ backgroundColor: "#dedede" }}
             >
               <Code
-                language="javascript"
+                language="python"
                 showLineNumbers={true}
-                darkMode={true}
+                darkMode={false}
                 copyButtonAppearance="persist"
+                highlightLines={[8, 15]}
               >
                 {GEO_QUERY}
               </Code>
