@@ -169,7 +169,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             marginBottom: spacing[200],
           }}
         >
-          {supplier.operational_context.active_orders && (
+          {supplier.operational_context.active_orders != null && (
             <span style={{ color: palette.red.dark2, fontWeight: 600 }}>
               📦 {supplier.operational_context.active_orders} active orders
             </span>
