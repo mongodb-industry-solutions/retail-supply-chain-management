@@ -111,6 +111,10 @@ export default function Step2() {
           headers: { "X-Session-ID": sessionId },
         });
 
+        if (!response.ok || !response.body) {
+          throw new Error(`Evaluate failed: ${response.status}`);
+        }
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
