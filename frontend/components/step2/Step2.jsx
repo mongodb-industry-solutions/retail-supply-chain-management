@@ -9,6 +9,7 @@ import {
   setSelectedSupplier,
   setSelectedAlertType,
   setAffectedSuppliers,
+  appendAffectedSuppliersAgentReasoning,
 } from "../../redux/slices/GlobalSlice";
 import SectionHeader from "../shared/SectionHeader";
 import ReActAgent from "../shared/ReActAgent";
@@ -20,7 +21,7 @@ import WorldMap from "./WorldMap";
 import BehindTheScenes from "./BehindTheScenes";
 import Icon from "@leafygreen-ui/icon";
 import { Code } from "@leafygreen-ui/code";
-import {Card} from "@leafygreen-ui/card";
+import { Card } from "@leafygreen-ui/card";
 
 const AGENT_PHASES = [
   {
@@ -102,19 +103,18 @@ export default function Step2() {
   const dispatch = useDispatch();
   const sessionId = useSelector((s) => s.Global.sessionId);
   const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers);
+  const affectedSuppliersAgentReasoning = useSelector((s) => s.Global.affectedSuppliersAgentReasoning);
+  const agentCurrentThought = useSelector((s) => s.Global.affectedSuppliersAgentCurrentThought);
   const [agentDone, setAgentDone] = useState(false);
 
   useEffect(() => {
     if (affectedSuppliers.length > 0) return;
-
-    const controller = new AbortController();
 
     async function runEvaluate() {
       try {
         const response = await fetch("/api/simulation/evaluate", {
           method: "POST",
           headers: { "X-Session-ID": sessionId },
-          signal: controller.signal,
         });
 
         const reader = response.body.getReader();
@@ -125,26 +125,41 @@ export default function Step2() {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
+          buffer = buffer.replace(/\r\n/g, "\n");
           const frames = buffer.split("\n\n");
           buffer = frames.pop();
           for (const frame of frames) {
             const line = frame.trim();
             if (line.startsWith("data:")) {
               const event = JSON.parse(line.slice(5).trim());
-              console.log("[evaluate]", event);
+              console.log("[evaluate]", event.type);
               if (event.type === "agent_response") {
-                dispatch(setAffectedSuppliers(event.data.suppliers));
+                dispatch(setAffectedSuppliers(event.data.suppliers || []));
               }
+              console.log("[atlas_operation]", event);
+              dispatch(appendAffectedSuppliersAgentReasoning(event));
+              // if (event.type === "tool_start") {
+                
+              // }
+              // if (event.type === "tool_end") {
+              //   console.log("[atlas_operation]", event);
+              // }
+              // if (event.type === "atlas_operation") {
+              //   console.log("[atlas_operation]", event);
+              // }
+              // if (event.type === "agent_thought") {
+              //   console.log("[atlas_operation]", event);
+              // }
             }
           }
         }
       } catch (err) {
-        if (err.name !== "AbortError") console.error("[evaluate] stream error", err);
+        console.error("[evaluate] stream error", err);
+      } finally {
       }
     }
 
     runEvaluate();
-    return () => controller.abort();
   }, []);
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
@@ -165,7 +180,14 @@ export default function Step2() {
         title="Identifying affected suppliers"
         subtitle="The ReAct (Reason + Act) agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
         phases={AGENT_PHASES}
-        onComplete={() => setAgentDone(true)}
+        phasesNew={[
+          {
+            name: "Affected suppliers",
+            steps: affectedSuppliersAgentReasoning || [],
+          },
+        ]}
+        agentCurrentThought={agentCurrentThought}
+        onDoneChange={(done) => setAgentDone(done)}
         onViewLogs={() => setLogsOpen(true)}
       />
 
@@ -194,7 +216,10 @@ export default function Step2() {
             }
           />
           {showGeoQuery && (
-            <Card className="container mb-2 p-2" style={{ backgroundColor: "#dedede" }}>
+            <Card
+              className="container mb-2 p-2"
+              style={{ backgroundColor: "#dedede" }}
+            >
               <Code
                 language="javascript"
                 showLineNumbers={true}

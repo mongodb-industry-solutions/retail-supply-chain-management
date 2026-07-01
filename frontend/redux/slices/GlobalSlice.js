@@ -4,13 +4,18 @@ const GlobalSlice = createSlice({
   name: "Global",
   initialState: {
     sessionId: null,
-    externalConditions: [],
     currentStep: 1,
     maxStep: 1,
+    // Step 1
+    externalConditions: [],
     loadedExternalConditions: [],
+    // Step 2
     affectedSuppliers: [],
-    selectedSupplier: null,
+    affectedSuppliersAgentReasoning: [],
+    affectedSuppliersAgentCurrentThought: "",
     selectedAlertType: "logistical",
+    // Step 3
+    selectedSupplier: null,
   },
   reducers: {
     setSessionId(state, action) {
@@ -42,6 +47,13 @@ const GlobalSlice = createSlice({
     setSelectedAlertType(state, action) {
       state.selectedAlertType = action.payload;
     },
+    appendAffectedSuppliersAgentReasoning(state, action) {
+      console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
+      state.affectedSuppliersAgentReasoning.push(action.payload);
+      if (action.payload.type === "agent_thought") {
+        state.affectedSuppliersAgentCurrentThought = action.payload.message;
+      }
+    },
   },
 });
 
@@ -55,6 +67,7 @@ export const {
   setAffectedSuppliers,
   setSelectedSupplier,
   setSelectedAlertType,
+  appendAffectedSuppliersAgentReasoning
 } = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

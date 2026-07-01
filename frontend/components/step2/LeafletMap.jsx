@@ -2,7 +2,14 @@
 
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Circle,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 
@@ -55,7 +62,8 @@ export default function LeafletMap({ conditions = [], suppliers = [] }) {
         .filter((c) => c.has_physical_location && c.epicentre)
         .map((c) => {
           const borderColor =
-            conditionConfig[RISK_TYPE_MAP[c.risk_type_triggered]]?.borderColor ?? "#6b7280";
+            conditionConfig[RISK_TYPE_MAP[c.risk_type_triggered]]
+              ?.borderColor ?? "#6b7280";
           return (
             <Circle
               key={c.condition_id}
@@ -71,21 +79,26 @@ export default function LeafletMap({ conditions = [], suppliers = [] }) {
           );
         })}
 
-      {suppliers.map((s) => (
-        <Marker
-          key={s.id}
-          position={[s.lat, s.lng]}
-          icon={supplierIcon()}
-        >
-          <Popup>
-            <strong style={{ fontSize: 13 }}>{s.name}</strong>
-            <br />
-            <span style={{ fontSize: 12, color: "#555" }}>{s.location}</span>
-            <br />
-            <span style={{ fontSize: 12, color: "#dc2626" }}>{s.impactReason}</span>
-          </Popup>
-        </Marker>
-      ))}
+      {suppliers
+        .filter((s) => s?.location?.coordinates)
+        .map((s) => (
+          <Marker
+            key={s.id}
+            position={[s.location?.coordinates[1], s.location?.coordinates[0]]}
+            icon={supplierIcon()}
+          >
+            <Popup>
+              <strong style={{ fontSize: 13 }}>{s.supplier_id}</strong>
+              <br />
+              <span style={{ fontSize: 12, color: "#dc2626" }}>{s.supplier_name}</span>
+              <br />
+              <span style={{ fontSize: 12, color: "#555" }}>
+                {s.region} - Coords: [{s.location?.coordinates[1]},{" "}
+                {s.location?.coordinates[0]}]
+              </span>
+            </Popup>
+          </Marker>
+        ))}
     </MapContainer>
   );
 }
