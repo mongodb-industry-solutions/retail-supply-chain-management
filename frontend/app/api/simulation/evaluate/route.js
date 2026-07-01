@@ -34,10 +34,8 @@ export async function POST(request) {
     async pull(controller) {
       const { done, value } = await upstream.read();
       if (done) {
-        console.log("upstream stream closed");
         controller.close();
       } else {
-        console.log("upstream stream received");
         controller.enqueue(value);
       }
     },
