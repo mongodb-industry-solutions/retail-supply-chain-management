@@ -26,7 +26,9 @@ function ConditionBadgeWithRPN({ risk, triggeredBy }) {
       {risk && (
         <Body style={{ fontSize: 13, margin: 0 }}>
           RPN:{" "}
-          <span style={{ color: palette.gray.dark1 }}>{risk.rpn_base} base</span>
+          <span style={{ color: palette.gray.dark1 }}>
+            {risk.rpn_base} base
+          </span>
           <span style={{ color: palette.red.base, margin: "0 4px" }}>→</span>
           <span style={{ color: palette.red.base, fontWeight: 700 }}>
             {risk.rpn_dynamic} dynamic
@@ -65,19 +67,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
           className="d-flex align-items-start justify-content-between"
           style={{ marginBottom: spacing[200] }}
         >
-          <div>
-            <SupplierTitle name={supplier?.supplier_name} />
-
-            <Body
-              style={{
-                fontSize: 14,
-                color: palette.gray.dark1,
-                marginTop: "15px",
-              }}
-            >
-              📍 {`${supplier?.country} — ${supplier?.region}`}
-            </Body>
-          </div>
+          <SupplierTitle name={supplier?.supplier_name} />
           <div
             className="d-flex gap-2 flex-shrink-0"
             style={{ marginLeft: spacing[400] }}
@@ -100,21 +90,28 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             ))}
           </div>
         </div>
-        {/* Impact description */}
-        <Body
-          style={{
-            fontSize: 14,
-            color: palette.gray.dark1,
-            lineHeight: 1.6,
-            marginBottom: spacing[200],
-          }}
-        >
-          ⚠️ {supplier.supplier_risk_level}.{" "}
-          {(supplier.requires_action ?? false)
-            ? "Action required"
-            : "No immediate action required"}
-        </Body>
-
+            <div className="d-flex flex-row align-items-center gap-3 mb-2">
+              <Body
+                style={{
+                  fontSize: 14,
+                  color: palette.gray.dark1,
+                }}
+              >
+                📍 {`${supplier?.country} — ${supplier?.region}`}
+              </Body>
+              <Body
+                style={{
+                  fontSize: 14,
+                  color: palette.gray.dark1,
+                  lineHeight: 1.6,
+                }}
+              >
+                ⚠️ {supplier.supplier_risk_level}.{" "}
+                {(supplier.requires_action ?? false)
+                  ? "Action required"
+                  : "No immediate action required"}
+              </Body>
+            </div>
         {/* Impact reason (short, bolded) */}
         {supplier.natural_language_summary && (
           <div style={{ marginBottom: spacing[100] }}>
@@ -133,8 +130,16 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             </Body>
             <span
               role="button"
-              onClick={(e) => { e.stopPropagation(); setSummaryExpanded((v) => !v); }}
-              style={{ fontSize: 13, color: palette.blue.base, cursor: "pointer", userSelect: "none" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSummaryExpanded((v) => !v);
+              }}
+              style={{
+                fontSize: 13,
+                color: palette.blue.base,
+                cursor: "pointer",
+                userSelect: "none",
+              }}
             >
               {summaryExpanded ? "Read less" : "Read more"}
             </span>
@@ -177,21 +182,22 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
         </div>
 
         {/* Find alternative suppliers — high severity only */}
-        {supplier.operational_context.criticality === "high" && onFindAlternatives && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{ marginTop: spacing[200] }}
-            className="w-100 d-flex flex-row-reverse"
-          >
-            <Button
-              variant="primary"
-              size="default"
-              onClick={() => onFindAlternatives(supplier)}
+        {supplier.operational_context.criticality === "high" &&
+          onFindAlternatives && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ marginTop: spacing[200] }}
+              className="w-100 d-flex flex-row-reverse"
             >
-              Find alternative suppliers →
-            </Button>
-          </div>
-        )}
+              <Button
+                variant="primary"
+                size="default"
+                onClick={() => onFindAlternatives(supplier)}
+              >
+                Find alternative suppliers →
+              </Button>
+            </div>
+          )}
       </Card>
     </div>
   );
