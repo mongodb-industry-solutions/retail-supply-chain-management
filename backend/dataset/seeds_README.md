@@ -17,8 +17,8 @@ This guide walks through setting up the MongoDB Atlas database for the Retail Su
 | `purchase_orders` | `purchase_orders_seed.json` | 620 | ✅ Done |
 | `supplier_documents` | `supplier_documents_seed.json` | 146 | ✅ Done |
 | `external_conditions` | `external_conditions_seed.json` | 20 | ⬜ Pending |
-| `supplier_risk_evaluations` | — | — | ⬜ Created by Agent 1 at runtime |
-| `supplier_alternatives` | — | — | ⬜ Created by Agent 2 at runtime |
+| `supplier_risk_evaluations` | — | — | ⬜ Created by risk_evaluator at runtime |
+| `supplier_alternatives` | — | — | ⬜ Created by alternative_finder at runtime |
 | `agent_memory` | — | — | ⬜ Pending (base episodes) |
 
 ---
@@ -93,13 +93,13 @@ Both indexes created from the **Indexes** tab in MongoDB Compass.
 ```json
 { "location": "2dsphere" }
 ```
-Powers all geospatial queries. Agent 1 uses `$geoWithin $centerSphere` to check if a supplier's plant is inside a risk signal's `impact_radius_km`. Agent 2 uses `$geoNear` to calculate `proximity_km` between each candidate supplier and the distribution center. Without this index, geospatial queries fail or run as full collection scans.
+Powers all geospatial queries. risk_evaluator uses `$geoWithin $centerSphere` to check if a supplier's plant is inside a risk signal's `impact_radius_km`. alternative_finder uses `$geoNear` to calculate `proximity_km` between each candidate supplier and the distribution center. Without this index, geospatial queries fail or run as full collection scans.
 
 **Index 2 — Compound on `region`, `product_categories`, `status`**
 ```json
 { "region": 1, "product_categories": 1, "status": 1 }
 ```
-Supports the pre-filter Agent 2 runs before Hybrid Search — filtering by `status: "active"`, excluding CN/TW regions, and matching `product_categories`. Atlas Vector Search pre-filters rely on standard indexes, so this must exist before the Vector Search index is used.
+Supports the pre-filter alternative_finder runs before Hybrid Search — filtering by `status: "active"`, excluding CN/TW regions, and matching `product_categories`. Atlas Vector Search pre-filters rely on standard indexes, so this must exist before the Vector Search index is used.
 
 ---
 
@@ -128,7 +128,7 @@ Supports the pre-filter Agent 2 runs before Hybrid Search — filtering by `stat
 }
 ```
 
-**What this does:** Atlas scans all 40 supplier documents, sends each `auto_embed_text` to Voyage AI (voyage-4), generates vectors, and stores them in `__mdb_internal_search`. No external embedding pipeline needed. The filter fields (`region`, `product_categories`, `status`) are the exact fields used in Agent 2's pre-filter before vector search runs.
+**What this does:** Atlas scans all 40 supplier documents, sends each `auto_embed_text` to Voyage AI (voyage-4), generates vectors, and stores them in `__mdb_internal_search`. No external embedding pipeline needed. The filter fields (`region`, `product_categories`, `status`) are the exact fields used in alternative_finder's pre-filter before vector search runs.
 
 **Why autoEmbed and not a manual embedding pipeline:** autoEmbed keeps vectors in sync automatically — when a supplier document is updated, Atlas regenerates the vector. No ETL job, no drift between document content and vector representation.
 
@@ -233,7 +233,7 @@ Index 1 — Compound:
 ```json
 { "supplier_id": 1, "doc_type": 1 }
 ```
-Powers Agent 2 pre-filter before Hybrid Search. Must exist before search indexes are used.
+Powers alternative_finder pre-filter before Hybrid Search. Must exist before search indexes are used.
 
 Index 2 — Vector Search (autoEmbed):
 ```json
@@ -342,13 +342,13 @@ Index 2 — 2dsphere on `epicentre`:
 ```
 Index name: `epicentre_2dsphere`
 
-Powers `$geoWithin $centerSphere` queries in Agent 1 — checks whether a supplier's `location` falls within a signal's `impact_radius_km` from the `epicentre` coordinates. Documents with `has_physical_location: false` have no `epicentre` field — the 2dsphere index ignores them silently, no errors.
+Powers `$geoWithin $centerSphere` queries in risk_evaluator — checks whether a supplier's `location` falls within a signal's `impact_radius_km` from the `epicentre` coordinates. Documents with `has_physical_location: false` have no `epicentre` field — the 2dsphere index ignores them silently, no errors.
 
 ---
 
 ## Step 9 — Create indexes on `supplier_risk_evaluations`
 
-This collection is written by Agent 1 at runtime — no seed ingestion needed. Create the indexes before running the demo for the first time.
+This collection is written by risk_evaluator at runtime — no seed ingestion needed. Create the indexes before running the demo for the first time.
 
 **Index 1 — Compound `{ rpn_status, requires_action }`:**
 ```json
@@ -406,7 +406,7 @@ Powers retrieval of the most recent evaluation per supplier (`evaluated_at: -1` 
 ```json
 { "evaluation_id_ref": 1, "session_id": 1 }
 ```
-Links each shortlist back to its originating evaluation and session. Agent 2 uses this to retrieve the correct shortlist. Demo reset uses `session_id` to scope the `deleteMany`.
+Links each shortlist back to its originating evaluation and session. alternative_finder uses this to retrieve the correct shortlist. Demo reset uses `session_id` to scope the `deleteMany`.
 
 ---
 
@@ -416,7 +416,7 @@ Links each shortlist back to its originating evaluation and session. Agent 2 use
 ```json
 { "supplier_id": 1, "risk_type": 1 }
 ```
-Pre-filter index for Vector Search — Agent 1 filters by `supplier_id` and `risk_type` before running semantic similarity search. Must exist before the autoEmbed index is used.
+Pre-filter index for Vector Search — risk_evaluator filters by `supplier_id` and `risk_type` before running semantic similarity search. Must exist before the autoEmbed index is used.
 
 **Index 2 — Vector Search (autoEmbed):**
 ```json
@@ -430,7 +430,7 @@ Pre-filter index for Vector Search — Agent 1 filters by `supplier_id` and `ris
 ```
 Index name: `agent_memory_autoembed_index`
 
-Powers semantic retrieval of historical episodes. Agent 1 queries with a natural language description of the current risk situation and retrieves the most semantically similar past episodes — including analogous situations from other suppliers.
+Powers semantic retrieval of historical episodes. risk_evaluator queries with a natural language description of the current risk situation and retrieves the most semantically similar past episodes — including analogous situations from other suppliers.
 
 **Base episode example:**
 ```json

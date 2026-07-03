@@ -32,6 +32,7 @@ frontend can display a live step-by-step progress indicator while the graph is s
 running.
 """
 
+import ast
 import json
 import logging
 import re
@@ -85,17 +86,34 @@ or, when you have enough information:
   Final Answer: {"historical_weight": {"SUP-XXX": 1.2, ...}}
 
 Available tools:
-  search_supplier_memory(supplier_id, query_text)
-      Semantic search of past episodes for a specific supplier.
-  get_order_detail(supplier_id)
-      Retrieve active purchase orders for a supplier.
+  search_supplier_memory(supplier_ids, query_text)
+      Semantic search of past episodes for one or more suppliers at once.
+      supplier_ids is a LIST, e.g. ["SUP-A", "SUP-B"]. Results are grouped by
+      supplier_id so you can tell which episodes belong to which supplier.
+  get_order_detail(supplier_ids)
+      Retrieve active purchase orders for one or more suppliers at once.
+      supplier_ids is a LIST. Results are grouped by supplier_id.
   search_combined_episodes(supplier_id, risk_types)
-      Cross-supplier semantic search filtered by risk type list.
+      Cross-supplier semantic search filtered by risk type list. Returns episodes
+      from ANY supplier that experienced these risk types (each episode carries its
+      own supplier_id).
+
+Strategy — collect broadly first, then reason:
+  1. START with search_combined_episodes for the active risk_type(s). This surfaces
+     relevant historical precedent across all suppliers in a single call.
+  2. THEN issue ONE batched search_supplier_memory and/or get_order_detail passing
+     ALL exposed suppliers as the supplier_ids list — do NOT query suppliers one at a
+     time. A single batched call covers every exposed supplier at once.
+  3. Only use a single-element supplier_ids list to drill into one specific supplier
+     when the batched results show you need more detail on it.
+  4. Spend any remaining iterations reasoning and comparing the evidence you gathered
+     to assign each supplier its weight — not on collecting one supplier at a time.
 
 Rules:
   - Always start with Thought before any Action or Final Answer.
   - Issue exactly one tool call per Action line.
   - Final Answer must be valid JSON: {"historical_weight": {"SUP-XXX": 1.2, ...}}
+  - Include EVERY exposed supplier in the Final Answer with an explicitly reasoned weight.
   - Weight > 1.0 means historical precedent amplifies risk; < 1.0 attenuates; 1.0 = neutral.
   - Omitting a supplier from Final Answer defaults that supplier to weight 1.0.\
 """
@@ -146,17 +164,22 @@ def _rpn_status(rpn_dynamic: float, alert_threshold_rpn: float) -> str:
 
 
 async def search_supplier_memory(
-    supplier_id: str,
+    supplier_ids: list[str],
     query_text: str,
     atlas_ops_sink: list[dict],
-) -> list[dict]:
-    """Atlas Vector Search tool — retrieve historical episodes for one supplier.
+) -> dict[str, list[dict]]:
+    """Atlas Vector Search tool — retrieve historical episodes for one or more suppliers.
 
     One of the three Atlas tools the ReAct agent (``reason_and_retrieve``) can invoke.
-    Runs a ``$vectorSearch`` on the ``agent_memory`` collection filtered to a single
-    ``supplier_id``.  ``queryText`` lets the Atlas autoembedding index (Voyage AI model)
-    convert the text to a vector server-side, so no client-side embedding call is needed.
-    Returns the top 5 results out of 50 candidates.
+    Runs a single ``$vectorSearch`` on the ``agent_memory`` collection filtered to the
+    given ``supplier_ids`` via ``$in``, so all exposed suppliers can be covered in one
+    batched call rather than one query per supplier.  ``queryText`` lets the Atlas
+    autoembedding index (Voyage AI model) convert the text to a vector server-side, so no
+    client-side embedding call is needed.  ``limit`` scales with the number of suppliers
+    (5 per supplier) so a batched query still surfaces enough episodes to cover each one.
+
+    Returns the episodes grouped by ``supplier_id`` (``{supplier_id: [episode, ...]}``) so
+    the LLM can tell which episodes belong to which supplier.
 
     ``atlas_ops_sink`` is a mutable list shared with the caller.  Appending the operation
     descriptor here lets the router emit an ``atlas_operation`` SSE event without this
@@ -166,61 +189,75 @@ async def search_supplier_memory(
         "type": "atlas_operation",
         "feature": "Vector Search",
         "collection": "agent_memory",
-        "detail": f"queryText semantic search for supplier {supplier_id}",
+        "detail": f"queryText semantic search — batch query for {len(supplier_ids)} suppliers",
     })
     db = await get_database()
+    limit = max(5 * len(supplier_ids), 5)
     pipeline = [
         {
             "$vectorSearch": {
                 "index": "agent_memory_autoembed_index",
                 "query": {"text": query_text},
                 "path": "auto_embed_text",
-                "filter": {"supplier_id": {"$eq": supplier_id}},
-                "numCandidates": 50,
-                "limit": 5,
+                "filter": {"supplier_id": {"$in": supplier_ids}},
+                "numCandidates": max(limit * 10, 50),
+                "limit": limit,
             }
         }
     ]
     docs = await db["agent_memory"].aggregate(pipeline).to_list(length=None)
-    return [_serialize_doc(d) for d in docs]
+    grouped: dict[str, list[dict]] = {}
+    for d in docs:
+        sd = _serialize_doc(d)
+        grouped.setdefault(sd.get("supplier_id"), []).append(sd)
+    return grouped
 
 
 async def get_order_detail(
-    supplier_id: str,
+    supplier_ids: list[str],
     atlas_ops_sink: list[dict],
-) -> list[dict]:
-    """Atlas Aggregation tool — retrieve active purchase orders for one supplier.
+) -> dict[str, list[dict]]:
+    """Atlas Aggregation tool — retrieve active purchase orders for one or more suppliers.
 
     One of the three Atlas tools the ReAct agent can invoke.  Runs a MongoDB
-    Aggregation pipeline: ``$match`` filters to active orders for the supplier,
-    ``$project`` returns only scheduling-relevant fields (order_id, sku, quantity,
-    delivery_due_date, days_until_due), and ``$limit 10`` caps the result set.
-    The agent calls this to understand financial exposure and delivery urgency
-    before committing to a ``historical_weight`` for the supplier.
+    Aggregation pipeline: ``$match`` filters to active orders for the given
+    ``supplier_ids`` via ``$in``, ``$project`` returns only scheduling-relevant fields
+    (supplier_id, order_id, product_category, value_usd, delivery_due_date,
+    days_until_due), and ``$limit`` (10 per supplier) caps the result set.  The agent
+    calls this to understand financial exposure and delivery urgency before committing to
+    a ``historical_weight`` for each supplier.
+
+    Returns the orders grouped by ``supplier_id`` (``{supplier_id: [order, ...]}``) so the
+    LLM can tell which orders belong to which supplier.
     """
     atlas_ops_sink.append({
         "type": "atlas_operation",
         "feature": "Aggregation",
         "collection": "purchase_orders",
-        "detail": f"active orders for supplier {supplier_id}",
+        "detail": f"active orders — batch query for {len(supplier_ids)} suppliers",
     })
     db = await get_database()
     pipeline = [
-        {"$match": {"supplier_id": supplier_id, "status": "active"}},
+        {"$match": {"supplier_id": {"$in": supplier_ids}, "status": "active"}},
         {
             "$project": {
                 "_id": 0,
+                "supplier_id": 1,
                 "order_id": 1,
-                "sku": 1,
-                "quantity": 1,
+                "product_category": 1,
+                "value_usd": 1,
                 "delivery_due_date": 1,
                 "days_until_due": 1,
             }
         },
-        {"$limit": 10},
+        {"$limit": max(10 * len(supplier_ids), 10)},
     ]
     docs = await db["purchase_orders"].aggregate(pipeline).to_list(length=None)
-    return [_serialize_doc(d) for d in docs]
+    grouped: dict[str, list[dict]] = {}
+    for d in docs:
+        sd = _serialize_doc(d)
+        grouped.setdefault(sd.get("supplier_id"), []).append(sd)
+    return grouped
 
 
 async def search_combined_episodes(
@@ -261,14 +298,86 @@ async def search_combined_episodes(
 
 
 def _parse_action_args(action_str: str) -> list:
-    """Extract positional arguments from a tool call string, e.g. fn("a", ["b", "c"]) → ["a", ["b", "c"]]."""
+    """Extract positional arguments from a tool call string, e.g. fn("a", ["b", "c"]) → ["a", ["b", "c"]].
+
+    Real LLM output is not reliably valid JSON: Claude frequently emits single-quoted
+    strings (``fn('SUP-X', 'text')``) or bare, unquoted arguments
+    (``fn(SUP-X, tariff history)``).  Strict ``json.loads`` rejects both, which used to
+    leave the argument list empty and silently skip the tool call.  Parsing is therefore
+    attempted in three widening passes, stopping at the first that succeeds:
+
+    1. Strict JSON — handles double-quoted strings and nested lists (original behaviour).
+    2. Python literal syntax (``ast.literal_eval``) — additionally tolerates single
+       quotes and list/tuple literals.
+    3. Manual top-level comma split — last resort for bare/unquoted arguments; splits on
+       commas outside any bracket depth, drops a leading ``name=`` keyword prefix
+       (Claude sometimes emits keyword-style calls), and recovers each token's literal
+       value (list, quoted string) where possible, falling back to the stripped string.
+
+    This only makes the parser more permissive about what the LLM already emits; the tool
+    interfaces and the ReAct system prompt are unchanged.
+    """
     inner = re.search(r"\((.+)\)\s*$", action_str, re.DOTALL)
     if not inner:
         return []
+    raw = inner.group(1)
+
+    # Pass 1: strict JSON (double quotes, nested lists).
     try:
-        return json.loads(f"[{inner.group(1)}]")
+        return json.loads(f"[{raw}]")
     except json.JSONDecodeError:
-        return []
+        pass
+
+    # Pass 2: Python literals — tolerates single quotes and list/tuple syntax.
+    try:
+        return list(ast.literal_eval(f"[{raw}]"))
+    except (ValueError, SyntaxError):
+        pass
+
+    # Pass 3: bare/unquoted args — split on top-level commas (respecting bracket depth),
+    # then strip whitespace and any stray surrounding quotes.
+    args: list = []
+    depth = 0
+    current = ""
+    for ch in raw:
+        if ch in "[{(":
+            depth += 1
+            current += ch
+        elif ch in "]})":
+            depth -= 1
+            current += ch
+        elif ch == "," and depth == 0:
+            args.append(current)
+            current = ""
+        else:
+            current += ch
+    if current.strip():
+        args.append(current)
+
+    parsed: list = []
+    for token in args:
+        token = token.strip()
+        # Drop a leading keyword-argument prefix like ``supplier_id=`` (but not ``==``).
+        token = re.sub(r"^[A-Za-z_]\w*\s*=(?!=)\s*", "", token, count=1).strip()
+        # Recover the token's literal value (quoted string, list) when possible.
+        try:
+            parsed.append(ast.literal_eval(token))
+        except (ValueError, SyntaxError):
+            parsed.append(token.strip("'\""))
+    return parsed
+
+
+def _coerce_id_list(arg) -> list[str]:
+    """Normalise a tool's first argument into a list of supplier_id strings.
+
+    The batched memory/order tools expect ``supplier_ids`` as a list, but the LLM may
+    still emit a single bare id (``search_supplier_memory("SUP-A", ...)``) instead of a
+    one-element list.  This coerces either shape to ``list[str]`` so a lone id is treated
+    as a single-supplier drill-down rather than being dropped.
+    """
+    if isinstance(arg, (list, tuple)):
+        return [str(x) for x in arg]
+    return [str(arg)]
 
 
 async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig) -> dict:
@@ -350,9 +459,18 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
 
     historical_weights: dict[str, float] = {}
 
+    # Accumulate the real memory episodes surfaced by the memory tools during the
+    # loop, keyed by supplier_id then memory_id so repeated hits dedupe naturally.
+    # Only search_supplier_memory / search_combined_episodes feed this; order-detail
+    # results (no memory_id) are ignored.
+    episodes_by_supplier: dict[str, dict[str, dict]] = {}
+
     # ReAct loop: at most 4 iterations to bound latency. Each iteration the LLM
     # either calls a tool (Action) or returns a Final Answer.
-    for _ in range(4):
+    # _final_iteration records which iteration produced the Final Answer, purely for
+    # diagnostic logging so we can confirm all suppliers came from one shared loop pass.
+    _final_iteration: int | None = None
+    for _iteration in range(4):
         response = await llm.ainvoke(messages)
         text = response.content.strip()
         messages.append(AIMessage(content=text))
@@ -381,6 +499,7 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
                 }
             except (json.JSONDecodeError, ValueError, TypeError) as exc:
                 logger.warning("reason_and_retrieve: failed to parse Final Answer — %s", exc)
+            _final_iteration = _iteration
             break
 
         # No Final Answer yet — expect an Action. Dispatch to the matching Atlas tool
@@ -390,7 +509,7 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
             break
 
         action_str = action_match.group(1).strip()
-        observation: list[dict] = []
+        observation: list[dict] | dict[str, list[dict]] = []
         _sink_len_before = len(atlas_ops_sink)
 
         try:
@@ -398,12 +517,14 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
                 args = _parse_action_args(action_str)
                 if len(args) >= 2:
                     observation = await search_supplier_memory(
-                        str(args[0]), str(args[1]), atlas_ops_sink
+                        _coerce_id_list(args[0]), str(args[1]), atlas_ops_sink
                     )
             elif action_str.startswith("get_order_detail("):
                 args = _parse_action_args(action_str)
                 if args:
-                    observation = await get_order_detail(str(args[0]), atlas_ops_sink)
+                    observation = await get_order_detail(
+                        _coerce_id_list(args[0]), atlas_ops_sink
+                    )
             elif action_str.startswith("search_combined_episodes("):
                 args = _parse_action_args(action_str)
                 if len(args) >= 2:
@@ -414,6 +535,34 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
         except Exception as exc:
             logger.warning("reason_and_retrieve: tool '%s' failed — %s", action_str, exc)
 
+        # Accumulate memory episodes returned by the two memory-search tools, deduped by
+        # memory_id. Attribution differs by tool, keeping memory_episodes_used consistent
+        # with the derived historical_weight:
+        #   - search_supplier_memory: batched over a $in of the queried suppliers, so each
+        #     episode's OWN supplier_id is guaranteed to be one of the queried suppliers
+        #     and is the correct owner. The tool returns episodes already grouped by
+        #     supplier_id; attribute each group to its own supplier_id.
+        #   - search_combined_episodes: cross-supplier (filtered by risk_type, not
+        #     supplier), so a precedent from supplier Y surfaced while evaluating supplier
+        #     X is attributed to X (the queried supplier_id, args[0]) — unchanged Phase 1
+        #     behaviour. Nothing is synthesised.
+        if action_str.startswith("search_supplier_memory(") and isinstance(observation, dict):
+            for _sid, _eps in observation.items():
+                if not _sid:
+                    continue
+                for _ep in _eps:
+                    _mid = _ep.get("memory_id")
+                    if _mid:
+                        episodes_by_supplier.setdefault(_sid, {})[_mid] = _ep
+        elif action_str.startswith("search_combined_episodes(") and isinstance(observation, list):
+            _q_args = _parse_action_args(action_str)
+            _queried_sid = str(_q_args[0]) if _q_args else None
+            if _queried_sid:
+                for _ep in observation:
+                    _mid = _ep.get("memory_id")
+                    if _mid:
+                        episodes_by_supplier.setdefault(_queried_sid, {})[_mid] = _ep
+
         for _new_op in atlas_ops_sink[_sink_len_before:]:
             if _new_op.get("type") == "atlas_operation":
                 logger.info("[%s] atlas_op %s %s — %s", state["session_id"], _new_op["feature"], _new_op["collection"], _new_op["detail"])
@@ -423,16 +572,88 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
         # it in the next iteration before deciding on another Action or Final Answer.
         messages.append(HumanMessage(content=f"Observation: {json.dumps(observation)}"))
 
+    # Capture which suppliers the LLM explicitly named in its Final Answer BEFORE the
+    # setdefault below fills in neutral defaults — used only by the diagnostic log to
+    # distinguish an LLM-derived weight from a 1.0 fallback.
+    _weights_from_llm = set(historical_weights.keys())
+
     # Guarantee every scored supplier has a weight. Omission from the LLM's Final
     # Answer is treated as neutral (1.0), not an error — the pipeline continues safely.
     for supplier_id in state["risk_scores"]:
         historical_weights.setdefault(supplier_id, 1.0)
+
+    # Diagnostic logging (no behaviour change): for each scored supplier, record the
+    # derived historical_weight, the memory_id(s) surfaced/accumulated for that supplier
+    # during the loop, whether the weight came from the LLM Final Answer or the 1.0
+    # default, and the (single, shared) ReAct iteration in which the Final Answer landed.
+    # NOTE: this is one shared ReAct loop for all suppliers — the LLM returns a single
+    # Final Answer weight map, not a separate loop per supplier. Same weight across
+    # suppliers is therefore expected if the LLM assigned them the same value; identical
+    # memory_ids across suppliers would instead point to shared evidence, not per-supplier
+    # reasoning.
+    for supplier_id in state["risk_scores"]:
+        _weight = historical_weights.get(supplier_id, 1.0)
+        _mem_ids = list(episodes_by_supplier.get(supplier_id, {}).keys())
+        logger.info(
+            "[%s] historical_weight supplier=%s weight=%s memory_ids=%s "
+            "from_llm_final_answer=%s final_iteration=%s",
+            state["session_id"],
+            supplier_id,
+            _weight,
+            _mem_ids,
+            supplier_id in _weights_from_llm,
+            _final_iteration,
+        )
+
+    # Apply the derived historical_weight to each supplier's risk scores. This mirrors
+    # the formula in the (unused) retrieve_memory helper: rescale rpn_dynamic by the
+    # weight, recompute rpn_status against the catalog threshold, and record the real
+    # weight on triggered_by. A weight of 1.0 (the default) leaves values unchanged,
+    # so suppliers with no derived weight behave exactly as before.
+    db = await get_database()
+    updated_scores: dict = dict(state["risk_scores"])
+    for supplier_id, scores in state["risk_scores"].items():
+        weight = historical_weights.get(supplier_id, 1.0)
+        adjusted = []
+        for score in scores:
+            catalog = await db["risk_catalog"].find_one({"risk_id": score.risk_id})
+            alert_threshold = catalog["alert_threshold_rpn"] if catalog else None
+            new_rpn = round(score.rpn_dynamic * weight, 2)
+            new_status = (
+                _rpn_status(new_rpn, alert_threshold)
+                if alert_threshold is not None
+                else score.rpn_status
+            )
+            new_triggered_by = score.triggered_by.model_copy(
+                update={"historical_weight": weight}
+            )
+            adjusted.append(
+                score.model_copy(
+                    update={
+                        "rpn_dynamic": new_rpn,
+                        "rpn_status": new_status,
+                        "triggered_by": new_triggered_by,
+                    }
+                )
+            )
+        updated_scores[supplier_id] = adjusted
+
+    # Expose the real episodes to generate_summary. Every scored supplier gets a key;
+    # suppliers with no relevant precedent map to an empty list so the summary can
+    # honestly report "no historical precedent" rather than fabricating one.
+    memory_episodes: dict = {}
+    for supplier_id in state["risk_scores"]:
+        memory_episodes[supplier_id] = list(
+            episodes_by_supplier.get(supplier_id, {}).values()
+        )
 
     await queue.put({"type": "tool_end", "message": "Reasoning and retrieving memory..."})
     return {
         "agent_thoughts": agent_thoughts,
         "atlas_operations": atlas_ops_sink,
         "historical_weight": historical_weights,
+        "risk_scores": updated_scores,
+        "memory_episodes": memory_episodes,
     }
 
 
