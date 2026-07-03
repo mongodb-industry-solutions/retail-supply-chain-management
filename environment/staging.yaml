@@ -22,7 +22,12 @@ envSecrets:
 ## should be used in case of multiple sidecar containers
 sidecarContainers:
   - name: backend
-    image: 275662791714.dkr.ecr.us-east-1.amazonaws.com/kanopy-session-backend:latest
+    image: 275662791714.dkr.ecr.us-east-1.amazonaws.com/retail-supply-chain-management-backend:latest
+    
+    ports:
+      - containerPort: 8000
+        name: backend
+
     env:
       - name: APP_NAME
         value: retail-supply-chain-risk
