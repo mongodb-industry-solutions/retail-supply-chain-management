@@ -271,11 +271,24 @@ All three Layer 1 Atlas operations now run against the live cluster with real be
 - **`atlas_operation` "in" counts are real, per-run.** `$match` in = total active suppliers (40); `$rankFusion` in = live count of eligible chunks for the pool (e.g. 24 or 15, **not** a static 146 — the corpus is pre-filtered). Verified end-to-end on two evaluations: SUP-SHENZHEN-441 packaging (40→17→5, exclude CN/HK) and SUP-VALLE-MX fresh_produce (40→11→5, exclude MX); both produced plausible in-category, out-of-excluded-region candidates.
 - **Empty-pool path:** if `$match` yields no suppliers, `$rankFusion`/`$rerank` are emitted with zero counts (event sequence preserved) and an empty candidate set is handed downstream — no search is attempted against an empty `$in` list.
 
+## Verified in Stage 4.3 (Layer 2 / Reflect & Critique made real)
+
+Layer 2's Generate and Audit calls now run against real data, with real citations and real precedent lookups. Generate and Audit remain two separate LLM calls with separate `agent_thought` streams (`step: "generate"` / `step: "audit"`), confirmed still true. Layers 0, 1, 3 unchanged.
+
+- **Citation field mapping (confirmed against live `supplier_documents`):** the wire `citation` object is projected from real chunk fields — `source_file` ← `filename`, `page` ← `page_ref`, `excerpt` ← `chunk_text`. The doc's earlier example keys (`source_file`/`page`/`excerpt`) are retained on the wire; only the backing field names differ. `chunk_id`, `doc_type`, and `valid_until` map through unchanged where present.
+- **`agent_memory` exact-match query needs no index.** Verified: there is **no index on `episode.resolution.alt_supplier_id`**, so the Layer 2 exact-track-record `find` is a collection scan — but with only **5 episodes total** in `agent_memory`, the scan is trivially fine. **Decision: do not create an index.** This resolves the prior open question; if the collection grows by orders of magnitude this should be revisited, but it is not a current concern.
+
+**Known data gaps (Stage 4.3) — documented, NOT routed around in code.** These are gaps in the seed data, not design flaws; the code exercises the real paths and reports honestly (`found: false` / `status: "unknown"`) rather than branching to hide them:
+
+- **`exact_track_record` never hit in these two evals.** The exact precedent query ran correctly but returned no match for any candidate across both test evaluations — expected, given the sparse `agent_memory` seed. The code emits `exact_track_record.found: false`; it does not skip or fabricate the lookup.
+- **Sparse `sustainability_report` coverage.** Few candidates have a `sustainability_report` chunk, so sustainability-related criteria frequently resolve to `status: "unknown"` with `citation: null`. This is real evidence absence surfaced faithfully, not a code defect.
+- **Only 5 `agent_memory` episodes total.** The entire memory corpus is 5 episodes, which limits both exact and semantic precedent signal strength in this demo. Precedent output is therefore thin by data availability, not by logic.
+
 ---
 
 
 
 - ~~Confirm `$rerank` stage availability and cluster version support (Layer 1).~~ **RESOLVED (Stage 4.2):** stage available; required enabling the Atlas Native Reranking project setting + a project-level Voyage Model API key (see above).
 - ~~Confirm whether `$vectorSearch` filter supports `$in` over a `supplier_id` list.~~ **RESOLVED (Stage 4.2):** yes, supported and in use for Layer 1's pool restriction.
-- Confirm whether an index exists on `episode.resolution.alt_supplier_id` in `agent_memory`, or whether one needs to be created to avoid a collection scan on the Layer 2 exact-match query.
+- ~~Confirm whether an index exists on `episode.resolution.alt_supplier_id` in `agent_memory`, or whether one needs to be created to avoid a collection scan on the Layer 2 exact-match query.~~ **RESOLVED (Stage 4.3):** no index exists; scan is fine at 5 episodes, no index created (see above).
 - `metrics.candidates_in/out` on `atlas_operation` events should reflect real counts from the live aggregation, never estimated.

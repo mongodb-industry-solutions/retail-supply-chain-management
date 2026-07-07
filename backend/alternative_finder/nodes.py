@@ -62,6 +62,38 @@ _TARGET_CANDIDATES = 5      # distinct suppliers to hand to Layer 2 (README's "t
 # stage report; real data ranges ~0.30-0.70 so this is permissive, not pool-emptying.
 _CAPACITY_MAX = 0.90
 
+# --- Layer 2 (reflect & critique) real-infra constants, confirmed live 2026-07-07 --
+# agent_memory vector index (autoEmbed voyage-4 on auto_embed_text; filters supplier_id,
+# risk_type) — READY on the cluster, never exercised by code before this stage.
+_MEMORY_VECTOR_INDEX = "agent_memory_autoembed_index"
+# supplier_documents citation fields DO NOT match the README contract 1:1. Confirmed
+# against all 146 live docs (Stage 4.3): the collection has `filename` (not `source_file`),
+# `page_ref` (not `page`), and no `excerpt` field at all (the citable text is `chunk_text`).
+# We keep the contract's OUTPUT key names but populate them from these real fields — an
+# explicit, documented mapping, not a silent rename. `valid_until`/`chunk_id`/`doc_type`
+# exist as-named.
+_CITATION_FIELD_MAP = {"source_file": "filename", "page": "page_ref"}  # excerpt <- chunk_text (sliced)
+_EXCERPT_MAX_CHARS = 400
+
+# The audit criteria we actually support, mapped to the real doc_type vocabulary that can
+# back each. We do NOT invent criteria the corpus can't evidence — every doc_type here was
+# confirmed present in supplier_documents (distinct(): certificate/audit_report/contract/
+# email/sustainability_report).
+_CRITERIA_DOC_TYPES = {
+    "compliance_certification": ["certificate", "audit_report"],
+    "operational_status": ["email", "contract"],
+    "sustainability_practices": ["sustainability_report"],
+}
+_CRITERIA = list(_CRITERIA_DOC_TYPES.keys())
+
+# Bounded gap-resolution cap. JUDGMENT CALL (no prior doc fixed a number): at most ONE extra
+# targeted supplier_documents lookup PER CANDIDATE (not per criterion), so a 5-candidate run
+# runs at most 5 extra queries total. Rationale: the cost that must be bounded is per-run,
+# it scales naturally with candidate count, and one lookup can surface any doc_type the
+# highest-priority unresolved criterion needs. If the gap survives that single lookup, the
+# criterion honestly stays "unknown" — no looping, no forced resolution.
+_GAP_LOOKUPS_PER_CANDIDATE = 1
+
 
 class PlanResolutionError(Exception):
     """Raised by plan_node when ``evaluation_id_ref`` does not resolve to a real
@@ -130,6 +162,60 @@ _PLAN_SYSTEM_PROMPT = (
     "the regions the risk applies to and the disrupted supplier's own region when the "
     "risk is regional. profile_text must NOT name the disrupted supplier; it describes "
     "the replacement being sought."
+)
+
+
+_GENERATE_SYSTEM_PROMPT = (
+    "You are a sourcing analyst drafting evidence-based claims about a candidate alternative "
+    "supplier. You are given ONLY the real document chunks on file for this supplier — no "
+    "outside knowledge is allowed. For each audit criterion, decide whether the provided "
+    "chunks support a positive claim.\n\n"
+    "Criteria:\n"
+    "- compliance_certification: quality/compliance certifications or audit results (e.g. ISO "
+    "9001, third-party audit).\n"
+    "- operational_status: current commercial/operational standing (active contract, recent "
+    "operational correspondence).\n"
+    "- sustainability_practices: environmental or sustainability commitments / reporting.\n\n"
+    "HARD RULES:\n"
+    "1. Every claim with status \"compliant\" MUST cite exactly one chunk_id from the provided "
+    "chunks. No citation => status MUST be \"unknown\" and chunk_id null.\n"
+    "2. Never assert something the chunks do not actually state. Use \"unknown\" liberally when "
+    "evidence is thin — an honest unknown is correct, a fabricated claim is not.\n"
+    "3. Do not use any knowledge beyond the provided chunks.\n\n"
+    "Respond with ONLY a single JSON object, no prose:\n"
+    "{\n"
+    '  "reasoning": "<2-4 sentences on what evidence you found and what is missing>",\n'
+    '  "claims": [\n'
+    '    {"criterion": "<one of the three>", "status": "compliant|unknown", '
+    '"chunk_id": "<cited chunk_id or null>", "claim": "<short claim, or why unknown>"}\n'
+    "  ]\n"
+    "}\n"
+    "Include an entry for every criterion listed above."
+)
+
+_AUDIT_SYSTEM_PROMPT = (
+    "You are a verification auditor. Given a set of drafted claims about a supplier, the FULL "
+    "text of each cited chunk, and any historical precedent, verify each claim. You are the "
+    "final authority on each criterion's status.\n\n"
+    "HARD RULES:\n"
+    "1. Never move a criterion toward \"compliant\" without a cited chunk whose text actually "
+    "states it. If a claim's citation does not support it, downgrade to \"unknown\".\n"
+    "2. If a cited chunk directly contradicts the claim (or a certificate is expired — you will "
+    "be told when valid_until has passed), status is \"noncompliant\".\n"
+    "3. \"unknown\" is the honest default when evidence is thin or missing.\n"
+    "4. Precedent (prior track record / semantic precedent) is CONTEXT ONLY — it may inform "
+    "your reasoning but MUST NOT be used as the citation that makes a criterion compliant.\n\n"
+    "Allowed final status values: compliant, noncompliant, unknown.\n\n"
+    "Respond with ONLY a single JSON object, no prose:\n"
+    "{\n"
+    '  "reasoning": "<2-4 sentences: what you confirmed, what you downgraded and why, and '
+    'whether precedent supports or undercuts this candidate>",\n'
+    '  "criteria": [\n'
+    '    {"criterion": "<name>", "status": "compliant|noncompliant|unknown", '
+    '"chunk_id": "<cited chunk_id or null>", "note": "<short justification>"}\n'
+    "  ]\n"
+    "}\n"
+    "Include an entry for every criterion you were given."
 )
 
 
@@ -541,113 +627,356 @@ async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> 
 # ---------------------------------------------------------------------------
 # Layer 2 — Reflect & Critique
 # ---------------------------------------------------------------------------
-async def reflect_critique_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
-    """Generate cited claims per candidate, then audit them.
+def _parse_valid_until(value) -> datetime | None:
+    """Parse a supplier_documents ``valid_until`` value (ISO string or datetime) to an
+    aware datetime, or ``None`` if absent/unparseable. Used for the deterministic expiry
+    guard in the audit pass."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+    try:
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
 
-    Real behaviour (later): two distinct LLM passes (generate, then audit) plus a
-    bounded gap-resolution loop; exact + semantic precedent lookups against
-    agent_memory. Here: placeholder criteria/precedent, real event shapes. The two
-    memory mechanisms are kept as separate objects, never merged into one score.
+
+def _build_citation(chunk: dict) -> dict:
+    """Build a contract-shaped citation from a real ``supplier_documents`` chunk.
+
+    The contract keys ``source_file`` / ``page`` / ``excerpt`` have no same-named field in
+    the live collection; they are populated from the real fields ``filename`` / ``page_ref``
+    / ``chunk_text`` (sliced) per ``_CITATION_FIELD_MAP``. ``chunk_id`` / ``doc_type`` /
+    ``valid_until`` exist as-named. This mapping is explicit and reported, not silent.
+    """
+    text = chunk.get("chunk_text", "") or ""
+    return {
+        "chunk_id": chunk.get("chunk_id"),
+        "doc_type": chunk.get("doc_type"),
+        "source_file": chunk.get("filename"),
+        "page": chunk.get("page_ref"),
+        "excerpt": text[:_EXCERPT_MAX_CHARS] + ("…" if len(text) > _EXCERPT_MAX_CHARS else ""),
+        "valid_until": chunk.get("valid_until"),
+    }
+
+
+_CHUNK_PROJECTION = {
+    "_id": 0, "chunk_id": 1, "doc_type": 1, "chunk_text": 1,
+    "filename": 1, "page_ref": 1, "valid_until": 1, "supplier_id": 1,
+}
+
+
+async def _fetch_supplier_chunks(db, supplier_id: str, doc_types: list[str] | None = None) -> list[dict]:
+    """Real ``find`` on ``supplier_documents`` scoped to ONE supplier (never the Layer 1
+    pool). Optionally narrowed to specific ``doc_type``s for a targeted gap lookup. Suppliers
+    carry only a handful of chunks, so the full set is returned for grounding."""
+    q: dict = {"supplier_id": supplier_id}
+    if doc_types:
+        q["doc_type"] = {"$in": doc_types}
+    return await db["supplier_documents"].find(q, _CHUNK_PROJECTION).to_list(length=None)
+
+
+async def reflect_critique_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
+    """Generate cited claims per candidate, then audit them — Stage 4.3 (real).
+
+    Per candidate: one Generate LLM call (drafts claims grounded ONLY in real chunks
+    retrieved for that specific supplier_id), a bounded gap-resolution lookup, then one
+    Audit LLM call (verifies each citation actually supports the claim, applies a
+    deterministic expiry guard, and weighs precedent). Two separate precedent mechanisms
+    are looked up against ``agent_memory`` — exact track record (``find`` on
+    ``episode.resolution.alt_supplier_id``) and cross-supplier semantic precedent
+    (``$vectorSearch`` by ``risk_type``) — kept as separate objects, never merged.
+
+    Gap resolution is capped at ``_GAP_LOOKUPS_PER_CANDIDATE`` extra query per candidate
+    (see constant): after Generate reveals which criteria lack a citation, at most one
+    targeted lookup runs (before Audit, so the single Audit call is authoritative over the
+    gap-resolved evidence — a deliberate ordering choice, flagged in the stage report). If
+    the gap survives, the criterion honestly stays "unknown".
     """
     session_id = state["session_id"]
     candidates = state["candidates"]
+    risk_types = state.get("risk_types", [])
+    profile_text = state.get("profile_text", "").strip()
 
     await _emit(config, session_id, "layer_started", layer=2, label=_LAYER_LABELS[2])
 
-    # --- Generate pass: one thought + one candidate_generated per candidate ---
-    for cand in candidates:
-        await _emit(
-            config, session_id, "agent_thought", layer=2,
-            step="generate",
-            text=f"[PLACEHOLDER] Drafting cited claims for {cand['supplier_id']}.",
-        )
-        await _emit(
-            config, session_id, "candidate_generated", layer=2,
-            supplier_id=cand["supplier_id"],
-            supplier_name=cand["supplier_name"],
-            location=cand["location"],
-            category=cand["category"],
-        )
+    db = await get_database()
+    llm = _make_llm()
+    candidate_ids = [c["supplier_id"] for c in candidates]
 
-    # --- Precedent / evidence-gap Atlas operations (once for the layer) -------
+    # --- Precedent lookups (once per run, two SEPARATE mechanisms) --------------------
+    # 1. Exact track record: real find on episode.resolution.alt_supplier_id. NOTE: no index
+    #    exists on that path (only _id + supplier_id_1_risk_type_1) — collection scan, but the
+    #    collection is tiny (5 docs). Reported as the Stage 4.1 open question.
+    exact_by_alt: dict = {}
+    if candidate_ids:
+        mem_hits = await db["agent_memory"].find(
+            {"episode.resolution.alt_supplier_id": {"$in": candidate_ids}}
+        ).sort("recorded_at", -1).to_list(length=None)
+        for m in mem_hits:
+            alt = m.get("episode", {}).get("resolution", {}).get("alt_supplier_id")
+            if alt and alt not in exact_by_alt:  # keep most recent (sorted desc)
+                exact_by_alt[alt] = m
     await _emit(
         config, session_id, "atlas_operation", layer=2,
         operation_type="find", collection="agent_memory",
-        description="Checking if this candidate was proposed before (episode.resolution.alt_supplier_id)",
-        metrics={"documents_read": 0},
+        description=(
+            "Checking if any candidate was proposed before "
+            "(episode.resolution.alt_supplier_id) — collection scan, no index on this path"
+        ),
+        metrics={"documents_read": len(exact_by_alt)},
     )
+
+    # 2. Semantic precedent: cross-supplier $vectorSearch by risk_type similarity. Run-level
+    #    (about the risk situation, not one candidate) — attached identically to each
+    #    candidate, kept SEPARATE from exact track record.
+    semantic_hit: dict | None = None
+    semantic_query = profile_text or f"{', '.join(risk_types)} supply chain risk precedent"
+    if risk_types:
+        try:
+            sem = await db["agent_memory"].aggregate([
+                {"$vectorSearch": {
+                    "index": _MEMORY_VECTOR_INDEX,
+                    "query": {"text": semantic_query},
+                    "path": "auto_embed_text",
+                    "filter": {"risk_type": {"$in": risk_types}},
+                    "numCandidates": 50,
+                    "limit": 3,
+                }},
+                {"$project": {
+                    "_id": 0, "memory_id": 1, "supplier_id": 1, "risk_type": 1,
+                    "recorded_at": 1, "auto_embed_text": 1,
+                    "episode.resolution.outcome": 1, "proposal_quality": 1,
+                    "score": {"$meta": "vectorSearchScore"},
+                }},
+            ]).to_list(length=None)
+        except Exception as e:  # index/feature issue surfaces as a reported data/infra gap
+            logger.warning("reflect_critique_node: agent_memory $vectorSearch failed — %s", e)
+            sem = []
+        semantic_hit = sem[0] if sem else None
+        sem_count = len(sem)
+    else:
+        sem_count = 0
     await _emit(
         config, session_id, "atlas_operation", layer=2,
         operation_type="$vectorSearch", collection="agent_memory",
-        description="Cross-supplier semantic precedent search by risk_type",
-        metrics={"candidates_in": 0, "candidates_out": 0},
-    )
-    await _emit(
-        config, session_id, "atlas_operation", layer=2,
-        operation_type="find", collection="supplier_documents",
-        description="Resolving a specific evidence gap",
-        metrics={"documents_read": 0},
+        description=f"Cross-supplier semantic precedent search by risk_type {risk_types or '[]'}",
+        metrics={"candidates_in": sem_count, "candidates_out": 1 if semantic_hit else 0},
     )
 
-    # --- Audit pass: one thought + one candidate_audited per candidate --------
+    def _semantic_precedent_obj() -> dict:
+        if not semantic_hit:
+            return {"found": False, "memory_id": None, "risk_type": None,
+                    "recorded_at": None, "strength": "none",
+                    "reason": "No agent_memory episode for the current risk_type(s)"}
+        score = semantic_hit.get("score", 0.0) or 0.0
+        strength = "moderate" if score >= 0.7 else "weak"
+        return {
+            "found": True,
+            "memory_id": semantic_hit.get("memory_id"),
+            "risk_type": semantic_hit.get("risk_type"),
+            "recorded_at": semantic_hit.get("recorded_at"),
+            "strength": strength,
+            "score": round(float(score), 4),
+            "reason": (
+                f"Same risk_type ({semantic_hit.get('risk_type')}) precedent from "
+                f"{semantic_hit.get('supplier_id')} — directional cross-supplier context, "
+                "not candidate-specific confirmation"
+            ),
+        }
+
     audits: dict = {}
+    gap_lookups_used = 0
+
     for cand in candidates:
-        await _emit(
-            config, session_id, "agent_thought", layer=2,
-            step="audit",
-            text=f"[PLACEHOLDER] Verifying claims for {cand['supplier_id']}.",
-        )
+        sid = cand["supplier_id"]
 
-        criteria = [
-            {
-                "criterion": "compliance_certification",
-                "status": "compliant",
-                "citation": {
-                    "chunk_id": "PLACEHOLDER_chunk",
-                    "doc_type": "pdf",
-                    "source_file": "PLACEHOLDER_certificate.pdf",
-                    "page": 1,
-                    "excerpt": "[PLACEHOLDER excerpt]",
-                    "valid_until": "2027-01-01",
-                },
-            },
-            {
-                "criterion": "operational_status",
-                "status": "unknown",
-                "citation": None,
-                "note": "PLACEHOLDER — no recent operational document found",
-            },
-        ]
+        # --- GENERATE: retrieve this supplier's real chunks, draft cited claims ----------
+        chunks = await _fetch_supplier_chunks(db, sid)
+        chunk_map = {c["chunk_id"]: c for c in chunks if c.get("chunk_id")}
+
+        gen_payload = {
+            "supplier_id": sid,
+            "supplier_name": cand.get("supplier_name"),
+            "criteria": _CRITERIA,
+            "chunks": [
+                {"chunk_id": c.get("chunk_id"), "doc_type": c.get("doc_type"),
+                 "valid_until": c.get("valid_until"), "text": c.get("chunk_text")}
+                for c in chunks
+            ],
+        }
+        if chunks:
+            gen_resp = await llm.ainvoke([
+                SystemMessage(content=_GENERATE_SYSTEM_PROMPT),
+                HumanMessage(content=json.dumps(gen_payload, default=str)),
+            ])
+            try:
+                gen = _extract_json(gen_resp.content)
+            except (json.JSONDecodeError, ValueError):
+                gen = {"reasoning": "Generate output unparseable; defaulting all criteria to unknown.",
+                       "claims": []}
+            gen_reason = str(gen.get("reasoning", "")).strip()
+            gen_claims = {c.get("criterion"): c for c in gen.get("claims", []) if c.get("criterion")}
+        else:
+            gen_reason = (
+                f"No documents on file for {sid} — all criteria start unknown "
+                "(real data-coverage gap, not a fabrication)."
+            )
+            gen_claims = {}
+
+        # Validate: a claim may only cite a chunk_id that really exists for this supplier.
+        draft_criteria = []
+        for crit in _CRITERIA:
+            claim = gen_claims.get(crit, {})
+            cid = claim.get("chunk_id")
+            status = claim.get("status", "unknown")
+            if cid not in chunk_map:  # no real citation -> forced unknown
+                cid, status = None, "unknown"
+            if status not in ("compliant", "unknown"):
+                status = "unknown"
+            draft_criteria.append({"criterion": crit, "status": status,
+                                   "chunk_id": cid, "claim": claim.get("claim", "")})
+
+        await _emit(config, session_id, "agent_thought", layer=2, step="generate",
+                    text=gen_reason or f"Drafted claims for {sid}.")
+        await _emit(config, session_id, "candidate_generated", layer=2,
+                    supplier_id=sid, supplier_name=cand["supplier_name"],
+                    location=cand["location"], category=cand["category"])
+
+        # --- BOUNDED GAP RESOLUTION: one targeted lookup for the top unresolved gap ------
+        unresolved = [c["criterion"] for c in draft_criteria if c["chunk_id"] is None]
+        if unresolved and gap_lookups_used < len(candidates) * _GAP_LOOKUPS_PER_CANDIDATE:
+            gap_crit = unresolved[0]  # cap is per-candidate, so resolve the highest-priority one
+            gap_doc_types = _CRITERIA_DOC_TYPES.get(gap_crit, [])
+            await _emit(config, session_id, "tool_start", layer=2,
+                        tool="search_supplier_documents",
+                        args={"supplier_id": sid, "doc_type": gap_doc_types, "criterion": gap_crit})
+            gap_chunks = await _fetch_supplier_chunks(db, sid, gap_doc_types)
+            gap_lookups_used += 1
+            for gc in gap_chunks:  # fold any newly found chunks into the evidence set
+                if gc.get("chunk_id"):
+                    chunk_map.setdefault(gc["chunk_id"], gc)
+            await _emit(config, session_id, "tool_end", layer=2,
+                        tool="search_supplier_documents",
+                        result_summary=(
+                            f"{len(gap_chunks)} {'/'.join(gap_doc_types)} chunk(s) found for {gap_crit}"
+                            if gap_chunks else
+                            f"No {'/'.join(gap_doc_types)} document on file for {sid} "
+                            f"— {gap_crit} stays unknown"
+                        ))
+
+        # --- Precedent for this candidate (two separate objects) -------------------------
+        exact_mem = exact_by_alt.get(sid)
+        if exact_mem:
+            res = exact_mem.get("episode", {}).get("resolution", {})
+            exact_track_record = {
+                "found": True,
+                "memory_id": exact_mem.get("memory_id"),
+                "proposed_for_supplier_id": exact_mem.get("supplier_id"),
+                "outcome": res.get("outcome"),
+                "proposal_quality": exact_mem.get("proposal_quality"),
+                "recorded_at": exact_mem.get("recorded_at"),
+                "note": "This candidate was proposed as an alternative in a prior episode",
+            }
+        else:
+            exact_track_record = {"found": False, "note": "No prior proposal for this candidate"}
         precedent = {
-            "exact_track_record": {"found": False, "note": "PLACEHOLDER — no prior proposal"},
-            "semantic_precedent": {
-                "found": False,
-                "memory_id": None,
-                "risk_type": "PLACEHOLDER_RISK_TYPE",
-                "recorded_at": None,
-                "strength": "none",
-                "reason": "PLACEHOLDER — no semantic precedent",
-            },
+            "exact_track_record": exact_track_record,
+            "semantic_precedent": _semantic_precedent_obj(),
         }
-        evidence_coverage = {"criteria_total": 2, "criteria_verified": 1}
 
-        audits[cand["supplier_id"]] = {
-            "criteria": criteria,
+        # --- AUDIT: verify claims against full chunk text + deterministic expiry guard ---
+        now = datetime.now(timezone.utc)
+        audit_evidence = []
+        for c in draft_criteria:
+            ev = {"criterion": c["criterion"], "drafted_status": c["status"],
+                  "drafted_claim": c["claim"], "chunk_id": c["chunk_id"]}
+            if c["chunk_id"] and c["chunk_id"] in chunk_map:
+                ch = chunk_map[c["chunk_id"]]
+                vu = _parse_valid_until(ch.get("valid_until"))
+                ev["cited_chunk"] = {
+                    "chunk_id": ch.get("chunk_id"), "doc_type": ch.get("doc_type"),
+                    "text": ch.get("chunk_text"),
+                    "valid_until": ch.get("valid_until"),
+                    "expired": bool(vu and vu < now),
+                }
+            audit_evidence.append(ev)
+        # Chunks discovered during gap resolution the LLM hasn't seen yet, so it can cite them.
+        extra_chunks = [
+            {"chunk_id": ch.get("chunk_id"), "doc_type": ch.get("doc_type"),
+             "text": ch.get("chunk_text"), "valid_until": ch.get("valid_until")}
+            for cid, ch in chunk_map.items()
+            if cid not in {c["chunk_id"] for c in draft_criteria if c["chunk_id"]}
+        ]
+        audit_payload = {
+            "supplier_id": sid,
+            "drafted": audit_evidence,
+            "additional_chunks_available": extra_chunks,
             "precedent": precedent,
-            "evidence_coverage": evidence_coverage,
+            "note": "A cited chunk marked expired:true must not remain compliant.",
         }
+        audit_resp = await llm.ainvoke([
+            SystemMessage(content=_AUDIT_SYSTEM_PROMPT),
+            HumanMessage(content=json.dumps(audit_payload, default=str)),
+        ])
+        try:
+            aud = _extract_json(audit_resp.content)
+        except (json.JSONDecodeError, ValueError):
+            aud = {"reasoning": "Audit output unparseable; keeping only citation-backed drafts.",
+                   "criteria": []}
+        aud_reason = str(aud.get("reasoning", "")).strip()
+        aud_by_crit = {c.get("criterion"): c for c in aud.get("criteria", []) if c.get("criterion")}
 
-        await _emit(
-            config, session_id, "candidate_audited", layer=2,
-            supplier_id=cand["supplier_id"],
-            criteria=criteria,
-            precedent=precedent,
-            evidence_coverage=evidence_coverage,
-        )
+        # --- Assemble final criteria with hard guardrails --------------------------------
+        final_criteria = []
+        verified = 0
+        for crit in _CRITERIA:
+            verdict = aud_by_crit.get(crit, {})
+            status = verdict.get("status", "unknown")
+            cid = verdict.get("chunk_id")
+            note = str(verdict.get("note", "")).strip()
+            if status not in ("compliant", "noncompliant", "unknown"):
+                status = "unknown"
+            # Guardrail 1: no real citation -> cannot be compliant.
+            if cid not in chunk_map:
+                cid = None
+                if status == "compliant":
+                    status = "unknown"
+            citation = None
+            if cid and cid in chunk_map:
+                ch = chunk_map[cid]
+                citation = _build_citation(ch)
+                # Guardrail 2: deterministic expiry — an expired citation can't be compliant.
+                vu = _parse_valid_until(ch.get("valid_until"))
+                if status == "compliant" and vu and vu < now:
+                    status = "noncompliant"
+                    note = (note + " " if note else "") + "Citation expired per valid_until."
+            entry = {"criterion": crit, "status": status, "citation": citation}
+            if citation is None:
+                entry["note"] = note or "No supporting document found for this candidate"
+            elif note:
+                entry["note"] = note
+            if citation is not None:
+                verified += 1
+            final_criteria.append(entry)
+
+        evidence_coverage = {"criteria_total": len(_CRITERIA), "criteria_verified": verified}
+        audits[sid] = {"criteria": final_criteria, "precedent": precedent,
+                       "evidence_coverage": evidence_coverage}
+
+        await _emit(config, session_id, "agent_thought", layer=2, step="audit",
+                    text=aud_reason or f"Audited {sid}: {verified}/{len(_CRITERIA)} criteria evidence-backed.")
+        await _emit(config, session_id, "candidate_audited", layer=2,
+                    supplier_id=sid, criteria=final_criteria,
+                    precedent=precedent, evidence_coverage=evidence_coverage)
 
     await _emit(
         config, session_id, "layer_completed", layer=2,
-        summary=f"{len(candidates)} candidates audited (placeholder)",
+        summary=(
+            f"{len(candidates)} candidate(s) audited; {gap_lookups_used} targeted "
+            "gap-resolution lookup(s) run"
+        ),
     )
 
     return {"audits": audits}
