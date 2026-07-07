@@ -94,6 +94,7 @@ Known operations to emit (see mapping table already agreed):
 |---|---|---|---|
 | 0 | `find` | `supplier_risk_evaluations` | Reading the real risk evaluation |
 | 0 | `find` | `purchase_orders` | Checking active orders for time pressure |
+| 0 | `find` | `risk_catalog` | Resolving risk types and affected regions for the evaluated risks |
 | 1 | `$match` | `suppliers` | Filtering by category, excluded region, capacity margin |
 | 1 | `$rankFusion` (`$vectorSearch` + `$search`) | `supplier_documents` | Combining semantic and full-text search |
 | 1 | `$rerank` (native Voyage) | `supplier_documents` | Native reranking, no external call, narrowing to top candidates |
@@ -153,6 +154,8 @@ Emitted once per candidate after the Generate call, before Audit — allows the 
 ### 7. `candidate_audited`
 Emitted once per candidate after the Audit call — carries the verdict that becomes part of the final shortlist entry (see output schema below). This is the event the "Compliant with ISO 9001" card in the mockup renders from.
 
+Each criterion's `status` is one of three real allowed values: **`compliant` / `noncompliant` / `unknown`**. `noncompliant` fires when a citation directly contradicts a claim, or when a cited certificate's `valid_until` has already passed (a deterministic expiry check, not an LLM judgment). `unknown` is used when no supporting document is found at all (`citation: null`).
+
 ```json
 {
   "event": "candidate_audited",
@@ -178,6 +181,19 @@ Emitted once per candidate after the Audit call — carries the verdict that bec
       "status": "unknown",
       "citation": null,
       "note": "No recent operational document found for this candidate"
+    },
+    {
+      "criterion": "sustainability_practices",
+      "status": "noncompliant",
+      "citation": {
+        "chunk_id": "sustain_017",
+        "doc_type": "sustainability_report",
+        "source_file": "Sustainability_Audit_2022.pdf",
+        "page": 1,
+        "excerpt": "...environmental compliance certification valid through 2024-06-30...",
+        "valid_until": "2024-06-30"
+      },
+      "note": "Cited certificate's valid_until (2024-06-30) is in the past — deterministic expiry check failed"
     }
   ],
   "precedent": {
@@ -194,6 +210,8 @@ Emitted once per candidate after the Audit call — carries the verdict that bec
   "evidence_coverage": { "criteria_total": 3, "criteria_verified": 2 }
 }
 ```
+
+Note: the third (`sustainability_practices` / `noncompliant`) criterion above is an illustrative shape example — not captured from an actual test run; modeled on the deterministic-expiry behavior described above.
 
 Note: `precedent` deliberately keeps the two memory mechanisms (exact track record vs. semantic cross-supplier precedent) as separate objects — never merged into one score, per design.
 
@@ -275,6 +293,16 @@ All three Layer 1 Atlas operations now run against the live cluster with real be
 
 Layer 2's Generate and Audit calls now run against real data, with real citations and real precedent lookups. Generate and Audit remain two separate LLM calls with separate `agent_thought` streams (`step: "generate"` / `step: "audit"`), confirmed still true. Layers 0, 1, 3 unchanged.
 
+**The three implemented audit criteria** (the fixed set every candidate is scored against; `evidence_coverage.criteria_total` is therefore always `3`) and the real `supplier_documents` `doc_type`(s) that back each:
+
+| `criterion` | Backing `doc_type`(s) |
+|---|---|
+| `compliance_certification` | `certificate`, `audit_report` |
+| `operational_status` | `contract`, `email` |
+| `sustainability_practices` | `sustainability_report` |
+
+Each criterion resolves to `compliant` / `noncompliant` / `unknown` (see `candidate_audited` above); `unknown` is expected wherever the backing `doc_type` is absent for a candidate.
+
 - **Citation field mapping (confirmed against live `supplier_documents`):** the wire `citation` object is projected from real chunk fields — `source_file` ← `filename`, `page` ← `page_ref`, `excerpt` ← `chunk_text`. The doc's earlier example keys (`source_file`/`page`/`excerpt`) are retained on the wire; only the backing field names differ. `chunk_id`, `doc_type`, and `valid_until` map through unchanged where present.
 - **`agent_memory` exact-match query needs no index.** Verified: there is **no index on `episode.resolution.alt_supplier_id`**, so the Layer 2 exact-track-record `find` is a collection scan — but with only **5 episodes total** in `agent_memory`, the scan is trivially fine. **Decision: do not create an index.** This resolves the prior open question; if the collection grows by orders of magnitude this should be revisited, but it is not a current concern.
 
@@ -290,6 +318,25 @@ Layer 2's Generate and Audit calls now run against real data, with real citation
 
 - **GeoJSON field is `location`** on `suppliers` — `{type: "Point", coordinates: [lng, lat]}`, backed by a `location_2dsphere` index (confirmed via `index_information()`). It is the same field `risk_evaluator`'s `$geoWithin` uses. `$geoNear` runs with `spherical: true`, `key: "location"`, restricted to the candidate `supplier_id`s via its `query`; distance returned in metres, converted to km (rounded to 0.1).
 - **Distribution-center reference point is an ASSUMPTION, flagged — not confirmed.** There is **no fixed DC coordinate anywhere** in the system: no config value, no `distribution_center`/`config` collection, and `risk_evaluator` never uses one (its geospatial queries measure distance to risk *epicentres*). The seed corpus names several FreshMart DCs (Los Angeles, Chicago, Monterrey, Miami) with no coordinates. We use **FreshMart's Los Angeles DC** (`[-118.2437, 34.0522]`, the most-referenced US import hub in `supplier_documents`) as a single reference point. The `$geoNear` `atlas_operation` event carries `reference_point: {name, coordinates, assumed: true}` so the assumption is visible to the frontend, never passed off as confirmed. **Open item for a future stage:** replace with a real per-DC / multi-DC coordinate source when one exists.
+
+  Real shape of the `$geoNear` `atlas_operation` event (from a live Stage 4.4 run):
+  ```json
+  {
+    "event": "atlas_operation",
+    "layer": 3,
+    "timestamp": "...",
+    "session_id": "...",
+    "operation_type": "$geoNear",
+    "collection": "suppliers",
+    "description": "Calculating real proximity to distribution center",
+    "reference_point": {
+      "name": "FreshMart Los Angeles DC",
+      "coordinates": [-118.2437, 34.0522],
+      "assumed": true
+    },
+    "metrics": { "candidates_in": 5, "candidates_out": 5, "missing_location": 0 }
+  }
+  ```
 - **Real proximity confirmed sane:** e.g. against the LA reference, `SUP-FRESNO-US` ≈ 330 km, `SUP-SEATTLE-US` ≈ 1547 km, `SUP-VN-204` ≈ 13151 km — geographically plausible. A candidate with no `location` (or otherwise not returned by `$geoNear`) gets `proximity_km: null` and is counted in the `$geoNear` event's `missing_location` metric — a real geo gap reported honestly, never back-filled and never dropped from the shortlist. (In the three test evals, all candidates had `location`, so `missing_location: 0`.)
 - **`supplier_alternatives` write shape.** The ONE pre-existing document is an `is_base` baseline (`status: "no_action_required"`, empty `candidates`, `_id` an `ObjectId`). Per the design doc this collection's final shape isn't fixed; we keep the baseline's field names where they carry over (`evaluation_id_ref`, `blocked_supplier_id`, `is_base`, `is_demo_trigger`, `session_id`, `status`, `candidates_evaluated`, `candidates_discarded`, `candidates`, `discarded_candidates`, `approved_supplier_id`, `decision_deadline`, `created_at`) and **add** two Stage-4 fields the baseline lacked: `risk_types` and `reference_point`. **Deliberate divergences from the baseline** (flagged, not silent): `status → "pending_approval"`; `is_base → false`; `blocked_supplier_id →` the disrupted supplier_id (baseline left it null); `candidates` carries the full real shortlist entries. `_id` is a Mongo-generated `ObjectId` (matches the baseline's type).
 - **`insertOne`, never upsert.** Each run is a new proposal document, so run history is preserved and the `is_base` baseline is never overwritten. `supplier_alternatives_id` on `shortlist_ready` is the real inserted `_id` (`str(ObjectId)`) — the collection has no separate business-level id field, so the `_id` is authoritative.
@@ -301,9 +348,12 @@ Layer 2's Generate and Audit calls now run against real data, with real citation
 
 ---
 
-
+## Resolved open questions
 
 - ~~Confirm `$rerank` stage availability and cluster version support (Layer 1).~~ **RESOLVED (Stage 4.2):** stage available; required enabling the Atlas Native Reranking project setting + a project-level Voyage Model API key (see above).
 - ~~Confirm whether `$vectorSearch` filter supports `$in` over a `supplier_id` list.~~ **RESOLVED (Stage 4.2):** yes, supported and in use for Layer 1's pool restriction.
 - ~~Confirm whether an index exists on `episode.resolution.alt_supplier_id` in `agent_memory`, or whether one needs to be created to avoid a collection scan on the Layer 2 exact-match query.~~ **RESOLVED (Stage 4.3):** no index exists; scan is fine at 5 episodes, no index created (see above).
+
+## Standing invariants
+
 - `metrics.candidates_in/out` on `atlas_operation` events should reflect real counts from the live aggregation, never estimated.
