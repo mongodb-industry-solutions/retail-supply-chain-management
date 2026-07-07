@@ -100,9 +100,10 @@ Known operations to emit (see mapping table already agreed):
 | 1 | `$rerank` (native Voyage) | `supplier_documents` | Native reranking, no external call, narrowing to top candidates |
 | 2 | `find` (exact) | `agent_memory` | Checking if this candidate was proposed before (`episode.resolution.alt_supplier_id`) |
 | 2 | `$vectorSearch` | `agent_memory` | Cross-supplier semantic precedent search by `risk_type` |
-| 2 | `find` (targeted) | `supplier_documents` | Resolving a specific evidence gap |
 | 3 | `$geoNear` | `suppliers` | Calculating real proximity to distribution center |
 | 3 | `insertOne` / `updateOne` | `supplier_alternatives` | Persisting shortlist, pending approval |
+
+The bounded gap-resolution lookup in Layer 2 (targeted `find` on `supplier_documents`, see `tool_start` / `tool_end` below) intentionally does **not** emit its own `atlas_operation` — it surfaces only as `tool_start` / `tool_end`, consistent with the ReAct tool framing. Confirmed in a live end-to-end run: the gap lookup produced `tool_start` / `tool_end` with no accompanying `atlas_operation`.
 
 `metrics` is optional but should be included whenever there's a meaningful before/after count (Layer 1 operations especially — that reduction is the whole point of the demo).
 
@@ -214,6 +215,8 @@ Each criterion's `status` is one of three real allowed values: **`compliant` / `
 Note: the third (`sustainability_practices` / `noncompliant`) criterion above is an illustrative shape example — not captured from an actual test run; modeled on the deterministic-expiry behavior described above.
 
 Note: `precedent` deliberately keeps the two memory mechanisms (exact track record vs. semantic cross-supplier precedent) as separate objects — never merged into one score, per design.
+
+Note: `exact_track_record` is looked up **per candidate** (keyed on `episode.resolution.alt_supplier_id`), but `semantic_precedent` is computed **once per run** (a single cross-supplier `$vectorSearch` by `risk_type`) and attached **identically to every candidate**. So all candidates in a run carry the same `semantic_precedent` object — same `memory_id`, same `score`. This is expected (the semantic hit is a run-level, risk-type-level signal, not a per-candidate one), not a bug. Confirmed in a live end-to-end run where all 5 candidates shared an identical `semantic_precedent`.
 
 ### 8. `shortlist_ready` (terminal result event)
 Final output, after `$geoNear` in Layer 3. This is the payload the "Recommended Alternative Suppliers" screen renders in full.

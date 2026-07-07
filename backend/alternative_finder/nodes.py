@@ -498,7 +498,7 @@ async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> 
         description=(
             "Filtering active suppliers by category "
             f"{categories}, excluding regions {region_exclude or '[]'}, "
-            f"requiring >={int((1 - _CAPACITY_MAX) * 100)}% capacity headroom"
+            f"requiring >={round((1 - _CAPACITY_MAX) * 100)}% capacity headroom"
         ),
         metrics={"candidates_in": total_active, "candidates_out": len(pool)},
     )
