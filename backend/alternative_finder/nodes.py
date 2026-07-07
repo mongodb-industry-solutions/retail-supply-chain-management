@@ -86,6 +86,29 @@ _CRITERIA_DOC_TYPES = {
 }
 _CRITERIA = list(_CRITERIA_DOC_TYPES.keys())
 
+# --- Layer 3 (close) real-infra constants, confirmed live 2026-07-07 ---------------
+# GeoJSON field on suppliers: `location` = {type: "Point", coordinates: [lng, lat]},
+# backed by a `location_2dsphere` index (confirmed via index_information()). This is the
+# ONLY geospatial field on suppliers and the same one risk_evaluator's $geoWithin uses.
+_SUPPLIER_GEO_FIELD = "location"
+_EARTH_RADIUS_M = 6378100.0  # metres; matches risk_evaluator's 6378.1 km sphere radius
+
+# Distribution-center reference point for $geoNear proximity.
+# ASSUMPTION — flagged, not silent. There is NO fixed DC coordinate anywhere in the
+# system: no config value, no distribution_center/config collection, and risk_evaluator
+# never uses one (its geospatial queries measure distance to risk *epicentres*, not a DC).
+# The seed corpus references several FreshMart DCs by name only (Los Angeles, Chicago,
+# Monterrey, Miami) with no coordinates. We pick FreshMart's Los Angeles DC — the most
+# frequently referenced US import hub in the supplier_documents corpus — as a reasonable
+# single reference point, and surface this assumption in the $geoNear atlas_operation
+# event (reference_point.assumed = True) so it is visible to the frontend/manager, never
+# passed off as a confirmed fixed location.
+_DC_REFERENCE = {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [-118.2437, 34.0522],  # [lng, lat] — Los Angeles, CA
+    "assumed": True,
+}
+
 # Bounded gap-resolution cap. JUDGMENT CALL (no prior doc fixed a number): at most ONE extra
 # targeted supplier_documents lookup PER CANDIDATE (not per criterion), so a 5-candidate run
 # runs at most 5 extra queries total. Rationale: the cost that must be bounded is per-run,
@@ -985,65 +1008,174 @@ async def reflect_critique_node(state: AlternativeFinderState, config: RunnableC
 # ---------------------------------------------------------------------------
 # Layer 3 — Close
 # ---------------------------------------------------------------------------
-async def close_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
-    """Compute proximity, assemble the shortlist, persist pending approval.
+def _precedent_summary(precedent: dict) -> str:
+    """Collapse the two SEPARATE precedent objects into a single short display token for
+    the shortlist card — WITHOUT merging their meaning. This is a presentation-only label
+    (replaces the removed ``reliability_score``); the full, unmerged ``exact_track_record``
+    / ``semantic_precedent`` objects still ride along on each candidate's ``criteria`` /
+    ``candidate_audited`` payload untouched, per the design's "never merged into one score".
 
-    Real behaviour (later): $geoNear against suppliers for real proximity_km, then
-    insertOne/updateOne into supplier_alternatives. Here: placeholder proximity and
-    shortlist, real event shapes. ``approved_supplier_id`` is always null — approval
-    is a human step, never set by the agent.
+    Precedence: an exact prior proposal (candidate literally proposed before) outranks a
+    directional cross-supplier semantic hit.
+    """
+    exact = (precedent or {}).get("exact_track_record", {})
+    semantic = (precedent or {}).get("semantic_precedent", {})
+    if exact.get("found"):
+        return "exact_track_record"
+    if semantic.get("found"):
+        strength = semantic.get("strength", "weak")
+        return f"{strength}_directional"
+    return "none"
+
+
+async def close_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
+    """Compute real proximity, assemble the shortlist, persist pending approval — Stage 4.4.
+
+    Deterministic by design: NO LLM call, so this layer emits no ``agent_thought`` events
+    (confirmed still true). Two real MongoDB operations against the live cluster:
+
+      1. ``$geoNear`` on ``suppliers`` — real spherical distance from each shortlist
+         survivor to the distribution-center reference point (see ``_DC_REFERENCE``; the
+         reference point is an explicit ASSUMPTION, surfaced in the event). Restricted to
+         the candidate ``supplier_id``s via the ``query`` filter. Distance is returned in
+         metres and converted to km. A candidate with no ``location`` (or otherwise not
+         returned by ``$geoNear``) gets ``proximity_km: null`` — a real data gap is
+         reported honestly, never back-filled with a placeholder distance and never
+         silently dropped from the shortlist.
+      2. ``insertOne`` into ``supplier_alternatives`` — persists this run's shortlist with
+         ``approved_supplier_id: null`` (approval is a human step elsewhere, NEVER set by
+         this agent). One document per run (``insertOne``, not upsert) so run history is
+         preserved and the pre-existing ``is_base`` baseline doc is never overwritten.
+
+    ``approved_supplier_id`` is always null.
     """
     session_id = state["session_id"]
     candidates = state["candidates"]
     audits = state["audits"]
+    disrupted_supplier_id = state.get("supplier_id", "")
+    risk_types = state.get("risk_types", [])
+    evaluation_id_ref = state["evaluation_id_ref"]
 
     await _emit(config, session_id, "layer_started", layer=3, label=_LAYER_LABELS[3])
+
+    db = await get_database()
+    candidate_ids = [c["supplier_id"] for c in candidates]
+
+    # --- 1. $geoNear on suppliers -----------------------------------------------------
+    # $geoNear MUST be the first stage. Restrict to the candidate pool via `query`; a
+    # candidate lacking `location` simply won't be returned -> reported as a data gap.
+    proximity_km: dict = {}
+    if candidate_ids:
+        geo_rows = await db["suppliers"].aggregate([
+            {
+                "$geoNear": {
+                    "near": {"type": "Point", "coordinates": _DC_REFERENCE["coordinates"]},
+                    "distanceField": "_dist_m",
+                    "spherical": True,
+                    "key": _SUPPLIER_GEO_FIELD,
+                    "query": {"supplier_id": {"$in": candidate_ids}},
+                }
+            },
+            {"$project": {"_id": 0, "supplier_id": 1, "_dist_m": 1}},
+        ]).to_list(length=None)
+        for row in geo_rows:
+            dist_m = row.get("_dist_m")
+            if dist_m is not None:
+                proximity_km[row["supplier_id"]] = round(dist_m / 1000.0, 1)
+
+    # Candidates with no distance returned = real geo data gap (null, not a placeholder).
+    geo_gap_ids = [sid for sid in candidate_ids if sid not in proximity_km]
 
     await _emit(
         config, session_id, "atlas_operation", layer=3,
         operation_type="$geoNear", collection="suppliers",
-        description="Calculating real proximity to distribution center",
-        metrics={"candidates_in": len(candidates), "candidates_out": len(candidates)},
-    )
-    await _emit(
-        config, session_id, "atlas_operation", layer=3,
-        operation_type="insertOne", collection="supplier_alternatives",
-        description="Persisting shortlist, pending approval",
-        metrics={"documents_written": 1},
+        description=(
+            "Calculating real spherical proximity from each candidate to the "
+            f"distribution center ({_DC_REFERENCE['name']})"
+            + (f" — {len(geo_gap_ids)} candidate(s) missing location data, reported as null"
+               if geo_gap_ids else "")
+        ),
+        metrics={
+            "candidates_in": len(candidate_ids),
+            "candidates_out": len(proximity_km),
+            "missing_location": len(geo_gap_ids),
+        },
+        reference_point=_DC_REFERENCE,  # carries assumed=True so the assumption is visible
     )
 
-    proximity_km: dict = {}
+    # --- Assemble the shortlist (real proximity, real precedent summary) ---------------
     shortlist: list[dict] = []
     for cand in candidates:
-        km = 0.0  # PLACEHOLDER — real $geoNear distance later
-        proximity_km[cand["supplier_id"]] = km
-        audit = audits.get(cand["supplier_id"], {})
+        sid = cand["supplier_id"]
+        audit = audits.get(sid, {})
         shortlist.append(
             {
-                "supplier_id": cand["supplier_id"],
+                "supplier_id": sid,
                 "supplier_name": cand["supplier_name"],
                 "location": cand["location"],
                 "category": cand["category"],
-                "proximity_km": km,
+                "proximity_km": proximity_km.get(sid),  # None => real geo data gap
                 "evidence_coverage": audit.get("evidence_coverage"),
-                "precedent_summary": "none",  # PLACEHOLDER — derived from precedent later
+                "precedent_summary": _precedent_summary(audit.get("precedent", {})),
                 "criteria": audit.get("criteria", []),
             }
         )
+
+    # --- 2. insertOne into supplier_alternatives --------------------------------------
+    # Shape note (reported in the stage deliverable): the ONE pre-existing document is an
+    # `is_base` baseline (status "no_action_required", empty candidates). We keep its field
+    # names where they carry over (evaluation_id_ref, blocked_supplier_id, is_base,
+    # is_demo_trigger, session_id, status, candidates_evaluated/discarded, candidates,
+    # discarded_candidates, approved_supplier_id, decision_deadline, created_at) and add
+    # Stage-4 fields (risk_types, reference_point) the baseline never had. Deliberate
+    # divergences: status -> "pending_approval"; is_base -> False; blocked_supplier_id ->
+    # the disrupted supplier_id (baseline left it null); candidates carry the full real
+    # shortlist. approved_supplier_id is ALWAYS null (human-only). insertOne, never upsert.
+    now_iso = _now()
+    alt_doc = {
+        "evaluation_id_ref": evaluation_id_ref,
+        "session_id": session_id,
+        "blocked_supplier_id": disrupted_supplier_id or None,
+        "is_base": False,
+        "is_demo_trigger": False,
+        "status": "pending_approval",
+        "risk_types": risk_types,
+        "reference_point": _DC_REFERENCE,
+        "candidates_evaluated": len(shortlist),
+        "candidates_discarded": 0,
+        "candidates": shortlist,
+        "discarded_candidates": [],
+        "approved_supplier_id": None,   # NEVER set by the agent — human approval only
+        "decision_deadline": None,
+        "created_at": now_iso,
+    }
+    insert_result = await db["supplier_alternatives"].insert_one(alt_doc)
+    supplier_alternatives_id = str(insert_result.inserted_id)
+
+    await _emit(
+        config, session_id, "atlas_operation", layer=3,
+        operation_type="insertOne", collection="supplier_alternatives",
+        description="Persisting shortlist as a new run, pending human approval",
+        metrics={"documents_written": 1, "candidates_persisted": len(shortlist)},
+    )
 
     # Terminal result event — deliberately excludes reliability_score,
     # lead_time_days, capacity_pct, price_delta_pct (not part of this design).
     await _emit(
         config, session_id, "shortlist_ready", layer=3,
-        evaluation_id_ref=state["evaluation_id_ref"],
-        supplier_alternatives_id="ALT-PLACEHOLDER-000",
+        evaluation_id_ref=evaluation_id_ref,
+        supplier_alternatives_id=supplier_alternatives_id,
         approved_supplier_id=None,
         candidates=shortlist,
     )
 
     await _emit(
         config, session_id, "layer_completed", layer=3,
-        summary=f"Shortlist of {len(shortlist)} ready (placeholder), pending approval",
+        summary=(
+            f"Shortlist of {len(shortlist)} persisted (id {supplier_alternatives_id}), "
+            "pending approval"
+            + (f"; {len(geo_gap_ids)} without proximity data" if geo_gap_ids else "")
+        ),
     )
 
     return {
