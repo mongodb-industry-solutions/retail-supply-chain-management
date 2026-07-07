@@ -258,11 +258,24 @@ Explicit terminal event — replaces the undocumented `None` sentinel found in `
 - Layers 1–3 unchanged (still Stage 4.0 placeholder), now consuming plan_node's real `region_exclude`/`doc_type_hint`/`profile_text`.
 - `region_exclude` decision: LLM judgment is intentionally NOT bounded to `risk_catalog`'s `applies_to_regions` — it may broaden (e.g. adding HK alongside CN) based on sourcing intent. Confirmed as the desired behavior, not an open flag.
 
+## Verified in Stage 4.2 (Layer 1 / Deterministic Funnel made real)
+
+All three Layer 1 Atlas operations now run against the live cluster with real before/after counts. Layer 1 emits **no `agent_thought`** events (deterministic by design — confirmed still true, no LLM call added). Layers 0, 2, 3 unchanged.
+
+- **`$rankFusion` (`$vectorSearch` + `$search`) works on this cluster.** First real exercise of the capability by this codebase. Vector arm: autoEmbed voyage-4 on `auto_embed_text` (`supplier_documents_vector_index`); text arm: `$search` on `chunk_text` (`supplier_documents_fulltext_index`). Combined with `combination.weights {vector: 0.7, text: 0.3}` — semantic profile match weighted over lexical, a judgment call (no doc specifies weights).
+- **`$vectorSearch` `filter` DOES support `$in` over a `supplier_id` list** — confirmed live. This is how Layer 1's semantic search is restricted to the `$match` pool. The **text arm cannot** be pre-filtered the same way (the full-text index maps only `chunk_text`, `dynamic:false`), so the pool restriction is re-applied as a `$match` stage inside the text sub-pipeline.
+- **`doc_type_hint` is applied as a filter on the vector arm only.** The vector index supports a `doc_type` filter; the full-text index does not (only `chunk_text` is mapped). Applying it on the arm that natively supports it, rather than adding a post-filter that could shrink the pool below target — flagged, not silent.
+- **Native Voyage `$rerank` works — but ONLY after an Atlas project-level config change made during this stage.** Initially it failed at execution (not spec-parse) with `403 "$rerank is not enabled for JeffN. Enable the $rerank Project Setting to run this pipeline." and VOYAGE_API_KEY environment variable not set`. This was a real blocker, reported as a decision point. Resolved by: (a) enabling the **Native Reranking** project setting, and (b) creating a project-level **Voyage Model API key** in Atlas. After that the stage runs. Correct spec: `{$rerank: {query: {text: <profile_text>}, path: "chunk_text", model: "rerank-2.5", numDocsToRerank: <n>}}`; relevance score is read via `{$meta: "score"}` (not `relevanceScore`/`rerankScore`).
+- **Candidates are suppliers, not chunks.** Search operates over `supplier_documents` chunks; reranked chunks are deduped to the top 5 **distinct** `supplier_id`s (preserving rerank order), then hydrated from the `suppliers` docs already fetched by `$match`. `candidates_out` on `$rerank` is the distinct-supplier count (target 5), `candidates_in` is the fused chunk count.
+- **`$match` fields (confirmed against live `suppliers`, not any prior design doc):** `status` (`"active"`), `product_categories` (array → `$in` the disrupted supplier's categories), `region` (ISO code → `$nin region_exclude`), `committed_capacity_pct` (fraction already committed → `$lte 0.90`, i.e. ≥10% headroom — **judgment call**, no doc specifies a threshold; real values run ~0.30-0.70 so it is permissive). The disrupted supplier is excluded via `supplier_id $ne`.
+- **`atlas_operation` "in" counts are real, per-run.** `$match` in = total active suppliers (40); `$rankFusion` in = live count of eligible chunks for the pool (e.g. 24 or 15, **not** a static 146 — the corpus is pre-filtered). Verified end-to-end on two evaluations: SUP-SHENZHEN-441 packaging (40→17→5, exclude CN/HK) and SUP-VALLE-MX fresh_produce (40→11→5, exclude MX); both produced plausible in-category, out-of-excluded-region candidates.
+- **Empty-pool path:** if `$match` yields no suppliers, `$rankFusion`/`$rerank` are emitted with zero counts (event sequence preserved) and an empty candidate set is handed downstream — no search is attempted against an empty `$in` list.
+
 ---
 
 
 
-- Confirm `$rerank` stage availability and cluster version support (Layer 1) — expected to work given current cluster tier, but confirm live rather than assuming.
-- Confirm whether `$vectorSearch` filter supports `$in` over a `supplier_id` list (needed for the pre-filtered candidate set feeding Layer 1).
+- ~~Confirm `$rerank` stage availability and cluster version support (Layer 1).~~ **RESOLVED (Stage 4.2):** stage available; required enabling the Atlas Native Reranking project setting + a project-level Voyage Model API key (see above).
+- ~~Confirm whether `$vectorSearch` filter supports `$in` over a `supplier_id` list.~~ **RESOLVED (Stage 4.2):** yes, supported and in use for Layer 1's pool restriction.
 - Confirm whether an index exists on `episode.resolution.alt_supplier_id` in `agent_memory`, or whether one needs to be created to avoid a collection scan on the Layer 2 exact-match query.
 - `metrics.candidates_in/out` on `atlas_operation` events should reflect real counts from the live aggregation, never estimated.

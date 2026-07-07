@@ -45,6 +45,23 @@ logger = logging.getLogger(__name__)
 # grounds to values Layer 1 can actually filter on rather than free-text guesses.
 _DOC_TYPES = ["audit_report", "certificate", "contract", "email", "sustainability_report"]
 
+# --- Layer 1 (funnel) real-infra constants, all confirmed live 2026-07-07 ----------
+# Vector + full-text search indexes over supplier_documents (both READY on the cluster).
+_DOCS_VECTOR_INDEX = "supplier_documents_vector_index"      # autoEmbed voyage-4 on auto_embed_text; filters supplier_id, doc_type
+_DOCS_FULLTEXT_INDEX = "supplier_documents_fulltext_index"  # $search on chunk_text (lucene.standard)
+# Native Voyage reranker — requires the "Native Reranking" Atlas project setting ON and a
+# project-level Voyage Model API key (both enabled 2026-07-07). Model confirmed available.
+_RERANK_MODEL = "rerank-2.5"
+# rankFusion weights: semantic profile match matters more than lexical overlap for sourcing.
+_FUSION_WEIGHTS = {"vector": 0.7, "text": 0.3}
+_FUSION_LIMIT = 50          # chunks kept from each search arm / fused output (README's "top 50")
+_TARGET_CANDIDATES = 5      # distinct suppliers to hand to Layer 2 (README's "top 5")
+# Capacity-margin gate: committed_capacity_pct is fraction of capacity already committed, so a
+# lower value means more spare capacity to absorb reallocated volume. 0.90 keeps only suppliers
+# with >=10% headroom. JUDGMENT CALL (no design doc specifies a threshold) — flagged in the
+# stage report; real data ranges ~0.30-0.70 so this is permissive, not pool-emptying.
+_CAPACITY_MAX = 0.90
+
 
 class PlanResolutionError(Exception):
     """Raised by plan_node when ``evaluation_id_ref`` does not resolve to a real
@@ -307,54 +324,215 @@ async def plan_node(state: AlternativeFinderState, config: RunnableConfig) -> di
 # Layer 1 — Deterministic Funnel
 # ---------------------------------------------------------------------------
 async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
-    """Narrow the supplier universe to a small candidate set.
+    """Narrow the supplier universe to a small candidate set — Stage 4.2 (real).
 
-    Real behaviour (later): $match on suppliers, $rankFusion ($vectorSearch + $search)
-    over supplier_documents, then native Voyage $rerank. No LLM here (funnel is
-    deterministic), so no agent_thought events for this layer. Here: 2 placeholder
-    candidates, real event shapes.
+    Deterministic by design: NO LLM call, so this layer emits no ``agent_thought``
+    events. Three real MongoDB operations against the live cluster, each surfaced as an
+    ``atlas_operation`` with real before/after counts:
+
+      1. ``$match`` on ``suppliers`` — active suppliers sharing the disrupted supplier's
+         product category, outside ``region_exclude``, with capacity headroom, minus the
+         disrupted supplier itself. Produces the candidate pool.
+      2. ``$rankFusion`` (``$vectorSearch`` + ``$search``) over ``supplier_documents`` —
+         fuses semantic match on ``profile_text`` (autoEmbed voyage-4) with lexical match
+         on ``chunk_text``, restricted to the pool via the vectorSearch ``$in`` filter
+         (confirmed supported) and biased to ``doc_type_hint`` on the vector arm.
+      3. native Voyage ``$rerank`` — reranks the fused chunks against ``profile_text``,
+         then we dedupe to the top ``_TARGET_CANDIDATES`` distinct suppliers.
+
+    Candidate order follows the reranker. Each candidate carries the four fields Layers
+    2-3 consume (supplier_id, supplier_name, location, category), read from the real
+    ``suppliers`` documents already fetched in step 1.
     """
     session_id = state["session_id"]
+    region_exclude = state.get("region_exclude", [])
+    doc_type_hint = state.get("doc_type_hint", [])
+    profile_text = state.get("profile_text", "").strip()
+    disrupted_supplier_id = state.get("supplier_id", "")
 
     await _emit(config, session_id, "layer_started", layer=1, label=_LAYER_LABELS[1])
+
+    db = await get_database()
+
+    # --- Resolve the disrupted supplier's product categories to build the $match ------
+    # Deterministic lookup used only to construct the filter below (not a search op, so
+    # not surfaced as its own atlas_operation — the $match is the headline operation).
+    disrupted = await db["suppliers"].find_one(
+        {"supplier_id": disrupted_supplier_id}, {"_id": 0, "product_categories": 1}
+    )
+    categories = (disrupted or {}).get("product_categories", [])
+
+    # --- 1. $match on suppliers -------------------------------------------------------
+    match_filter: dict = {
+        "status": "active",
+        "committed_capacity_pct": {"$lte": _CAPACITY_MAX},
+    }
+    if disrupted_supplier_id:
+        match_filter["supplier_id"] = {"$ne": disrupted_supplier_id}
+    if categories:
+        match_filter["product_categories"] = {"$in": categories}
+    if region_exclude:
+        match_filter["region"] = {"$nin": region_exclude}
+
+    total_active = await db["suppliers"].count_documents({"status": "active"})
+    pool = await db["suppliers"].find(
+        match_filter,
+        {"_id": 0, "supplier_id": 1, "supplier_name": 1, "region": 1,
+         "country": 1, "product_categories": 1},
+    ).to_list(length=None)
+    pool_ids = [p["supplier_id"] for p in pool]
+    pool_by_id = {p["supplier_id"]: p for p in pool}
 
     await _emit(
         config, session_id, "atlas_operation", layer=1,
         operation_type="$match", collection="suppliers",
-        description="Filtering by category, excluded region, capacity margin",
-        metrics={"candidates_in": 500, "candidates_out": 146},
+        description=(
+            "Filtering active suppliers by category "
+            f"{categories}, excluding regions {region_exclude or '[]'}, "
+            f"requiring >={int((1 - _CAPACITY_MAX) * 100)}% capacity headroom"
+        ),
+        metrics={"candidates_in": total_active, "candidates_out": len(pool)},
     )
+
+    # No eligible suppliers — nothing to search. Emit the remaining ops as zero-count so
+    # the event sequence stays consistent, then hand an empty candidate set downstream.
+    if not pool_ids:
+        for op, desc in (
+            ("$rankFusion", "No candidate pool — semantic/full-text search skipped"),
+            ("$rerank", "No candidate pool — reranking skipped"),
+        ):
+            await _emit(
+                config, session_id, "atlas_operation", layer=1,
+                operation_type=op, collection="supplier_documents",
+                description=desc, metrics={"candidates_in": 0, "candidates_out": 0},
+            )
+        await _emit(
+            config, session_id, "layer_completed", layer=1,
+            summary="0 candidates — no suppliers matched the pre-filter",
+        )
+        return {"candidates": []}
+
+    # --- 2. $rankFusion ($vectorSearch + $search) over supplier_documents -------------
+    query_text = profile_text or f"alternative supplier for {', '.join(categories) or 'the disrupted category'}"
+
+    # Vector-arm filter: restrict to the pool (confirmed $in works) and bias to the
+    # planned doc types on the arm whose index actually supports a doc_type filter (the
+    # full-text index maps only chunk_text, so doc_type can't be filtered there).
+    vector_filter: dict = {"supplier_id": {"$in": pool_ids}}
+    if doc_type_hint:
+        vector_filter["doc_type"] = {"$in": doc_type_hint}
+
+    # Real "in" count for the fusion: how many chunks are actually eligible.
+    corpus_filter: dict = {"supplier_id": {"$in": pool_ids}}
+    if doc_type_hint:
+        corpus_filter["doc_type"] = {"$in": doc_type_hint}
+    corpus_size = await db["supplier_documents"].count_documents(corpus_filter)
+
+    def _rank_fusion_stage() -> dict:
+        return {
+            "$rankFusion": {
+                "input": {
+                    "pipelines": {
+                        "vector": [
+                            {
+                                "$vectorSearch": {
+                                    "index": _DOCS_VECTOR_INDEX,
+                                    "query": {"text": query_text},
+                                    "path": "auto_embed_text",
+                                    "filter": vector_filter,
+                                    "numCandidates": max(len(pool_ids) * 20, 150),
+                                    "limit": _FUSION_LIMIT,
+                                }
+                            }
+                        ],
+                        "text": [
+                            {
+                                "$search": {
+                                    "index": _DOCS_FULLTEXT_INDEX,
+                                    "text": {"query": query_text, "path": "chunk_text"},
+                                }
+                            },
+                            {"$match": {"supplier_id": {"$in": pool_ids}}},
+                            {"$limit": _FUSION_LIMIT},
+                        ],
+                    }
+                },
+                "combination": {"weights": _FUSION_WEIGHTS},
+            }
+        }
+
+    fused = await db["supplier_documents"].aggregate([
+        _rank_fusion_stage(),
+        {"$limit": _FUSION_LIMIT},
+        {"$project": {"_id": 0, "chunk_id": 1, "supplier_id": 1, "doc_type": 1}},
+    ]).to_list(length=None)
+
     await _emit(
         config, session_id, "atlas_operation", layer=1,
         operation_type="$rankFusion", collection="supplier_documents",
-        description="Combining semantic and full-text search across 146 document chunks",
-        metrics={"candidates_in": 146, "candidates_out": 50},
+        description=(
+            f"Combining semantic and full-text search across {corpus_size} document "
+            f"chunks from {len(pool_ids)} pre-filtered suppliers"
+        ),
+        metrics={"candidates_in": corpus_size, "candidates_out": len(fused)},
     )
+
+    # --- 3. native Voyage $rerank -----------------------------------------------------
+    reranked: list[dict] = []
+    if fused:
+        reranked = await db["supplier_documents"].aggregate([
+            _rank_fusion_stage(),
+            {"$limit": _FUSION_LIMIT},
+            {
+                "$rerank": {
+                    "query": {"text": query_text},
+                    "path": "chunk_text",
+                    "model": _RERANK_MODEL,
+                    "numDocsToRerank": len(fused),
+                }
+            },
+            {"$project": {"_id": 0, "chunk_id": 1, "supplier_id": 1, "doc_type": 1}},
+        ]).to_list(length=None)
+
+    # Dedupe reranked chunks to the top distinct suppliers, preserving rerank order.
+    ordered_supplier_ids: list[str] = []
+    seen: set[str] = set()
+    for chunk in reranked:
+        sid = chunk["supplier_id"]
+        if sid not in seen:
+            seen.add(sid)
+            ordered_supplier_ids.append(sid)
+        if len(ordered_supplier_ids) >= _TARGET_CANDIDATES:
+            break
+
+    candidates: list[dict] = []
+    for sid in ordered_supplier_ids:
+        sup = pool_by_id.get(sid, {})
+        cats = sup.get("product_categories", [])
+        # Prefer a category shared with the disrupted supplier; else the supplier's own.
+        shared = [c for c in cats if c in categories]
+        category = (shared or cats or [""])[0]
+        candidates.append({
+            "supplier_id": sid,
+            "supplier_name": sup.get("supplier_name", sid),
+            # No city field exists in suppliers; country is the finest real location text.
+            "location": sup.get("country", sup.get("region", "")),
+            "category": category,
+        })
+
     await _emit(
         config, session_id, "atlas_operation", layer=1,
         operation_type="$rerank", collection="supplier_documents",
-        description="Native reranking, no external call, narrowing to top candidates",
-        metrics={"candidates_in": 50, "candidates_out": 2},
+        description=(
+            "Native Voyage reranking (in-cluster, no external call), narrowing to top "
+            f"{_TARGET_CANDIDATES} suppliers"
+        ),
+        metrics={"candidates_in": len(fused), "candidates_out": len(candidates)},
     )
-
-    candidates = [
-        {
-            "supplier_id": "SUP-PLACEHOLDER-001",
-            "supplier_name": "Placeholder Supplier One",
-            "location": "PLACEHOLDER City, PLACEHOLDER Country",
-            "category": "PLACEHOLDER_CATEGORY",
-        },
-        {
-            "supplier_id": "SUP-PLACEHOLDER-002",
-            "supplier_name": "Placeholder Supplier Two",
-            "location": "PLACEHOLDER City, PLACEHOLDER Country",
-            "category": "PLACEHOLDER_CATEGORY",
-        },
-    ]
 
     await _emit(
         config, session_id, "layer_completed", layer=1,
-        summary=f"{len(candidates)} candidates selected from 146 document chunks (placeholder)",
+        summary=f"{len(candidates)} candidates selected from {corpus_size} document chunks",
     )
 
     return {"candidates": candidates}
