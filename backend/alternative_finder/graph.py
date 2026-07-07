@@ -31,6 +31,7 @@ import asyncio
 from langgraph.graph import END, START, StateGraph
 
 from alternative_finder.nodes import (
+    PlanResolutionError,
     _emit,
     close_node,
     funnel_node,
@@ -66,18 +67,21 @@ async def run_graph_task(
     ``status: "failed"`` so the stream always closes cleanly. A final ``None`` breaks
     the router's queue loop.
 
-    NOTE (Stage 4.0): ``supplier_id`` and ``risk_types`` on ``alternative_finder_started``
-    are placeholders here. Per the contract they are read server-side from the referenced
-    ``supplier_risk_evaluations`` document — that read lands in plan_node in Stage 4.1,
-    at which point the started event should be emitted with the real values. See the
-    ambiguity note in the stage summary.
+    Per the corrected contract, ``alternative_finder_started`` carries only what is known
+    at request time (``evaluation_id_ref``). ``supplier_id`` and ``risk_types`` are NOT
+    included here — they are read server-side from the referenced
+    ``supplier_risk_evaluations`` document inside ``plan_node`` (Layer 0) and surface for
+    the first time on Layer 0's ``layer_completed`` event.
+
+    If ``plan_node`` cannot resolve ``evaluation_id_ref`` to a real document it emits its
+    own ``error`` event and raises ``PlanResolutionError``; we catch that here and emit
+    only ``stream_end`` (status ``failed``) so the error is not duplicated. Any other
+    unhandled exception still gets a generic ``error`` + ``stream_end`` failed.
     """
     try:
         await _emit(
             config, session_id, "alternative_finder_started",
             evaluation_id_ref=evaluation_id_ref,
-            supplier_id="SUP-PLACEHOLDER-000",
-            risk_types=["PLACEHOLDER_RISK_TYPE"],
         )
         await graph.ainvoke(
             {
@@ -99,6 +103,9 @@ async def run_graph_task(
             config,
         )
         await _emit(config, session_id, "stream_end", status="completed")
+    except PlanResolutionError:
+        # plan_node already emitted the contract error event; just close the stream.
+        await _emit(config, session_id, "stream_end", status="failed")
     except Exception as e:
         await _emit(config, session_id, "error", message=str(e), recoverable=False)
         await _emit(config, session_id, "stream_end", status="failed")

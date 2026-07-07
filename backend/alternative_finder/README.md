@@ -247,6 +247,17 @@ Explicit terminal event — replaces the undocumented `None` sentinel found in `
 - Internally, a `None` sentinel is still placed on the SSE queue *after* `stream_end` purely to break the server's read loop — this is plumbing, not part of the wire contract; the client only ever sees `stream_end` as the last frame.
 - No Mongo reads/writes, LLM calls, or `$rankFusion`/`$rerank`/`$vectorSearch`/`$geoNear` exist yet — all `atlas_operation` events carry placeholder `metrics` with real `operation_type`/`collection`/`description` strings. This is Stage 4.1+ work.
 
+## Verified in Stage 4.1 (Layer 0 / Plan made real)
+
+- **`supplier_risk_evaluations` is keyed by `evaluation_id`** (not `evaluation_id_ref`); the request's `evaluation_id_ref` is matched against that field. If it doesn't resolve, plan_node emits `error` (recoverable: false) and the stream ends `failed` — no placeholder fall-through.
+- **`risk_scores[].risk_id` are catalog codes** (`RISK-LOG-001`, `RISK-GEO-001`, `RISK-CLM-001`), **not** the human `risk_type` strings this doc's earlier example assumed. The `risk_type` (`logistics_disruption` / `geopolitical_tariff` / `climate_disruption`) and `applies_to_regions` come from `risk_catalog`. This required a **third Layer 0 `atlas_operation` (`find` on `risk_catalog`)** beyond the two in the mapping table — added deliberately, not silently.
+- **`purchase_orders` "active" is a literal `status` value** (statuses in use: `active` / `in_transit` / `pending`). Time-pressure signals distilled from real orders: `days_until_due`, `value_usd`, `promotional_window`. `documents_read` metric is the real count (0 if none).
+- **`doc_type_hint` is constrained to the real `supplier_documents` `doc_type` vocabulary**: `audit_report`, `certificate`, `contract`, `email`, `sustainability_report`. Values outside this set are dropped.
+- **One structured LLM call, no tools/ReAct** — matches risk_evaluator's client construction (`ChatAnthropic` + proxy `base_url` + `api-key` header) and its JSON-in-prompt + parse approach (no `with_structured_output` pattern exists anywhere in the codebase).
+- `alternative_finder_started` no longer carries `supplier_id`/`risk_types`; they surface only on Layer 0's `layer_completed`, read from the real evaluation.
+- Layers 1–3 unchanged (still Stage 4.0 placeholder), now consuming plan_node's real `region_exclude`/`doc_type_hint`/`profile_text`.
+- `region_exclude` decision: LLM judgment is intentionally NOT bounded to `risk_catalog`'s `applies_to_regions` — it may broaden (e.g. adding HK alongside CN) based on sourcing intent. Confirmed as the desired behavior, not an open flag.
+
 ---
 
 
