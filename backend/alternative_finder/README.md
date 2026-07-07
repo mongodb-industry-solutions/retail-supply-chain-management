@@ -1,10 +1,6 @@
 # alternative_finder — SSE Event Contract & Output Schema (draft for integration)
 
-**Status: design contract, not yet implemented.** This README describes the
-target SSE event contract and output schema for Stage 4.0 onward. Until the
-graph is built and verified against real behavior, treat this as intention,
-not as documentation of running code — update this same file once each
-stage lands, replacing "target" language with verified behavior, 
+**Status:** design contract, not yet implemented in code. Confirmed against real code audit (2026-07-07): current module is a stub, no existing SSE contract to preserve — this is a fresh definition, not a migration.
 
 **Event vocabulary reused from `risk_evaluator`** (for visual/UX consistency in the frontend "agent thinking" panel): `tool_start`, `tool_end`, `atlas_operation`, `agent_thought`, `agent_response`, `error`. Extended below with layer-aware fields and new event types specific to the 4-layer design. Unlike `risk_evaluator`'s real contract, this one explicitly defines a terminal event (`stream_end`) instead of relying on an undocumented `None` sentinel.
 
@@ -45,23 +41,32 @@ Every SSE event shares this envelope; event-specific fields are added on top.
 ## Event types
 
 ### 1. `alternative_finder_started`
-Emitted once, immediately after the request is accepted.
+Emitted once, immediately after the request is accepted — before any Mongo read
+happens. Carries only what is known at request time. `supplier_id` and
+`risk_types` are **not** included here: they only exist after Layer 0 reads
+the referenced `supplier_risk_evaluations` document, so promising them
+"immediately" was a contradiction caught during Stage 4.0 implementation.
+They now surface for the first time in Layer 0's `atlas_operation` /
+`layer_completed` events (see below).
 ```json
 {
   "event": "alternative_finder_started",
   "timestamp": "...",
   "session_id": "...",
-  "evaluation_id_ref": "...",
-  "supplier_id": "SUP-SHENZHEN-441",
-  "risk_types": ["geopolitical_tariff", "logistics_disruption"]
+  "evaluation_id_ref": "..."
 }
 ```
 
 ### 2. `layer_started` / `layer_completed`
-Marks entry/exit of each of the 4 layers — drives the frontend's step indicator / agent mascot state.
+Marks entry/exit of each of the 4 layers — drives the frontend's step indicator / agent mascot state. **Layer 0's `layer_completed` is where `supplier_id` and `risk_types` surface for the first time**, once actually read from `supplier_risk_evaluations` — not in `alternative_finder_started` (see above).
 ```json
 { "event": "layer_started", "layer": 1, "timestamp": "...", "session_id": "...",
   "label": "Deterministic funnel: narrowing candidates" }
+
+{ "event": "layer_completed", "layer": 0, "timestamp": "...", "session_id": "...",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "risk_types": ["geopolitical_tariff", "logistics_disruption"],
+  "summary": "Plan synthesised: 1 region excluded, profile ready" }
 
 { "event": "layer_completed", "layer": 1, "timestamp": "...", "session_id": "...",
   "summary": "5 candidates selected from 146 document chunks" }
@@ -234,9 +239,17 @@ Explicit terminal event — replaces the undocumented `None` sentinel found in `
 ```
 `status` is `"completed"` or `"failed"`.
 
+## Verified in Stage 4.0 (plumbing) — real behavior, not just design intent
+
+- **`X-Session-ID` validation is 422, not 400, when the header is entirely absent.** Only a *present-but-empty* header returns 400. This matches `risk_evaluator`'s shared `core/session.py::get_session_id` dependency exactly — confirmed by running both paths. The earlier "400 if missing" wording in this doc and in `decisiones-diseno-sesion` (§7) didn't distinguish "absent" from "empty"; this is the corrected, verified statement.
+- Transport is `EventSourceResponse` (sse_starlette), matching `risk_evaluator`'s actual router — not `StreamingResponse`.
+- The full 30-event sequence for a placeholder run (Stage 4.0) was tested green end-to-end: `alternative_finder_started` → layer 0 (2× `atlas_operation`, 1× `agent_thought`, `layer_completed` with `supplier_id`/`risk_types`) → layer 1 (3× `atlas_operation`, no thoughts, `layer_completed`) → layer 2 (per-candidate `agent_thought`+`candidate_generated`, 3× `atlas_operation`, per-candidate `agent_thought`+`candidate_audited`, `layer_completed`) → layer 3 (2× `atlas_operation`, `shortlist_ready`, `layer_completed`) → `stream_end`.
+- Internally, a `None` sentinel is still placed on the SSE queue *after* `stream_end` purely to break the server's read loop — this is plumbing, not part of the wire contract; the client only ever sees `stream_end` as the last frame.
+- No Mongo reads/writes, LLM calls, or `$rankFusion`/`$rerank`/`$vectorSearch`/`$geoNear` exist yet — all `atlas_operation` events carry placeholder `metrics` with real `operation_type`/`collection`/`description` strings. This is Stage 4.1+ work.
+
 ---
 
-## Open items for Claude Code to verify while implementing
+
 
 - Confirm `$rerank` stage availability and cluster version support (Layer 1) — expected to work given current cluster tier, but confirm live rather than assuming.
 - Confirm whether `$vectorSearch` filter supports `$in` over a `supplier_id` list (needed for the pre-filtered candidate set feeding Layer 1).
