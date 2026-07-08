@@ -51,24 +51,26 @@ Frontend
 
 Not an agent. Its only job is to plant the right data in MongoDB so the agents have something real to reason about when the manager clicks "Activate Demo".
 
-It selects up to 3 suppliers at random (those with active orders), picks matching base signals from `external_conditions` (one per risk type: geopolitical, logistics, climate), and calculates a `condition_score` calibrated to guarantee at least one supplier reaches CRITICAL when Agent 1 runs. The calibration formula is:
+It selects up to 3 suppliers at random (those with active orders), picks matching base signals from `external_conditions` (one per risk type: geopolitical, logistics, climate), and calculates a `condition_score` calibrated to guarantee at least one supplier reaches CRITICAL when `risk_evaluator` runs. The calibration formula is:
 
 ```
-condition_score = (alert_threshold_rpn / (severity × occurrence_base × 1.0 × detection)) × 1.15
+condition_score = (alert_threshold_rpn / (severity × occurrence_base × worst_case_weight × detection)) × 1.15
 ```
 
-The 1.15 safety margin means the result is robust — Agent 1's memory retrieval can amplify or dampen the score without accidentally dropping below the alert threshold. The signals inserted are structurally identical to what a real feed (GDELT, MarineTraffic, NOAA) would produce — the agents never know the difference.
+`worst_case_weight` is derived deterministically (no LLM) by `_worst_case_historical_weight`: a read-only `find` on `agent_memory` filtered by `risk_type`, taking the minimum historical weight across matching episodes (1.20 if a past impact occurred, 0.90 if not), clamped with `min(1.0, …)`. The clamp means the weight can only *widen* the safety margin (an attenuating episode makes `condition_score` larger), never narrow it — so amplifying episodes fall back to the neutral `1.0`, which is also the value used when no relevant episode exists.
+
+The 1.15 safety margin means the result is robust — `risk_evaluator`'s memory retrieval can amplify or dampen the score without accidentally dropping below the alert threshold. The signals inserted are structurally identical to what a real feed (GDELT, MarineTraffic, NOAA) would produce — the agents never know the difference.
 
 **Endpoint:** `POST /api/simulation/start` → JSON response
 
 ---
 
-### `risk_evaluator` — Agent 1, RPN evaluation
+### `risk_evaluator` — RPN evaluation
 
 A LangGraph workflow with 5 linear nodes. Activated by the frontend after ingestion completes. Streams its progress step by step via SSE so the UI shows the agent reasoning in real time.
 
 ```
-detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → generate_summary
+detect_conditions → match_suppliers → calculate_rpn → reason_and_retrieve → generate_summary
 ```
 
 **detect_conditions** — reads the session's active signals from `external_conditions`.
@@ -77,9 +79,11 @@ detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → 
 
 **calculate_rpn** — applies the RPN formula for each (supplier, signal) pair. Applies distance decay for physical signals. Determines `rpn_status` against the risk catalog thresholds.
 
-**retrieve_memory** — vector search on `agent_memory` for semantically similar past episodes. If a supplier failed under comparable conditions before, `historical_weight = 1.20` amplifies the RPN. If they navigated it successfully, `historical_weight = 0.90` dampens it. No prior memory defaults to `1.0` — consistent with the ingestion engine's calibration assumption. Memory failure is caught silently and never breaks the graph.
+**reason_and_retrieve** — an inner ReAct loop (capped at 4 iterations) where Claude decides which Atlas tools to call to surface historical precedent before deriving a `historical_weight` per supplier. Three read-only tools are available: `search_supplier_memory` (Vector Search on `agent_memory`, batched over a `$in` of supplier ids), `get_order_detail` (Aggregation on `purchase_orders`, batched), and `search_combined_episodes` (cross-supplier Vector Search filtered by risk type). If a supplier failed under comparable conditions before, `historical_weight > 1.0` amplifies the RPN; if it navigated similar events successfully, `< 1.0` dampens it; no relevant precedent (or a supplier the LLM omits from its Final Answer) defaults to `1.0`. The derived weight is **applied** here — each score's `rpn_dynamic` is rescaled and its `rpn_status` recomputed against the catalog threshold — and the surfaced episodes are carried forward so `generate_summary` can persist `memory_episodes_used`. Every tool call is emitted as an `atlas_operation` SSE event in real time, and each `Thought:` as an `agent_thought` event. Tool or parse failures are caught silently and never break the graph.
 
-**generate_summary** — calls Claude to write a concise natural-language summary per supplier for the procurement manager. Inserts the full evaluation document into `supplier_risk_evaluations`. Emits the final `agent_response` SSE event.
+> `retrieve_memory` (a single-pass, one-query-per-supplier version) still exists in `nodes.py` but is **not** wired into the graph — it was superseded by `reason_and_retrieve` and is kept only for reference.
+
+**generate_summary** — calls Claude to write a concise natural-language summary per supplier for the procurement manager. Inserts the full evaluation document into `supplier_risk_evaluations` (including the applied `historical_weight` on each score and the `memory_episodes_used` list). Emits the final `agent_response` SSE event.
 
 **Endpoint:** `POST /api/simulation/evaluate` → SSE stream
 
@@ -87,7 +91,7 @@ detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → 
 
 ---
 
-### `alternative_finder` — Agent 2, alternative supplier search
+### `alternative_finder` — alternative supplier search
 
 Human-in-the-loop. Only runs when the procurement manager explicitly clicks "Find alternatives" on a flagged supplier. Takes the `supplier_risk_evaluations` document as its brief and runs a structured search pipeline:
 
@@ -109,7 +113,7 @@ The agent writes the shortlist to `supplier_alternatives` and pauses. The `appro
 
 **Endpoint:** `POST /api/agent/find-alternatives` → SSE stream
 
-> **Status**: Agent 2 is not yet wired into the server. The router is commented out in
+> **Status**: `alternative_finder` is not yet wired into the server. The router is commented out in
 > `main.py` and will return 404. Implementation is in progress.
 
 ---
@@ -135,14 +139,14 @@ backend/
 │   ├── signal_generator.py  Builds 3 demo trigger documents (one per risk type)
 │   └── target_selector.py   Shuffles active-order suppliers, matches risk_catalog by region, picks up to 3 pairs
 │
-├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation (Agent 1)
+├── risk_evaluator/          Slice 2 — LangGraph RPN risk evaluation
 │   ├── router.py            POST /api/simulation/evaluate → SSE stream
 │   ├── graph.py             LangGraph StateGraph definition
-│   ├── nodes.py             detect_conditions → match_suppliers → calculate_rpn → retrieve_memory → generate_summary
+│   ├── nodes.py             detect_conditions → match_suppliers → calculate_rpn → reason_and_retrieve → generate_summary
 │   ├── schemas.py           RiskEvaluatorState, RiskScore, EvaluationResult
 │   └── stream_listener.py   Production reference only — Change Stream activation pattern (not used in demo)
 │
-├── alternative_finder/      Slice 3 — LangGraph alternative supplier search (Agent 2)
+├── alternative_finder/      Slice 3 — LangGraph alternative supplier search
 │   ├── router.py            POST /api/agent/find-alternatives → SSE stream
 │   ├── graph.py             LangGraph StateGraph definition
 │   ├── nodes.py             hybrid_search → voyage_rerank → validate_certifications → validate_lead_time → validate_capacity
@@ -180,20 +184,20 @@ Eight MongoDB collections divided into two groups:
 | `suppliers` | Master supplier register. 40 suppliers across 18 countries. Polymorphic document model — CN/TW suppliers carry `tariff_exposure_rating`, fresh produce suppliers carry `cold_chain_certified`. GeoJSON `location` field powers geo queries. |
 | `risk_catalog` | FMEA scores per risk type. Encodes procurement expertise: severity, occurrence, detection, and alert/critical thresholds. Maintained by the procurement team, never by agents. |
 | `purchase_orders` | 620 active orders across all suppliers. Provides the financial and timing context that makes a risk score meaningful — which orders are at stake, how much value, how many days until due. |
-| `supplier_documents` | 146 document chunks (contracts, certificates, audit reports, sustainability reports, emails). Chunked at 400–600 tokens with overlap. Hybrid Search index (vector + BM25) powers Agent 2's certification validation. |
+| `supplier_documents` | 146 document chunks (contracts, certificates, audit reports, sustainability reports, emails). Chunked at 400–600 tokens with overlap. Hybrid Search index (vector + BM25) powers `alternative_finder`'s certification validation. |
+| `agent_memory` | Historical risk episodes, pre-loaded as seed data. **Read-only** for the agents: `risk_evaluator` only reads it (Vector Search) and never writes to it; `ingestion_engine` also reads it (a deterministic `find`) to size the calibration weight. Each episode records what happened, whether the disruption materialised, what it cost, and how it was resolved. Voyage AI embeddings enable semantic retrieval — "tariff escalation affecting CN packaging supplier" retrieves the relevant episode regardless of exact wording. |
 
 **Session-scoped data** — written by agents during a demo run, cleaned up on reset:
 
 | Collection | Written by | Purpose |
 |---|---|---|
 | `external_conditions` | ingestion_engine | Active risk signals. Base signals (pre-loaded, always green) plus demo trigger signals (inserted at runtime, calibrated to push suppliers into CRITICAL). TTL index auto-expires demo triggers. |
-| `supplier_risk_evaluations` | Agent 1 | One document per evaluated supplier per session. Contains the dynamic RPN, which signals caused it, the operational context, and the natural-language summary Claude generated. This is what the manager reads on the dashboard. |
-| `agent_memory` | Agent 1 + 2 | Historical risk episodes. Each episode records what happened, whether the disruption materialised, what it cost, and how it was resolved. Voyage AI embeddings enable semantic retrieval — "tariff escalation affecting CN packaging supplier" retrieves the relevant episode regardless of exact wording. |
-| `supplier_alternatives` | Agent 2 | The shortlist Agent 2 produces. Paused until the manager approves — `approved_supplier_id: null` means the ERP integration has not fired. |
+| `supplier_risk_evaluations` | `risk_evaluator` | One document per evaluated supplier per session. Contains the dynamic RPN, which signals caused it, the operational context, and the natural-language summary Claude generated. This is what the manager reads on the dashboard. |
+| `supplier_alternatives` | `alternative_finder` | The shortlist `alternative_finder` produces. Paused until the manager approves — `approved_supplier_id: null` means the ERP integration has not fired. |
 
 > **Setup required**: the `agent_memory_autoembed_index` vector search index must be
-> created in Atlas before memory retrieval works. Without it, the `retrieve_memory` node
-> falls back to `historical_weight = 1.0` silently. Index setup is covered in
+> created in Atlas before memory retrieval works. Without it, the `reason_and_retrieve` node's
+> Atlas tool calls fail and each supplier falls back to `historical_weight = 1.0` silently. Index setup is covered in
 > `dataset/seeds_README.md`.
 
 ---
@@ -221,7 +225,7 @@ data: {"type": "agent_response", "data": { ... }}
 data: {"type": "error", "message": "..."}
 ```
 
-Agent 2 adds a `phase` field (`"left"` or `"right"`) to support the two-column UI layout showing retrieval and validation side by side.
+`alternative_finder` adds a `phase` field (`"left"` or `"right"`) to support the two-column UI layout showing retrieval and validation side by side.
 
 **Testing the SSE stream with curl:**
 ```bash
@@ -268,7 +272,7 @@ API available at `http://localhost:8000`. Health check: `GET /`.
 | `LLM_API_KEY`       | API key for the LLM gateway                                        |
 | `LLM_BASE_URL`      | Base URL for the LLM endpoint. Use `https://api.anthropic.com` for direct Anthropic access, or your organization's gateway URL. |
 | `ANTHROPIC_MODEL`   | Claude model name (e.g. claude-opus-4-7)                           |
-| `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in Agent 2 |
+| `VOYAGE_API_KEY` | Voyage AI API key — used by `voyage_rerank` node in `alternative_finder` |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
 
 ---

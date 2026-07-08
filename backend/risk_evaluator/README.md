@@ -392,7 +392,7 @@ The risk evaluator only reads from these collections — it never inserts or upd
 
 One collection receives writes during an evaluation run:
 
-- `supplier_risk_evaluations` — one document inserted per supplier that has at least one `WATCH`, `ALERT`, or `CRITICAL` score. Documents include `evaluation_id`, `session_id`, `evaluated_at`, all risk scores, and the LLM-generated summary.
+- `supplier_risk_evaluations` — one document inserted per supplier that has at least one `WATCH`, `ALERT`, or `CRITICAL` score. Documents include `evaluation_id`, `session_id`, `evaluated_at`, all risk scores, and the LLM-generated summary. The `historical_weight` derived by `reason_and_retrieve` is applied to each score's `rpn_dynamic`/`rpn_status` and persisted on `risk_scores[].triggered_by.historical_weight`; the `memory_id`s of the episodes actually surfaced for that supplier are persisted in `memory_episodes_used`. Both were previously computed and discarded — they are now genuinely applied and stored.
 
 ### Session isolation
 

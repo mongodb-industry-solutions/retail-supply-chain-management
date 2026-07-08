@@ -22,8 +22,8 @@ The `core/` package provides shared infrastructure (DB connection, settings, ses
 | Package | Responsibility |
 |---|---|
 | `ingestion_engine` | Generates 3 demo trigger signals per session; inserts them into `external_conditions`; returns JSON response |
-| `risk_evaluator` | Agent 1 — activated by frontend POST; runs LangGraph RPN evaluation; streams risk summary via SSE |
-| `alternative_finder` | Agent 2 — activated by frontend POST (human-in-the-loop); runs LangGraph supplier search; streams results via SSE |
+| `risk_evaluator` | Activated by frontend POST; runs LangGraph RPN evaluation; streams risk summary via SSE |
+| `alternative_finder` | Activated by frontend POST (human-in-the-loop); runs LangGraph supplier search; streams results via SSE |
 | `core` | DB singleton, settings, session header dependency, shared exceptions |
 | `voyageai` | Thin wrapper around MongoDB-native Voyage AI reranker |
 

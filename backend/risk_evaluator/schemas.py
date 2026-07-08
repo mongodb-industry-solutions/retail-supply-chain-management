@@ -38,6 +38,7 @@ class RiskEvaluatorState(TypedDict):
     exposed_suppliers: dict       # {supplier_id: supplier_doc + operational_context}
     risk_scores: dict             # {supplier_id: list[RiskScore]}
     memory_episodes: dict         # {supplier_id: list[episode_doc]}
+    historical_weight: dict       # {supplier_id: float} — derived by reason_and_retrieve
     evaluations: list[dict]       # documents written to supplier_risk_evaluations
     agent_thoughts: list[str]
     atlas_operations: list[dict]
