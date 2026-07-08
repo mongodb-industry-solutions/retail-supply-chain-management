@@ -13,7 +13,6 @@ import SectionHeader from "../shared/SectionHeader";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import IconButton from "@leafygreen-ui/icon-button";
 
-
 export default function ExternalConditionsCompact() {
   const loadedConditions = useSelector(
     (s) => s.Global.loadedExternalConditions,
@@ -29,6 +28,24 @@ export default function ExternalConditionsCompact() {
         onHide={() => setModalCondition(null)}
         title={modalCondition?.raw_headline}
         docModel={modalCondition}
+        whyMDB={
+          <>
+            <strong>Automated Data Hygiene via TTL Indexes — </strong>
+            Atlas uses Time-To-Live (TTL) indexes on the{" "}
+            <code
+              style={{
+                fontFamily: "monospace",
+                padding: "1px 5px",
+                borderRadius: 3,
+              }}
+            >
+              valid_until
+            </code>{" "}
+            field to automatically delete expired signals, ensuring the system
+            returns to baseline without manual intervention when a disruption
+            passes.
+          </>
+        }
       />
 
       <SectionHeader
@@ -50,7 +67,8 @@ export default function ExternalConditionsCompact() {
 
         <div className="d-flex flex-column gap-2">
           {loadedConditions.map((condition) => {
-            const cfg = conditionConfig[RISK_TYPE_MAP[condition.risk_type_triggered]];
+            const cfg =
+              conditionConfig[RISK_TYPE_MAP[condition.risk_type_triggered]];
             if (!cfg) return null;
             return (
               <div

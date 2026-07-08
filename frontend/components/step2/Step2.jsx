@@ -35,46 +35,6 @@ const AGENT_PHASES = [
   },
 ];
 
-const AGENT_LOG_PHASES = [
-  {
-    name: "Affected suppliers",
-    steps: [
-      {
-        name: "Identifying suppliers inside the affected external condition area",
-        logs: [
-          "Loading external condition zones from MongoDB...",
-          "Running $geoWithin query on supplier collection...",
-          "Found 7 suppliers within 320 km radius of Red Sea epicentre",
-        ],
-      },
-      {
-        name: "Context Assembly (knowledge, memory, state)",
-        logs: [
-          "Fetching supplier contracts from Atlas...",
-          "Loading agent memory: 3 historical episodes retrieved",
-          "Assembling context window (4,200 tokens)",
-        ],
-      },
-      {
-        name: "Calculating Dynamic Risk Priority Number (RPN) for the suppliers",
-        logs: [
-          "Applying severity weight: 1.8 (logistical disruption)",
-          "RPN updated for 5 critical suppliers",
-          "Highest RPN: Shenzhen Electronics Co. → 847",
-        ],
-      },
-      {
-        name: "Writing the evaluations to MongoDB",
-        logs: [
-          "Writing 7 supplier evaluations to MongoDB...",
-          "Collection: supplier_risk_evaluations",
-          "Acknowledged: 7 documents written",
-        ],
-      },
-    ],
-  },
-];
-
 const GEO_QUERY = `
   # geospatial path: conditions with a physical epicentre (e.g. earthquakes, port closures)
   if external_condition.get("has_physical_location"):
@@ -150,6 +110,10 @@ export default function Step2() {
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
 
+  useEffect(() => {
+    console.log("logsOpen", affectedSuppliersAgentReasoning);
+  }, [logsOpen]);
+
   const handleFindAlternatives = (supplier) => {
     dispatch(setSelectedSupplier(supplier));
     dispatch(
@@ -182,7 +146,7 @@ export default function Step2() {
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="ReAct Agent powered by LangGraph + MongoDB Atlas"
-        phases={AGENT_LOG_PHASES}
+        phases={affectedSuppliersAgentReasoning}
       />
 
       {agentDone && (
