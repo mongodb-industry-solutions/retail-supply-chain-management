@@ -22,11 +22,6 @@ function buildDisplayItems(events) {
         (i) => i.type === "step" && i.message === event.message && i.status === "running"
       );
       if (idx !== -1) items[idx] = { ...items[idx], status: "completed" };
-    } else if (event.type === "atlas_operation") {
-      items.push({
-        type: "atlas",
-        text: `${event.feature} on ${event.collection}: ${event.detail}`,
-      });
     }
   }
 
@@ -154,17 +149,6 @@ export default function ReActAgent({
                                   }}
                                 >
                                   {item.message}
-                                </Body>
-                              </div>
-                            );
-                          }
-
-                          if (item.type === "atlas") {
-                            return (
-                              <div key={i} className="d-flex align-items-center gap-2" style={{ paddingLeft: 2 }}>
-                                <MongoDBLogoMark height={16} style={{ flexShrink: 0 }} />
-                                <Body style={{ fontSize: 13, color: palette.gray.dark1, margin: 0 }}>
-                                  {item.text}
                                 </Body>
                               </div>
                             );

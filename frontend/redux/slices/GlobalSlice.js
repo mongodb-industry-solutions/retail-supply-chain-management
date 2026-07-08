@@ -49,12 +49,28 @@ const GlobalSlice = createSlice({
     },
     appendAffectedSuppliersAgentReasoning(state, action) {
       console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
-      const time = new Date().toLocaleTimeString([], {
+      const payloadKey = JSON.stringify(action.payload);
+      // TODO: remove once backend stops emitting duplicate SSE events for the same step
+      const isDuplicate = state.affectedSuppliersAgentReasoning.some((entry) => {
+        const { time: _time, ts: _ts, ...rest } = entry;
+        return JSON.stringify(rest) === payloadKey;
+      });
+      if (isDuplicate) return;
+      if( state.affectedSuppliersAgentReasoning[state.affectedSuppliersAgentReasoning.length - 1]?.type === "agent_response" 
+        && action.payload.type === "agent_response")
+        return
+      
+      const now = new Date();
+      const time = now.toLocaleTimeString([], {
         hour: "numeric",
         minute: "2-digit",
         second: "2-digit",
       });
-      state.affectedSuppliersAgentReasoning.push({ ...action.payload, time });
+      state.affectedSuppliersAgentReasoning.push({
+        ...action.payload,
+        time,
+        ts: now.getTime(),
+      });
       if (action.payload.type === "agent_thought") {
         state.affectedSuppliersAgentCurrentThought = action.payload.message;
       }

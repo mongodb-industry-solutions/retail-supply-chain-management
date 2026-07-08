@@ -12,11 +12,12 @@ export default function DocModelModal({
   onHide,
   title,
   docModel,
+  whyMDB,
 }) {
   if (!docModel) return null;
 
   return (
-    <Modal show={show} onHide={onHide} centered size="lg">
+    <Modal show={show} onHide={onHide} centered size="xl" >
       <Modal.Header
         closeButton
         style={{ borderBottom: `1px solid ${palette.gray.light2}` }}
@@ -26,23 +27,7 @@ export default function DocModelModal({
         </div>
       </Modal.Header>
       <Modal.Body>
-        
-          <WhyMongoDB>
-            <strong>Automated Data Hygiene via TTL Indexes — </strong>
-            Atlas uses Time-To-Live (TTL) indexes on the{" "}
-            <code
-              style={{
-                fontFamily: "monospace",
-                padding: "1px 5px",
-                borderRadius: 3,
-              }}
-            >
-              valid_until
-            </code>{" "}
-            field to automatically delete expired signals, ensuring the system
-            returns to baseline without manual intervention when a disruption
-            passes.
-          </WhyMongoDB>
+          {whyMDB && <WhyMongoDB>{whyMDB}</WhyMongoDB>}
           <br></br>
         <Code language="javascript" showLineNumbers={true} darkMode={true} copyButtonAppearance="persist">
           {JSON.stringify(docModel, null, 2)}

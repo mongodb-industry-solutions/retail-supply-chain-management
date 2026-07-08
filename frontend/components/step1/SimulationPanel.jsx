@@ -35,7 +35,7 @@ export default function SimulationPanel() {
     setConditions([]);
     setProgress(0);
 
-    const totalDuration = externalConditions.length * 800;
+    const totalDuration = externalConditions.length * 600;
     const steps = 20;
     const stepInterval = totalDuration / steps;
 

@@ -12,10 +12,14 @@ import { setSelectedSupplier } from "../../redux/slices/GlobalSlice";
 import { riskConfig, categoryConfig } from "../../data/suppliers";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import SupplierTitle from "../shared/SupplierTitle";
+import IconButton from "@leafygreen-ui/icon-button";
+import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
+import DocModelModal from "../modals/DocModelModal";
 
 function ConditionBadgeWithRPN({ risk, triggeredBy }) {
   const cfg =
     conditionConfig[RISK_TYPE_MAP[triggeredBy.risk_type_triggered]] || null;
+
   return (
     <div className="d-flex align-items-center gap-2">
       {cfg !== null && (
@@ -44,6 +48,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
   const selectedId = useSelector((s) => s.Global.selectedSupplier?.supplier_id);
   const isSelected = selectedId === supplier.supplier_id;
   const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const [modalCondition, setModalCondition] = useState(null);
 
   return (
     <div
@@ -55,6 +60,13 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
       }
       style={{ cursor: "pointer" }}
     >
+      <DocModelModal
+        show={!!modalCondition}
+        onHide={() => setModalCondition(null)}
+        title={`Affected supplier: ${modalCondition?.supplier_name}`}
+        docModel={modalCondition}
+        whyMDB={null}
+      />
       <Card
         style={{
           borderLeft: `4px solid ${isSelected ? palette.green.dark2 : palette.gray.light2}`,
@@ -88,30 +100,36 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
                 {category.replace(/_/g, " ").toUpperCase()}
               </Badge>
             ))}
+            <IconButton
+              onClick={() => setModalCondition(supplier)}
+              aria-label="See document"
+            >
+              <CurlyBraces />
+            </IconButton>
           </div>
         </div>
-            <div className="d-flex flex-row align-items-center gap-3 mb-2">
-              <Body
-                style={{
-                  fontSize: 14,
-                  color: palette.gray.dark1,
-                }}
-              >
-                📍 {`${supplier?.country} — ${supplier?.region}`}
-              </Body>
-              <Body
-                style={{
-                  fontSize: 14,
-                  color: palette.gray.dark1,
-                  lineHeight: 1.6,
-                }}
-              >
-                ⚠️ {supplier.supplier_risk_level}.{" "}
-                {(supplier.requires_action ?? false)
-                  ? "Action required"
-                  : "No immediate action required"}
-              </Body>
-            </div>
+        <div className="d-flex flex-row align-items-center gap-3 mb-2">
+          <Body
+            style={{
+              fontSize: 14,
+              color: palette.gray.dark1,
+            }}
+          >
+            📍 {`${supplier?.country} — ${supplier?.region}`}
+          </Body>
+          <Body
+            style={{
+              fontSize: 14,
+              color: palette.gray.dark1,
+              lineHeight: 1.6,
+            }}
+          >
+            ⚠️ {supplier.supplier_risk_level}.{" "}
+            {(supplier.requires_action ?? false)
+              ? "Action required"
+              : "No immediate action required"}
+          </Body>
+        </div>
         {/* Impact reason (short, bolded) */}
         {supplier.natural_language_summary && (
           <div style={{ marginBottom: spacing[100] }}>
