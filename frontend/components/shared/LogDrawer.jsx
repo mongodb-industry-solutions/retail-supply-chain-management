@@ -6,14 +6,16 @@ import { Overline } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import WhyMongoDB from "./WhyMongoDB";
+import Icon from "@leafygreen-ui/icon";
 
 export default function LogDrawer({
   show,
   onHide,
   title = "",
   subtitle = "",
-  phases = [],
+  phases: logs = [],
 }) {
+  console.log("LogDrawer", logs);
   return (
     <>
       <style>{`
@@ -21,6 +23,9 @@ export default function LogDrawer({
         [data-testid="log-drawer"] > div > div:first-child {
           height: fit-content !important;
           margin: 12px 0px 12px 0px  !important;
+        }
+        .no-caret .accordion-button::after {
+          display: none !important;
         }
       `}</style>
       <Drawer
@@ -60,48 +65,92 @@ export default function LogDrawer({
             pipeline — all without rearchitecting the data layer.
           </WhyMongoDB>
 
-          <div className="d-flex flex-column gap-4 mt-3">
-            {phases.map((phase, phaseIdx) => (
-              <div key={phaseIdx}>
-                <Overline
-                  style={{
-                    display: "block",
-                    marginBottom: spacing[200],
-                    color: palette.gray.dark1,
-                    paddingBottom: spacing[100],
-                    borderBottom: `1px solid ${palette.gray.light2}`,
-                  }}
-                >
-                  {phase.name}
-                </Overline>
+          <div
+            className="d-flex flex-column mt-3"
+            style={{
+              maxHeight: "calc(100vh - 220px)",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          >
+            {logs.map((log, logIdx) => {
+              return log.type == 'tool_start'
+              ? (
+                <div key={logIdx}>
+                  <Accordion style={{ borderBottom: "1px solid grey" }}>
+                    <Accordion.Header className="no-caret">
+                      <div>
+                        <Icon glyph="Refresh"></Icon>  {log.message}
+                        <br/>
+                        <small className="text-secondary">{log.time}</small>
+                      </div>
 
-                <Accordion>
-                  {phase.steps.map((step, stepIdx) => (
-                    <Accordion.Item key={stepIdx} eventKey={String(stepIdx)}>
-                      <Accordion.Header>{step.name}</Accordion.Header>
-                      <Accordion.Body>
-                        <div className="d-flex flex-column gap-1">
-                          {step.logs.map((line, lineIdx) => (
-                            <p
-                              key={lineIdx}
-                              style={{
-                                fontSize: 12,
-                                fontFamily: "monospace",
-                                color: palette.gray.dark3,
-                                margin: 0,
-                                lineHeight: 1.7,
-                              }}
-                            >
-                              {line}
-                            </p>
-                          ))}
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  ))}
-                </Accordion>
-              </div>
-            ))}
+                      </Accordion.Header>
+                  </Accordion>
+                </div>
+              )
+              : log.type == 'tool_end'
+              ? (
+                <div key={logIdx}>
+                  <Accordion style={{ borderBottom: "1px solid grey" }}>
+                    <Accordion.Header className="no-caret">
+                      <div>
+                        <Icon color="green" glyph="CheckmarkWithCircle"></Icon>  {log.message}
+                                                <br/>
+                        <small className="text-secondary">{log.time}</small>
+                      </div>
+                    </Accordion.Header>
+                  </Accordion>
+                </div>
+              )
+              : log.type == 'agent_thought'
+              ? (
+                <div key={logIdx}>
+                  <Accordion style={{ borderBottom: "1px solid grey" }}>
+                    <Accordion.Header>
+                      <div>
+                        <Icon glyph="SMS" color="blue"></Icon>  Agent thought
+                        <br/>
+                        <small className="text-secondary">{log.time}</small>
+                      </div>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      {log.message}
+                    </Accordion.Body>
+                  </Accordion>
+                </div>
+              )
+              : log.type == 'atlas_operation'
+              ? (
+                <div key={logIdx}>
+                  <Accordion style={{ borderBottom: "1px solid grey" }}>
+                    <Accordion.Header>
+                      <div>
+                        <Icon glyph="Wrench"></Icon>  Calling tool: {log.feature} on {log.collection}
+                        <br/>
+                        <small className="text-secondary">{log.time}</small>
+                      </div>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      {log.detail}
+                    </Accordion.Body>
+                  </Accordion>
+                </div>
+              )
+              : log.type == 'agent_response'  
+              ? (
+                <div key={logIdx}>
+                  <Accordion style={{ borderBottom: "1px solid grey" }}>
+                    <Accordion.Header>PROCESS COMPLETE</Accordion.Header>
+                    <Accordion.Body>
+                      
+                    </Accordion.Body>
+                  </Accordion>
+                </div>
+              )
+              : 'error'
+            
+            })}
           </div>
         </div>
       </Drawer>

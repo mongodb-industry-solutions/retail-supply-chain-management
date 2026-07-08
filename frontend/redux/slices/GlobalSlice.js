@@ -49,7 +49,12 @@ const GlobalSlice = createSlice({
     },
     appendAffectedSuppliersAgentReasoning(state, action) {
       console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
-      state.affectedSuppliersAgentReasoning.push(action.payload);
+      const time = new Date().toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      state.affectedSuppliersAgentReasoning.push({ ...action.payload, time });
       if (action.payload.type === "agent_thought") {
         state.affectedSuppliersAgentCurrentThought = action.payload.message;
       }
