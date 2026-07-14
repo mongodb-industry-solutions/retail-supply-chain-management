@@ -7,7 +7,6 @@ import { spacing } from "@leafygreen-ui/tokens";
 import {
   advanceToStep,
   setSelectedSupplier,
-  setSelectedAlertType,
   setAffectedSuppliers,
   appendAffectedSuppliersAgentReasoning,
 } from "../../redux/slices/GlobalSlice";
@@ -22,18 +21,6 @@ import BehindTheScenes from "./BehindTheScenes";
 import Icon from "@leafygreen-ui/icon";
 import { Code } from "@leafygreen-ui/code";
 import { Card } from "@leafygreen-ui/card";
-
-const AGENT_PHASES = [
-  {
-    name: "Affected suppliers",
-    steps: [
-      "Identifying suppliers inside the affected external condition area",
-      "Context Assembly (knowledge, memory, state)",
-      "Calculating Dynamic Risk Priority Number (RPN) for the suppliers",
-      "Writing the evaluations to MongoDB",
-    ],
-  },
-];
 
 const GEO_QUERY = `
   # geospatial path: conditions with a physical epicentre (e.g. earthquakes, port closures)
@@ -59,7 +46,10 @@ export default function Step2() {
   const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers);
   const affectedSuppliersAgentReasoning = useSelector((s) => s.Global.affectedSuppliersAgentReasoning);
   const agentCurrentThought = useSelector((s) => s.Global.affectedSuppliersAgentCurrentThought);
+  const selectedSupplier = useSelector((s) => s.Global.selectedSupplier);
   const [agentDone, setAgentDone] = useState(false);
+  const [logsOpen, setLogsOpen] = useState(false);
+  const [showGeoQuery, setShowGeoQuery] = useState(false);
 
   useEffect(() => {
     if (affectedSuppliers.length > 0) return;
@@ -94,7 +84,6 @@ export default function Step2() {
               if (event.type === "agent_response") {
                 dispatch(setAffectedSuppliers(event.data.suppliers || []));
               }
-              console.log("[atlas_operation]", event);
               dispatch(appendAffectedSuppliersAgentReasoning(event));
             }
           }
@@ -107,18 +96,13 @@ export default function Step2() {
 
     runEvaluate();
   }, []);
-  const [logsOpen, setLogsOpen] = useState(false);
-  const [showGeoQuery, setShowGeoQuery] = useState(false);
-
-  useEffect(() => {
-    console.log("logsOpen", affectedSuppliersAgentReasoning);
-  }, [logsOpen]);
 
   const handleFindAlternatives = (supplier) => {
+    if(selectedSupplier !== null && selectedSupplier.supplier_id === supplier.supplier_id) {
+      dispatch(advanceToStep(3))
+      return
+    }
     dispatch(setSelectedSupplier(supplier));
-    dispatch(
-      setSelectedAlertType(supplier.affectedConditions?.[0] ?? "logistical"),
-    );
     dispatch(advanceToStep(3));
   };
 
@@ -129,8 +113,7 @@ export default function Step2() {
       <ReActAgent
         title="Identifying affected suppliers"
         subtitle="The ReAct (Reason + Act) agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
-        phases={AGENT_PHASES}
-        phasesNew={[
+        phases={[
           {
             name: "Affected suppliers",
             steps: affectedSuppliersAgentReasoning || [],

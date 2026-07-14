@@ -1,3 +1,10 @@
+export const alternativeLayers = [
+  "Plan",
+  "Funnel",
+  "Reflect and Critique",
+  "Close"
+]
+
 const CERT_BASE = {
   name: "ISO 9001",
   documentModel: {

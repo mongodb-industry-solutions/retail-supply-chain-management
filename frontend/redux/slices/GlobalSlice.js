@@ -1,3 +1,4 @@
+import { alternativeLayers } from "@/data/alternatives";
 import { createSlice } from "@reduxjs/toolkit";
 
 const GlobalSlice = createSlice({
@@ -11,11 +12,14 @@ const GlobalSlice = createSlice({
     loadedExternalConditions: [],
     // Step 2
     affectedSuppliers: [],
-    affectedSuppliersAgentReasoning: [],
+    affectedSuppliersAgentReasoning: [], // events
     affectedSuppliersAgentCurrentThought: "",
-    selectedAlertType: "logistical",
     // Step 3
     selectedSupplier: null,
+    selectedSupplierAlertTypes: [], // i.e ["logistics_disruption", "geopolitical_tariff"]
+    alternativeSuppliers: [],
+    alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
+    alternativeSuppliersAgentCurrentThought: "",
   },
   reducers: {
     setSessionId(state, action) {
@@ -42,10 +46,11 @@ const GlobalSlice = createSlice({
       state.affectedSuppliers = action.payload;
     },
     setSelectedSupplier(state, action) {
-      state.selectedSupplier = action.payload;
-    },
-    setSelectedAlertType(state, action) {
-      state.selectedAlertType = action.payload;
+      state.selectedSupplier = { ...action.payload, supplier_id: "EVAL-test-ris-EN-441-1783442252" }; //action.payload;
+      state.selectedSupplierAlertTypes = action.payload.risk_scores.map(risk => risk.triggered_by.risk_type_triggered);
+      state.alternativeSuppliers = [];
+      state.alternativeSuppliersAgentReasoning = alternativeLayers.map(layer => ({ name: layer, steps: [] })); // events
+      state.alternativeSuppliersAgentCurrentThought = "";
     },
     appendAffectedSuppliersAgentReasoning(state, action) {
       console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
@@ -75,6 +80,33 @@ const GlobalSlice = createSlice({
         state.affectedSuppliersAgentCurrentThought = action.payload.message;
       }
     },
+    appendAlternativeSuppliersAgentReasoning(state, action) {
+      console.log("[appendAlternativeSuppliersAgentReasoning]", action.payload);
+      const time = action.payload.timestamp
+        ? new Date(action.payload.timestamp).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+          })
+        : undefined;
+      const data = {
+        ...action.payload,
+        time
+      };
+      console.log("[appendAlternativeSuppliersAgentReasoning] data.layer !== null", data.layer !== null);
+      if(data.layer !== null)
+        state.alternativeSuppliersAgentReasoning[data.layer].steps.push(data);
+      else if (data.event== "alternative_finder_started" || data.event == "stream_end")
+        console.log("[appendAlternativeSuppliersAgentReasoning] ignoring event without layer", data);
+      ///// AQUI EVALUAR
+      if ((action.payload.event || action.payload.type) === "agent_thought") {
+        console.log("[appendAlternativeSuppliersAgentReasoning] agent_thought", action.payload.text);
+        state.alternativeSuppliersAgentCurrentThought = action.payload.text;
+      }
+    },
+    setAlternativeSuppliers(state, action) {
+      state.alternativeSuppliers = action.payload;
+    },
   },
 });
 
@@ -87,8 +119,9 @@ export const {
   setLoadedExternalConditions,
   setAffectedSuppliers,
   setSelectedSupplier,
-  setSelectedAlertType,
-  appendAffectedSuppliersAgentReasoning
+  appendAffectedSuppliersAgentReasoning,
+  appendAlternativeSuppliersAgentReasoning,
+  setAlternativeSuppliers,
 } = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

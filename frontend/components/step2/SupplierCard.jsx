@@ -9,10 +9,11 @@ import Button from "@leafygreen-ui/button";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { setSelectedSupplier } from "../../redux/slices/GlobalSlice";
-import { riskConfig, categoryConfig } from "../../data/suppliers";
+import { riskConfig } from "../../data/suppliers";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import SupplierTitle from "../shared/SupplierTitle";
-import IconButton from "@leafygreen-ui/icon-button";
+import ReadMore from "../shared/ReadMore";
+import {IconButton} from "@leafygreen-ui/icon-button";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import DocModelModal from "../modals/DocModelModal";
 
@@ -47,7 +48,6 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
   const dispatch = useDispatch();
   const selectedId = useSelector((s) => s.Global.selectedSupplier?.supplier_id);
   const isSelected = selectedId === supplier.supplier_id;
-  const [summaryExpanded, setSummaryExpanded] = useState(false);
   const [modalCondition, setModalCondition] = useState(null);
 
   return (
@@ -95,7 +95,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             {supplier?.product_categories?.map((category) => (
               <Badge
                 key={category}
-                variant={categoryConfig[category]?.variant ?? "lightgray"}
+                variant="lightgray"
               >
                 {category.replace(/_/g, " ").toUpperCase()}
               </Badge>
@@ -131,38 +131,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
           </Body>
         </div>
         {/* Impact reason (short, bolded) */}
-        {supplier.natural_language_summary && (
-          <div style={{ marginBottom: spacing[100] }}>
-            <Body
-              weight="medium"
-              style={{
-                fontSize: 14,
-                color: palette.gray.dark2,
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: summaryExpanded ? "unset" : 1,
-              }}
-            >
-              {supplier.natural_language_summary}
-            </Body>
-            <span
-              role="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSummaryExpanded((v) => !v);
-              }}
-              style={{
-                fontSize: 13,
-                color: palette.blue.base,
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-            >
-              {summaryExpanded ? "Read less" : "Read more"}
-            </span>
-          </div>
-        )}
+        <ReadMore text={supplier.natural_language_summary} weight="medium" />
 
         {/* Condition badges with RPN delta */}
         <div
