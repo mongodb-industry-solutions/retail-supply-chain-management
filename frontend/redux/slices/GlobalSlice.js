@@ -14,12 +14,15 @@ const GlobalSlice = createSlice({
     affectedSuppliers: [],
     affectedSuppliersAgentReasoning: [], // events
     affectedSuppliersAgentCurrentThought: "",
+    affectedSuppliersAgentDone: false, // agent is done once we receive an "agent_response" event.type
     // Step 3
     selectedSupplier: null,
     selectedSupplierAlertTypes: [], // i.e ["logistics_disruption", "geopolitical_tariff"]
     alternativeSuppliers: [],
     alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
     alternativeSuppliersAgentCurrentThought: "",
+    alternativeSuppliersAgentDone: false, // agent is done once we receive a "shortlist_ready" event.event
+    certOpened: null, // criteria whose cert modal is open, null when closed
   },
   reducers: {
     setSessionId(state, action) {
@@ -51,6 +54,7 @@ const GlobalSlice = createSlice({
       state.alternativeSuppliers = [];
       state.alternativeSuppliersAgentReasoning = alternativeLayers.map(layer => ({ name: layer, steps: [] })); // events
       state.alternativeSuppliersAgentCurrentThought = "";
+      state.alternativeSuppliersAgentDone = false;
     },
     appendAffectedSuppliersAgentReasoning(state, action) {
       console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
@@ -79,6 +83,10 @@ const GlobalSlice = createSlice({
       if (action.payload.type === "agent_thought") {
         state.affectedSuppliersAgentCurrentThought = action.payload.message;
       }
+      // Step 2 agent is considered done once the final response arrives
+      if (action.payload.type === "agent_response") {
+        state.affectedSuppliersAgentDone = true;
+      }
     },
     appendAlternativeSuppliersAgentReasoning(state, action) {
       console.log("[appendAlternativeSuppliersAgentReasoning]", action.payload);
@@ -103,9 +111,16 @@ const GlobalSlice = createSlice({
         console.log("[appendAlternativeSuppliersAgentReasoning] agent_thought", action.payload.text);
         state.alternativeSuppliersAgentCurrentThought = action.payload.text;
       }
+      // Step 3 agent is considered done once the shortlist is ready
+      if ((action.payload.event || action.payload.type) === "shortlist_ready") {
+        state.alternativeSuppliersAgentDone = true;
+      }
     },
     setAlternativeSuppliers(state, action) {
       state.alternativeSuppliers = action.payload;
+    },
+    setCertOpened(state, action) {
+      state.certOpened = action.payload;
     },
   },
 });
@@ -122,6 +137,7 @@ export const {
   appendAffectedSuppliersAgentReasoning,
   appendAlternativeSuppliersAgentReasoning,
   setAlternativeSuppliers,
+  setCertOpened,
 } = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

@@ -47,7 +47,7 @@ export default function Step2() {
   const affectedSuppliersAgentReasoning = useSelector((s) => s.Global.affectedSuppliersAgentReasoning);
   const agentCurrentThought = useSelector((s) => s.Global.affectedSuppliersAgentCurrentThought);
   const selectedSupplier = useSelector((s) => s.Global.selectedSupplier);
-  const [agentDone, setAgentDone] = useState(false);
+  const agentDone = useSelector((s) => s.Global.affectedSuppliersAgentDone);
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
 
@@ -120,7 +120,7 @@ export default function Step2() {
           },
         ]}
         agentCurrentThought={agentCurrentThought}
-        onDoneChange={(done) => setAgentDone(done)}
+        done={agentDone}
         onViewLogs={() => setLogsOpen(true)}
       />
 

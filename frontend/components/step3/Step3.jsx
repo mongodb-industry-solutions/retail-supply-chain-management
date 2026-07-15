@@ -6,9 +6,8 @@ import { Modal } from "react-bootstrap";
 import Card from "@leafygreen-ui/card";
 import Button from "@leafygreen-ui/button";
 import { Badge } from "@leafygreen-ui/badge";
-import { Body, Subtitle, Overline } from "@leafygreen-ui/typography";
+import { Body, Subtitle } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
-import { Code } from "@leafygreen-ui/code";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 
@@ -19,6 +18,7 @@ import ReActAgent from "../shared/ReActAgent";
 import LogDrawer from "../shared/LogDrawer";
 import WhyMongoDB from "../shared/WhyMongoDB";
 import AlternativeCard from "./AlternativeCard";
+import CertModal from "./CertModal";
 import { generateAlternatives } from "../../data/alternatives";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import BehindTheScenes from "./BehindTheScenes";
@@ -26,6 +26,7 @@ import {
   appendAlternativeSuppliersAgentReasoning,
   setAlternativeSuppliers,
 } from "@/redux/slices/GlobalSlice";
+import DocModelModal from "../modals/DocModelModal";
 
 export default function Step3() {
   const dispatch = useDispatch();
@@ -43,10 +44,10 @@ export default function Step3() {
   const alternativeSuppliers = useSelector(
     (s) => s.Global.alternativeSuppliers,
   );
-  const [agentDone, setAgentDone] = useState(false);
+  const agentDone = useSelector((s) => s.Global.alternativeSuppliersAgentDone);
   const [logsOpen, setLogsOpen] = useState(false);
-  const [certModal, setCertModal] = useState(null);
   const [escalateOpen, setEscalateOpen] = useState(false);
+  const [modalCondition, setModalCondition] = useState(null);
 
   //const cfg = conditionConfig[selectedSupplierAlertTypes] ?? conditionConfig.logistical;
 
@@ -80,9 +81,12 @@ export default function Step3() {
             const line = frame.trim();
             if (line.startsWith("data:")) {
               const event = JSON.parse(line.slice(5).trim());
-              console.log("[evaluate]", event.type);
-              if (event.type === "shortlist_ready") {
-                dispatch(setAlternativeSuppliers(event.data.candidates || []));
+              console.log("[evaluate]", event.event);
+              if (
+                event.event === "shortlist_ready" ||
+                event.type === "shortlist_ready"
+              ) {
+                dispatch(setAlternativeSuppliers(event.candidates || []));
               }
               console.log("[atlas_operation]", event);
               dispatch(appendAlternativeSuppliersAgentReasoning(event));
@@ -153,7 +157,7 @@ export default function Step3() {
         subtitle={`The ReAct agent runs a two-stage retrieval pipeline — Hybrid Search + Voyage Rerank — to find the best alternative suppliers for ${selectedSupplier.name}.`}
         phases={alternativeSuppliersAgentReasoning || []}
         agentCurrentThought={alternativeSuppliersAgentCurrentThought}
-        onDoneChange={(done) => setAgentDone(done)}
+        done={agentDone}
         onViewLogs={() => setLogsOpen(true)}
       />
 
@@ -175,11 +179,11 @@ export default function Step3() {
 
           {alternativeSuppliers.map((alt, idx) => (
             <AlternativeCard
-              key={alt.id}
+              key={alt.supplier_id}
               supplier={alt}
               isFirst={idx === 0}
-              onOpenCert={(cert) => setCertModal(cert)}
               onEscalate={() => setEscalateOpen(true)}
+              onDocModelClick={(condition) => setModalCondition(condition)}
             />
           ))}
         </>
@@ -188,66 +192,7 @@ export default function Step3() {
       <BehindTheScenes />
 
       {/* ── Cert Modal ── */}
-      <Modal
-        show={!!certModal}
-        onHide={() => setCertModal(null)}
-        centered
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <div className="d-flex align-items-center gap-2">
-            <Icon glyph="CurlyBraces" />
-            <span style={{ fontWeight: 700 }}>
-              {certModal?.name} — Document Model
-            </span>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <WhyMongoDB>
-            By converting unstructured data types into high-dimensional vectors,{" "}
-            <strong>multimodal search</strong> allows users to find information
-            based on semantic meaning and intent — not just keyword matches.
-          </WhyMongoDB>
-
-          <div
-            className="d-flex align-items-center gap-2 mt-3 mb-3"
-            style={{
-              background: palette.gray.light3,
-              borderRadius: 8,
-              padding: `${spacing[200]}px ${spacing[300]}px`,
-            }}
-          >
-            <Icon
-              glyph="File"
-              size="small"
-              style={{ color: palette.gray.dark1 }}
-            />
-            <Overline style={{ margin: 0, color: palette.gray.dark1 }}>
-              {certModal?.sourceType?.toUpperCase()} · {certModal?.sourceFile}
-            </Overline>
-          </div>
-
-          <Body
-            style={{
-              fontStyle: "italic",
-              color: palette.gray.dark1,
-              marginBottom: spacing[300],
-              lineHeight: 1.6,
-            }}
-          >
-            {certModal?.chunk}
-          </Body>
-
-          <Code
-            language="json"
-            showLineNumbers
-            darkMode
-            copyButtonAppearance="persist"
-          >
-            {JSON.stringify(certModal?.documentModel ?? {}, null, 2)}
-          </Code>
-        </Modal.Body>
-      </Modal>
+      <CertModal />
 
       {/* ── Escalate Modal ── */}
       <Modal show={escalateOpen} onHide={() => setEscalateOpen(false)} centered>
@@ -306,6 +251,13 @@ export default function Step3() {
           </div>
         </Modal.Body>
       </Modal>
+
+      <DocModelModal
+        show={!!modalCondition}
+        onHide={() => setModalCondition(null)}
+        title={"my title"}
+        docModel={modalCondition}
+      />
     </div>
   );
 }

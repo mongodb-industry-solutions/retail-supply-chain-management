@@ -46,16 +46,23 @@ export default function ReActAgent({
   onComplete,
   onDoneChange,
   onViewLogs,
+  // When provided, this is the source of truth for completion (owned by Redux).
+  // Completion criteria differ per step (Step 2: "agent_response", Step 3:
+  // "shortlist_ready"), so callers decide when the agent is done. When omitted,
+  // we fall back to deriving it from the phase/step statuses.
+  done,
 }) {
   const hasLiveEvents = phases?.some((p) => p.steps?.length > 0);
   const completedRef = useRef(false);
 
-  const isDone = hasLiveEvents
+  const derivedDone = hasLiveEvents
     ? phases.every((p) => {
         const steps = buildDisplayItems(p.steps ?? []).filter((i) => i.type === "step");
         return steps.length > 0 && steps.every((i) => i.status === "completed" || i.status === "error");
       })
     : false;
+
+  const isDone = done ?? derivedDone;
 
   useEffect(() => {
     if (isDone && !completedRef.current) {
@@ -98,7 +105,7 @@ export default function ReActAgent({
     setTimeout(runStep, 400);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const showDone = hasLiveEvents ? isDone : timerDone;
+  const showDone = done ?? (hasLiveEvents ? isDone : timerDone);
 
   return (
     <>
@@ -109,18 +116,17 @@ export default function ReActAgent({
 
           <div style={{ flex: 1 }}>
             {hasLiveEvents ? (
-              // Live event-driven rendering — one column per phase
-              <div className="row g-0">
+              // Live event-driven rendering — one row per phase
+              <div className="d-flex flex-column">
                 {phases.map((phase, phaseIdx) => {
                   const items = buildDisplayItems(phase.steps ?? []);
                   return (
                     <div
                       key={phaseIdx}
-                      className="col"
                       style={
                         phaseIdx > 0
-                          ? { borderLeft: `1px solid ${palette.gray.light2}`, paddingLeft: spacing[400] }
-                          : { paddingRight: spacing[400] }
+                          ? { borderTop: `1px solid ${palette.gray.light2}`, paddingTop: spacing[400], marginTop: spacing[400] }
+                          : {}
                       }
                     >
                       <Overline
@@ -132,7 +138,7 @@ export default function ReActAgent({
                           color: palette.gray.dark1,
                         }}
                       >
-                        {phase.name}
+                        {phaseIdx+1}. {phase.name}
                       </Overline>
 
                       <div className="d-flex flex-column" style={{ gap: 6 }}>
@@ -144,7 +150,7 @@ export default function ReActAgent({
                             const isLayerStart = item.type === "layer" && item.status === "running";
                             const isLayerCompleted = item.type === "layer" && item.status === "completed";
                             return (
-                              <div key={i} className="d-flex align-items-center gap-2">
+                              <div key={i} className="d-flex gap-2">
                                 <span style={{ width: 20, textAlign: "center", flexShrink: 0 }}>
                                   {
                                     isCompleted ? (
@@ -154,7 +160,7 @@ export default function ReActAgent({
                                     ) : isRunning ?(
                                       <Icon glyph="Clock" color={palette.gray.base} />
                                     ) : isLayerStart ?(
-                                      <Icon glyph="Pending" color={palette.gray.base} />
+                                      <Icon glyph="Pending" color={palette.green.dark1} />
                                     ) : isLayerCompleted ?(
                                       <Icon glyph="Circle" color={palette.green.dark1} />
                                     ) : (
@@ -170,7 +176,11 @@ export default function ReActAgent({
                                     margin: 0,
                                   }}
                                 >
-                                  {item.message}
+                                  {
+                                    item.args && item.args !== null
+                                    ? `${item.message} for ${item.args.criterion} on ${item.args.supplier_id}`
+                                    : item.message
+                                  }
                                 </Body>
                               </div>
                             );
@@ -185,7 +195,7 @@ export default function ReActAgent({
               </div>
             ) : (
               // Timer-driven fallback rendering
-              <div className="row g-0">
+              <div className="d-flex flex-column">
                 {phases.map((phase, phaseIdx) => {
                   const offset = phases
                     .slice(0, phaseIdx)
@@ -194,11 +204,10 @@ export default function ReActAgent({
                   return (
                     <div
                       key={phaseIdx}
-                      className="col"
                       style={
                         phaseIdx > 0
-                          ? { borderLeft: `1px solid ${palette.gray.light2}`, paddingLeft: spacing[400] }
-                          : { paddingRight: spacing[400] }
+                          ? { borderTop: `1px solid ${palette.gray.light2}`, paddingTop: spacing[400], marginTop: spacing[400] }
+                          : {}
                       }
                     >
                       <Overline
