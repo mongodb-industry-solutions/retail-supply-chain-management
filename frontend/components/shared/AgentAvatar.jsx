@@ -33,8 +33,15 @@ export default function AgentAvatar({ agentCurrentThought = "ReAct Agent", idle 
               borderRadius: "50%",
               background: idle ? palette.gray.base : "#01684a",
               display: "inline-block",
+              animation: idle ? "none" : "agentDotBlink 1s ease-in-out infinite",
             }}
           />
+          <style>{`
+            @keyframes agentDotBlink {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.25; }
+            }
+          `}</style>
           <Body
             style={{
               fontSize: 11,

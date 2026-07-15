@@ -15,13 +15,23 @@ function buildDisplayItems(events) {
   const items = [];
 
   for (const event of events) {
-    if (event.type === "tool_start") {
-      items.push({ type: "step", message: event.message, status: "running" });
-    } else if (event.type === "tool_end") {
+    const eventType = event.type || event.event;
+    if(eventType === "layer_started"){
+      items.push({ type: "layer", message: event.label, status: "running" });
+    } else if(eventType === "layer_completed"){
+      items.push({ type: "layer", message: event.summary, status: "completed" });
+    }
+    if (eventType === "tool_start") {
+      const message = event.message || event.tool;
+      items.push({ type: "step", message: message, status: "running", args: event.args || null });
+    } else if (eventType === "tool_end") {
+      const message = event.message || event.tool;
       const idx = items.findIndex(
-        (i) => i.type === "step" && i.message === event.message && i.status === "running"
+        (i) => i.type === "step" && i.message === message && i.status === "running"
       );
       if (idx !== -1) items[idx] = { ...items[idx], status: "completed" };
+    } else if(eventType === "error") {
+      items.push({ type: "step", message: `Error: ${event.message}`, status: "error" });
     }
   }
 
@@ -30,23 +40,29 @@ function buildDisplayItems(events) {
 
 export default function ReActAgent({
   phases,
-  phasesNew,
   agentCurrentThought = "ReAct Agent",
   title,
   subtitle,
   onComplete,
   onDoneChange,
   onViewLogs,
+  // When provided, this is the source of truth for completion (owned by Redux).
+  // Completion criteria differ per step (Step 2: "agent_response", Step 3:
+  // "shortlist_ready"), so callers decide when the agent is done. When omitted,
+  // we fall back to deriving it from the phase/step statuses.
+  done,
 }) {
-  const hasLiveEvents = phasesNew?.some((p) => p.steps?.length > 0);
+  const hasLiveEvents = phases?.some((p) => p.steps?.length > 0);
   const completedRef = useRef(false);
 
-  const isDone = hasLiveEvents
-    ? phasesNew.every((p) => {
+  const derivedDone = hasLiveEvents
+    ? phases.every((p) => {
         const steps = buildDisplayItems(p.steps ?? []).filter((i) => i.type === "step");
-        return steps.length > 0 && steps.every((i) => i.status === "completed");
+        return steps.length > 0 && steps.every((i) => i.status === "completed" || i.status === "error");
       })
     : false;
+
+  const isDone = done ?? derivedDone;
 
   useEffect(() => {
     if (isDone && !completedRef.current) {
@@ -89,29 +105,28 @@ export default function ReActAgent({
     setTimeout(runStep, 400);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const showDone = hasLiveEvents ? isDone : timerDone;
+  const showDone = done ?? (hasLiveEvents ? isDone : timerDone);
 
   return (
     <>
       <SectionHeader title={title} subtitle={subtitle} />
-      <Card style={{ marginBottom: spacing[400] }}>
+      <Card style={{ marginBottom: spacing[400] }} onClick={() => console.log('REDUX: alternativeSuppliersAgentReasoning', phases )}>
         <div className="d-flex gap-4 align-items-start">
           <AgentAvatar agentCurrentThought={agentCurrentThought} idle={showDone} />
 
           <div style={{ flex: 1 }}>
             {hasLiveEvents ? (
-              // Live event-driven rendering — one column per phase
-              <div className="row g-0">
-                {phasesNew.map((phase, phaseIdx) => {
+              // Live event-driven rendering — one row per phase
+              <div className="d-flex flex-column">
+                {phases.map((phase, phaseIdx) => {
                   const items = buildDisplayItems(phase.steps ?? []);
                   return (
                     <div
                       key={phaseIdx}
-                      className="col"
                       style={
                         phaseIdx > 0
-                          ? { borderLeft: `1px solid ${palette.gray.light2}`, paddingLeft: spacing[400] }
-                          : { paddingRight: spacing[400] }
+                          ? { borderTop: `1px solid ${palette.gray.light2}`, paddingTop: spacing[400], marginTop: spacing[400] }
+                          : {}
                       }
                     >
                       <Overline
@@ -123,32 +138,49 @@ export default function ReActAgent({
                           color: palette.gray.dark1,
                         }}
                       >
-                        {phase.name}
+                        {phaseIdx+1}. {phase.name}
                       </Overline>
 
                       <div className="d-flex flex-column" style={{ gap: 6 }}>
                         {items.map((item, i) => {
-                          if (item.type === "step") {
-                            const isRunning = item.status === "running";
-                            const isCompleted = item.status === "completed";
+                          if (item.type === "step" || item.type === "layer") {
+                            const isRunning = item.type === "step" && item.status === "running";
+                            const isCompleted = item.type === "step" && item.status === "completed";
+                            const isError = item.type === "step" && item.status === "error";
+                            const isLayerStart = item.type === "layer" && item.status === "running";
+                            const isLayerCompleted = item.type === "layer" && item.status === "completed";
                             return (
-                              <div key={i} className="d-flex align-items-center gap-2">
+                              <div key={i} className="d-flex gap-2">
                                 <span style={{ width: 20, textAlign: "center", flexShrink: 0 }}>
-                                  {isCompleted ? (
-                                    <Icon glyph="CheckmarkWithCircle" color={palette.green.dark1} />
-                                  ) : (
-                                    <Icon glyph="Clock" color={palette.gray.base} />
-                                  )}
+                                  {
+                                    isCompleted ? (
+                                      <Icon glyph="CheckmarkWithCircle" color={palette.green.dark1} />
+                                    ) : isError ? (
+                                      <Icon glyph="NotAllowed" color={palette.red.dark2} />
+                                    ) : isRunning ?(
+                                      <Icon glyph="Clock" color={palette.gray.base} />
+                                    ) : isLayerStart ?(
+                                      <Icon glyph="Pending" color={palette.green.dark1} />
+                                    ) : isLayerCompleted ?(
+                                      <Icon glyph="Circle" color={palette.green.dark1} />
+                                    ) : (
+                                      "○"
+                                    )
+                                  }
                                 </span>
                                 <Body
                                   style={{
                                     fontSize: 14,
-                                    color: isCompleted ? palette.gray.dark3 : palette.gray.dark2,
+                                    color: (isCompleted || isLayerStart || isLayerCompleted) ? palette.gray.dark3 : palette.gray.dark2,
                                     fontWeight: isRunning ? 600 : 400,
                                     margin: 0,
                                   }}
                                 >
-                                  {item.message}
+                                  {
+                                    item.args && item.args !== null
+                                    ? `${item.message} for ${item.args.criterion} on ${item.args.supplier_id}`
+                                    : item.message
+                                  }
                                 </Body>
                               </div>
                             );
@@ -163,7 +195,7 @@ export default function ReActAgent({
               </div>
             ) : (
               // Timer-driven fallback rendering
-              <div className="row g-0">
+              <div className="d-flex flex-column">
                 {phases.map((phase, phaseIdx) => {
                   const offset = phases
                     .slice(0, phaseIdx)
@@ -172,11 +204,10 @@ export default function ReActAgent({
                   return (
                     <div
                       key={phaseIdx}
-                      className="col"
                       style={
                         phaseIdx > 0
-                          ? { borderLeft: `1px solid ${palette.gray.light2}`, paddingLeft: spacing[400] }
-                          : { paddingRight: spacing[400] }
+                          ? { borderTop: `1px solid ${palette.gray.light2}`, paddingTop: spacing[400], marginTop: spacing[400] }
+                          : {}
                       }
                     >
                       <Overline
