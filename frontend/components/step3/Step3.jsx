@@ -19,7 +19,6 @@ import LogDrawer from "../shared/LogDrawer";
 import WhyMongoDB from "../shared/WhyMongoDB";
 import AlternativeCard from "./AlternativeCard";
 import CertModal from "./CertModal";
-import { generateAlternatives } from "../../data/alternatives";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import BehindTheScenes from "./BehindTheScenes";
 import {

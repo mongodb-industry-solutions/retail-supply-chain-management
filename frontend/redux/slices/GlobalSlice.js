@@ -106,7 +106,6 @@ const GlobalSlice = createSlice({
         state.alternativeSuppliersAgentReasoning[data.layer].steps.push(data);
       else if (data.event== "alternative_finder_started" || data.event == "stream_end")
         console.log("[appendAlternativeSuppliersAgentReasoning] ignoring event without layer", data);
-      ///// AQUI EVALUAR
       if ((action.payload.event || action.payload.type) === "agent_thought") {
         console.log("[appendAlternativeSuppliersAgentReasoning] agent_thought", action.payload.text);
         state.alternativeSuppliersAgentCurrentThought = action.payload.text;
