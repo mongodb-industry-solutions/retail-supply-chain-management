@@ -160,13 +160,13 @@ export default function Step3() {
         onViewLogs={() => setLogsOpen(true)}
       />
 
-      {/* <LogDrawer
+      <LogDrawer
         show={logsOpen}
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="Hybrid Search + Voyage Rerank — execution trace"
         phases={alternativeSuppliersAgentReasoning.flatMap(phase => phase.steps)}
-      /> */}
+      />
 
       {/* ── Alternatives ── */}
       {agentDone && (

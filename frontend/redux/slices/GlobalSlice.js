@@ -1,4 +1,4 @@
-import { alternativeLayers } from "@/data/alternatives";
+import { alternativeLayers, altAsupAgentReason, affectedSupList } from "@/data/alternatives";
 import { createSlice } from "@reduxjs/toolkit";
 
 const GlobalSlice = createSlice({
@@ -11,7 +11,8 @@ const GlobalSlice = createSlice({
     externalConditions: [],
     loadedExternalConditions: [],
     // Step 2
-    affectedSuppliers: [],
+    //affectedSuppliers: [],
+    affectedSuppliers: affectedSupList,
     affectedSuppliersAgentReasoning: [], // events
     affectedSuppliersAgentCurrentThought: "",
     affectedSuppliersAgentDone: false, // agent is done once we receive an "agent_response" event.type
@@ -19,7 +20,8 @@ const GlobalSlice = createSlice({
     selectedSupplier: null,
     selectedSupplierAlertTypes: [], // i.e ["logistics_disruption", "geopolitical_tariff"]
     alternativeSuppliers: [],
-    alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
+    // alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
+    alternativeSuppliersAgentReasoning: altAsupAgentReason,
     alternativeSuppliersAgentCurrentThought: "",
     alternativeSuppliersAgentDone: false, // agent is done once we receive a "shortlist_ready" event.event
     certOpened: null, // criteria whose cert modal is open, null when closed
@@ -49,10 +51,17 @@ const GlobalSlice = createSlice({
       state.affectedSuppliers = action.payload;
     },
     setSelectedSupplier(state, action) {
-      state.selectedSupplier = action.payload; // { ...action.payload, supplier_id: "EVAL-test-ris-EN-441-1783442252" };
-      state.selectedSupplierAlertTypes = action.payload.risk_scores.map(risk => risk.triggered_by.risk_type_triggered);
+      state.selectedSupplier = {
+        ...action.payload,
+        supplier_id: "EVAL-test-ris-EN-441-1783442252",
+      }; // action.payload;
+      state.selectedSupplierAlertTypes = action.payload.risk_scores.map(
+        (risk) => risk.triggered_by.risk_type_triggered,
+      );
       state.alternativeSuppliers = [];
-      state.alternativeSuppliersAgentReasoning = alternativeLayers.map(layer => ({ name: layer, steps: [] })); // events
+      state.alternativeSuppliersAgentReasoning = alternativeLayers.map(
+        (layer) => ({ name: layer, steps: [] }),
+      ); // events
       state.alternativeSuppliersAgentCurrentThought = "";
       state.alternativeSuppliersAgentDone = false;
     },
@@ -60,15 +69,21 @@ const GlobalSlice = createSlice({
       console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
       const payloadKey = JSON.stringify(action.payload);
       // TODO: remove once backend stops emitting duplicate SSE events for the same step
-      const isDuplicate = state.affectedSuppliersAgentReasoning.some((entry) => {
-        const { time: _time, ts: _ts, ...rest } = entry;
-        return JSON.stringify(rest) === payloadKey;
-      });
+      const isDuplicate = state.affectedSuppliersAgentReasoning.some(
+        (entry) => {
+          const { time: _time, ts: _ts, ...rest } = entry;
+          return JSON.stringify(rest) === payloadKey;
+        },
+      );
       if (isDuplicate) return;
-      if( state.affectedSuppliersAgentReasoning[state.affectedSuppliersAgentReasoning.length - 1]?.type === "agent_response" 
-        && action.payload.type === "agent_response")
-        return
-      
+      if (
+        state.affectedSuppliersAgentReasoning[
+          state.affectedSuppliersAgentReasoning.length - 1
+        ]?.type === "agent_response" &&
+        action.payload.type === "agent_response"
+      )
+        return;
+
       const now = new Date();
       const time = now.toLocaleTimeString([], {
         hour: "numeric",
@@ -99,15 +114,27 @@ const GlobalSlice = createSlice({
         : undefined;
       const data = {
         ...action.payload,
-        time
+        time,
       };
-      console.log("[appendAlternativeSuppliersAgentReasoning] data.layer !== null", data.layer !== null);
-      if(data.layer !== null)
+      console.log(
+        "[appendAlternativeSuppliersAgentReasoning] data.layer !== null",
+        data.layer !== null,
+      );
+      if (data.layer !== null)
         state.alternativeSuppliersAgentReasoning[data.layer].steps.push(data);
-      else if (data.event== "alternative_finder_started" || data.event == "stream_end")
-        console.log("[appendAlternativeSuppliersAgentReasoning] ignoring event without layer", data);
+      else if (
+        data.event == "alternative_finder_started" ||
+        data.event == "stream_end"
+      )
+        console.log(
+          "[appendAlternativeSuppliersAgentReasoning] ignoring event without layer",
+          data,
+        );
       if ((action.payload.event || action.payload.type) === "agent_thought") {
-        console.log("[appendAlternativeSuppliersAgentReasoning] agent_thought", action.payload.text);
+        console.log(
+          "[appendAlternativeSuppliersAgentReasoning] agent_thought",
+          action.payload.text,
+        );
         state.alternativeSuppliersAgentCurrentThought = action.payload.text;
       }
       // Step 3 agent is considered done once the shortlist is ready

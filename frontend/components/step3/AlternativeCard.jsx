@@ -273,7 +273,7 @@ export default function AlternativeCard({
                       <Overline
                         style={{ margin: 0, color: palette.gray.dark1 }}
                       >
-                        Page {criteria?.citation?.doc_type}
+                        Document {criteria?.citation?.doc_type}
                       </Overline>
                     </div>
                   </div>

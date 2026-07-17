@@ -20,39 +20,21 @@ function renderBoldMarkdown(text) {
     );
 }
 
-export default function LogDrawer({
-  show,
-  onHide,
-  title = "",
-  subtitle = "",
-  phases: logs = [],
-}) {
-  console.log("LogDrawer", logs);
-
-  const listRef = useRef(null);
-
-  useEffect(() => {
-    if (!show || !listRef.current) return;
-    const scrollContainer = listRef.current.closest(
-      '[data-testid="log-drawer-scroll_container"]',
-    );
-    if (!scrollContainer) return;
-    scrollContainer.scrollTop = scrollContainer.scrollHeight;
-  }, [show, logs.length]);
-
+function buildBlocks(logs) {
   const firstTs = logs[0]?.ts;
   const blocks = [];
   let currentGroup = null;
   logs.forEach((log) => {
-    if (log.type === "tool_start") {
+    const logType = log.type || log.event;
+    if (logType === "tool_start") {
       currentGroup = { header: log, items: [] };
       blocks.push({ kind: "group", group: currentGroup });
-    } else if (log.type === "tool_end") {
+    } else if (logType === "tool_end") {
       const startTs = currentGroup?.header?.ts;
       const duration = startTs && log.ts ? (log.ts - startTs) / 1000 : null;
       currentGroup = null;
       blocks.push({ kind: "tool_end", log, duration });
-    } else if (log.type === "agent_response") {
+    } else if (logType === "agent_response") {
       const duration = firstTs && log.ts ? (log.ts - firstTs) / 1000 : null;
       currentGroup = null;
       blocks.push({ kind: "agent_response", log, duration });
@@ -62,6 +44,31 @@ export default function LogDrawer({
       blocks.push({ kind: "orphan", log });
     }
   });
+  return blocks;
+}
+
+export default function LogDrawer({
+  show,
+  onHide,
+  title = "",
+  subtitle = "",
+  phases = [],
+}) {
+  const listRef = useRef(null);
+
+  const totalSteps = phases.reduce(
+    (sum, phase) => sum + (phase.steps?.length ?? 0),
+    0,
+  );
+
+  useEffect(() => {
+    if (!show || !listRef.current) return;
+    const scrollContainer = listRef.current.closest(
+      '[data-testid="log-drawer-scroll_container"]',
+    );
+    if (!scrollContainer) return;
+    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+  }, [show, totalSteps]);
 
   return (
     <>
@@ -119,8 +126,22 @@ export default function LogDrawer({
           </WhyMongoDB>
 
           <div ref={listRef} className="d-flex flex-column mt-3">
-            {blocks.map((block, blockIdx) => {
-              if (block.kind === "group") {
+            {phases.map((phase, phaseIdx) => {
+              const blocks = buildBlocks(phase.steps ?? []);
+              return (
+                <div key={phaseIdx} className="d-flex flex-column">
+                  <h6
+                    style={{
+                      fontWeight: 700,
+                      color: palette.gray.dark3,
+                      marginTop: phaseIdx === 0 ? 0 : spacing[400],
+                      marginBottom: spacing[200],
+                    }}
+                  >
+                    {phase.name}
+                  </h6>
+                  {blocks.map((block, blockIdx) => {
+                    if (block.kind === "group") {
                 const { header, items } = block.group;
                 return (
                   <Accordion
@@ -140,7 +161,8 @@ export default function LogDrawer({
                       >
                         <div className="d-flex flex-column gap-3">
                           {items.map((item, itemIdx) => {
-                            const isThought = item.type === "agent_thought";
+                            const itemtype =item.type || item.event;
+                            const isThought = itemtype === "agent_thought";
                             const accent = isThought
                               ? palette.blue.base
                               : palette.green.dark1;
@@ -193,7 +215,7 @@ export default function LogDrawer({
                                   }}
                                 >
                                   {isThought
-                                    ? renderBoldMarkdown(item.message)
+                                    ? renderBoldMarkdown(item.message || "")
                                     : item.detail}
                                 </div>
                               </div>
@@ -313,7 +335,10 @@ export default function LogDrawer({
                 );
               }
 
-              return null;
+                    return null;
+                  })}
+                </div>
+              );
             })}
           </div>
         </div>

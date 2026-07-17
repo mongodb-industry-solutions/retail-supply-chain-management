@@ -129,7 +129,7 @@ export default function Step2() {
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="ReAct Agent powered by LangGraph + MongoDB Atlas"
-        phases={affectedSuppliersAgentReasoning}
+        phases={[{ name: "Affected suppliers", steps: affectedSuppliersAgentReasoning || [] }]}
       />
 
       {agentDone && (
