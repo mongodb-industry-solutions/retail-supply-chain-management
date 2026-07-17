@@ -165,7 +165,7 @@ export default function Step3() {
       {/* ── ReAct Agent ── */}
       <ReActAgent
         title="Identifying alternative suppliers"
-        subtitle={`The ReAct agent runs a two-stage retrieval pipeline — Hybrid Search + Voyage Rerank — to find the best alternative suppliers for ${selectedSupplier.name}.`}
+        subtitle={`The ReAct agent runs a two-stage retrieval pipeline — Hybrid Search + Voyage Rerank — to find the best alternative suppliers for ${selectedSupplier.supplier_name}.`}
         phases={alternativeSuppliersAgentReasoning || []}
         agentCurrentThought={alternativeSuppliersAgentCurrentThought}
         done={agentDone}
