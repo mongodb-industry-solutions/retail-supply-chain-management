@@ -177,7 +177,7 @@ export default function Step3() {
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="Hybrid Search + Voyage Rerank — execution trace"
-        phases={alternativeSuppliersAgentReasoning.flatMap(phase => phase.steps)}
+        phases={alternativeSuppliersAgentReasoning}
       />
 
       {/* ── Alternatives ── */}

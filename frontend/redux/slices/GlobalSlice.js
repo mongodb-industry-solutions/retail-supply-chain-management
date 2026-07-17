@@ -1,4 +1,4 @@
-import { alternativeLayers, altAsupAgentReason, affectedSupList } from "@/data/alternatives";
+import { alternativeLayers} from "@/data/alternatives";
 import { createSlice } from "@reduxjs/toolkit";
 
 const GlobalSlice = createSlice({
@@ -11,8 +11,7 @@ const GlobalSlice = createSlice({
     externalConditions: [],
     loadedExternalConditions: [],
     // Step 2
-    //affectedSuppliers: [],
-    affectedSuppliers: affectedSupList,
+    affectedSuppliers: [],
     affectedSuppliersAgentReasoning: [], // events
     affectedSuppliersAgentCurrentThought: "",
     affectedSuppliersAgentDone: false, // agent is done once we receive an "agent_response" event.type
@@ -20,8 +19,7 @@ const GlobalSlice = createSlice({
     selectedSupplier: null,
     selectedSupplierAlertTypes: [], // i.e ["logistics_disruption", "geopolitical_tariff"]
     alternativeSuppliers: [],
-    // alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
-    alternativeSuppliersAgentReasoning: altAsupAgentReason,
+    alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
     alternativeSuppliersAgentCurrentThought: "",
     alternativeSuppliersAgentDone: false, // agent is done once we receive a "shortlist_ready" event.event
     certOpened: null, // criteria whose cert modal is open, null when closed
