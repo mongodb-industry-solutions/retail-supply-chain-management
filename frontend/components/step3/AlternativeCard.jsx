@@ -11,8 +11,6 @@ import { spacing } from "@leafygreen-ui/tokens";
 import { useDispatch } from "react-redux";
 import SupplierTitle from "../shared/SupplierTitle";
 import { setCertOpened } from "@/redux/slices/GlobalSlice";
-import { IconButton } from "@leafygreen-ui/icon-button";
-import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import { Code, Panel } from "@leafygreen-ui/code";
 
 function RRFBar({ textScore, vectorScore }) {
