@@ -7,7 +7,6 @@ import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-import { MongoDBLogoMark } from "@leafygreen-ui/logo";
 import SectionHeader from "./SectionHeader";
 import AgentAvatar from "./AgentAvatar";
 
