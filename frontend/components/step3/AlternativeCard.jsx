@@ -129,12 +129,7 @@ const STATS = (s) => [
   },
 ];
 
-export default function AlternativeCard({
-  supplier,
-  isFirst,
-  onEscalate,
-  onDocModelClick,
-}) {
+export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
   const dispatch = useDispatch();
   return (
     <Card className="AlternativeCard" style={{ marginBottom: spacing[400] }}>
