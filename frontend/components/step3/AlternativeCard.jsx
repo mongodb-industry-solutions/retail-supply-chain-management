@@ -266,7 +266,7 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
                       <Overline
                         style={{ margin: 0, color: palette.gray.dark1 }}
                       >
-                        Page {criteria?.citation?.doc_type}
+                        Type {criteria?.citation?.doc_type}
                       </Overline>
                     </div>
                   </div>
