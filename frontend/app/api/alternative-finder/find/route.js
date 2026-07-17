@@ -17,16 +17,16 @@ export async function POST(request) {
     });
   }
 
-  let supplierId;
+  let evaluationId;
   try {
     const body = await request.json();
-    supplierId = body?.supplierId;
+    evaluationId = body?.evaluationId;
   } catch {
-    supplierId = undefined;
+    evaluationId = undefined;
   }
 
-  if (!supplierId) {
-    return new Response(JSON.stringify({ error: "Missing supplierId in request body" }), {
+  if (!evaluationId) {
+    return new Response(JSON.stringify({ error: "Missing evaluationId in request body" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -38,7 +38,7 @@ export async function POST(request) {
       "X-Session-ID": sessionId,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ evaluation_id_ref: supplierId }),
+    body: JSON.stringify({ evaluation_id_ref: evaluationId }),
   });
 
   if (!res.ok) {

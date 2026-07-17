@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "react-bootstrap";
 import Card from "@leafygreen-ui/card";
@@ -48,17 +48,29 @@ export default function Step3() {
   const [escalateOpen, setEscalateOpen] = useState(false);
   const [modalCondition, setModalCondition] = useState(null);
 
+  // Guards against React Strict Mode's intentional double-invoke of mount effects
+  // in development. Redux state alone can't guard here because it's only populated
+  // AFTER the fetch resolves — both Strict Mode passes run before that, so they'd
+  // both pass a state-only check. This ref flips synchronously, before the first
+  // await, so the second pass is blocked immediately.
+  const startedRef = useRef(false);
+
   //const cfg = conditionConfig[selectedSupplierAlertTypes] ?? conditionConfig.logistical;
 
   useEffect(() => {
-    if (alternativeSuppliers.length > 0) return;
+    if (alternativeSuppliers.length > 0) return; // skip if data already loaded (e.g. real remount)
+    if (startedRef.current) return;              // skip if a run has already started (Strict Mode's 2nd pass)
+    startedRef.current = true;                   // set BEFORE any await — must stay synchronous
 
     async function runFindAlternatives() {
       try {
         const response = await fetch("/api/alternative-finder/find", {
           method: "POST",
-          headers: { "X-Session-ID": sessionId },
-          body: JSON.stringify({ supplierId: selectedSupplier.supplier_id }),
+          headers: {
+            "X-Session-ID": sessionId,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ evaluationId: selectedSupplier.evaluation_id }),
         });
 
         if (!response.ok || !response.body) {
@@ -153,7 +165,7 @@ export default function Step3() {
       {/* ── ReAct Agent ── */}
       <ReActAgent
         title="Identifying alternative suppliers"
-        subtitle={`The ReAct agent runs a two-stage retrieval pipeline — Hybrid Search + Voyage Rerank — to find the best alternative suppliers for ${selectedSupplier.name}.`}
+        subtitle={`The ReAct agent runs a two-stage retrieval pipeline — Hybrid Search + Voyage Rerank — to find the best alternative suppliers for ${selectedSupplier.supplier_name}.`}
         phases={alternativeSuppliersAgentReasoning || []}
         agentCurrentThought={alternativeSuppliersAgentCurrentThought}
         done={agentDone}

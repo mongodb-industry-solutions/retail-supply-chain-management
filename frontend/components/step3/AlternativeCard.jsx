@@ -11,8 +11,6 @@ import { spacing } from "@leafygreen-ui/tokens";
 import { useDispatch } from "react-redux";
 import SupplierTitle from "../shared/SupplierTitle";
 import { setCertOpened } from "@/redux/slices/GlobalSlice";
-import { IconButton } from "@leafygreen-ui/icon-button";
-import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import { Code, Panel } from "@leafygreen-ui/code";
 
 function RRFBar({ textScore, vectorScore }) {
@@ -129,12 +127,7 @@ const STATS = (s) => [
   },
 ];
 
-export default function AlternativeCard({
-  supplier,
-  isFirst,
-  onEscalate,
-  onDocModelClick,
-}) {
+export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
   const dispatch = useDispatch();
   return (
     <Card className="AlternativeCard" style={{ marginBottom: spacing[400] }}>
@@ -273,7 +266,7 @@ export default function AlternativeCard({
                       <Overline
                         style={{ margin: 0, color: palette.gray.dark1 }}
                       >
-                        Document {criteria?.citation?.doc_type}
+                        Type {criteria?.citation?.doc_type}
                       </Overline>
                     </div>
                   </div>
