@@ -66,7 +66,10 @@ export default function Step3() {
       try {
         const response = await fetch("/api/alternative-finder/find", {
           method: "POST",
-          headers: { "X-Session-ID": sessionId },
+          headers: {
+            "X-Session-ID": sessionId,
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ evaluationId: selectedSupplier.evaluation_id }),
         });
 
