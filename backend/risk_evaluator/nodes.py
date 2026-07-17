@@ -1102,10 +1102,11 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
         )
         requires_action = any(s.rpn_status in _ACTION_STATUSES for s in scores)
 
+        evaluation_id = (
+            f"EVAL-{state['session_id'][:8]}-{supplier_id[-6:]}-{int(time.time())}"
+        )
         eval_doc = {
-            "evaluation_id": (
-                f"EVAL-{state['session_id'][:8]}-{supplier_id[-6:]}-{int(time.time())}"
-            ),
+            "evaluation_id": evaluation_id,
             "supplier_id": supplier_id,
             "supplier_name": supplier["supplier_name"],
             "region": supplier["region"],
@@ -1128,6 +1129,7 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
 
         evaluated_suppliers.append(
             SupplierEvaluation(
+                evaluation_id=evaluation_id,
                 supplier_id=supplier_id,
                 supplier_name=supplier["supplier_name"],
                 region=supplier["region"],

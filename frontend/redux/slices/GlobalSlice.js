@@ -49,7 +49,7 @@ const GlobalSlice = createSlice({
       state.affectedSuppliers = action.payload;
     },
     setSelectedSupplier(state, action) {
-      state.selectedSupplier = action.payload; // { ...action.payload, supplier_id: "EVAL-test-ris-EN-441-1783442252" };
+      state.selectedSupplier = action.payload;
       state.selectedSupplierAlertTypes = action.payload.risk_scores.map(risk => risk.triggered_by.risk_type_triggered);
       state.alternativeSuppliers = [];
       state.alternativeSuppliersAgentReasoning = alternativeLayers.map(layer => ({ name: layer, steps: [] })); // events
