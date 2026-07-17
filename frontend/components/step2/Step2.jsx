@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@leafygreen-ui/button";
 import { spacing } from "@leafygreen-ui/tokens";
@@ -51,8 +51,17 @@ export default function Step2() {
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
 
+  // Guards against React Strict Mode's intentional double-invoke of mount effects
+  // in development. Redux state alone can't guard here because it's only populated
+  // AFTER the fetch resolves — both Strict Mode passes run before that, so they'd
+  // both pass a state-only check. This ref flips synchronously, before the first
+  // await, so the second pass is blocked immediately.
+  const startedRef = useRef(false);
+
   useEffect(() => {
-    if (affectedSuppliers.length > 0) return;
+    if (affectedSuppliers.length > 0) return; // skip if data already loaded (e.g. real remount)
+    if (startedRef.current) return;           // skip if a run has already started (Strict Mode's 2nd pass)
+    startedRef.current = true;                // set BEFORE any await — must stay synchronous
 
     async function runEvaluate() {
       try {
@@ -129,7 +138,7 @@ export default function Step2() {
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
         subtitle="ReAct Agent powered by LangGraph + MongoDB Atlas"
-        phases={affectedSuppliersAgentReasoning}
+        phases={[{ name: "Affected suppliers", steps: affectedSuppliersAgentReasoning || [] }]}
       />
 
       {agentDone && (

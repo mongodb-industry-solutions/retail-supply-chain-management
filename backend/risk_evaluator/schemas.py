@@ -119,6 +119,7 @@ class SupplierEvaluation(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    evaluation_id: str
     supplier_id: str
     supplier_name: str
     region: str

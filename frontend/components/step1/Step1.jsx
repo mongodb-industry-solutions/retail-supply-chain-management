@@ -1,5 +1,4 @@
 "use client";
-
 import SimulationPanel from "./SimulationPanel";
 import DashboardAtlasCharts from "./DashboardAtlasCharts";
 import HowExternalConditionsGenerated from "./HowExternalConditionsGenerated";

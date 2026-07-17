@@ -24,6 +24,6 @@ services:
     env_file:
       - ./frontend/.env.local
     ports:
-      - "3000:3000"
+      - "3000:8080"
     restart: always
     container_name: demoname-frontend
