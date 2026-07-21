@@ -1,4 +1,4 @@
-# Intelligen Supplier Hub – User Guide
+# Intelligent Supplier Hub – User Guide
 
 This guide walks you through the Intelligent Supplier Hub demo step by step. It covers every section of the UI, what each element does, and what MongoDB capability it demonstrates — so you can navigate the demo confidently and understand what is happening at each stage.
 
