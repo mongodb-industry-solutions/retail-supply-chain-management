@@ -186,7 +186,7 @@ Step 3 contains three sections: **Affected Supplier**, **Identifying Alternative
 
 ### Affected Supplier
 
-This sections shows the supplier you selected in Step 2.
+This section shows the supplier you selected in Step 2.
 
 ![Affected Supplier](./images/selected-affected-supplier.png)
 
