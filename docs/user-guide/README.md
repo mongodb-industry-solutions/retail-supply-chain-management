@@ -87,7 +87,7 @@ The Dashboard section sits below the External Conditions simulation and displays
 
 **Clicking Learn More** opens a modal with information about Atlas Charts and links to real customer stories.
 
-![External Condition](./images/atlas-charts.png)
+![Atlas Charts](./images/atlas-charts.png)
 
 
 > **MongoDB capability:** All three charts are embedded directly in the application. There is no separate BI tool and no data export — the operational data and the analytics live in the same MongoDB Atlas platform.
