@@ -275,7 +275,7 @@ Clicking Escalate opens a full-page modal with a green header and the title **"C
 
 ![End](./images/end.png)
 
-Click **"Got it 👍"** to close the modal. You have now guarantee that the business stays agile in the face of external conditions that disrupt your supply chain.
+Click **"Got it 👍"** to close the modal. You have now helped ensure that the business stays agile in the face of external conditions that disrupt your supply chain.
 
 ---
 
