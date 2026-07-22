@@ -83,9 +83,7 @@ Once all three conditions are visible, a **"Go to supplier impact analysis →"*
 
 ### Dashboard
 
-The Dashboard section sits below the External Conditions simulation and displays 4 embedded **Atlas Charts** charts — each pulling live data from the `external_conditions` collection in MongoDB Atlas.
-
-[screenshot — Dashboard section with three charts]
+The Dashboard section sits below the External Conditions simulation and displays four embedded **Atlas Charts** visualizations — each pulling live data from the `external_conditions` collection in MongoDB Atlas.
 
 **Clicking Learn More** opens a modal with information about Atlas Charts and links to real customer stories.
 
