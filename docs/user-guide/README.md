@@ -254,7 +254,7 @@ Three rows that can be expanded individually, one per audit criterion:
 When you expand any row you will see:
 - The source document type badge (e.g. PDF, email), filename, and page number
 - An **Extracted Content** label above the exact text chunk the agent used to reach its verdict — including certificate numbers, validity dates, and capacity figures where present
-- A **📄 View document model** button that shows the chunk and the rpeview of the document of the chunk
+- A **📄 View document model** button that shows the chunk and a preview of the source document for that chunk
 
 <table>
 	<tr>
