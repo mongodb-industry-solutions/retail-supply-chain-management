@@ -50,7 +50,10 @@ class AlternativeFinderState(TypedDict):
 
     # --- Layer 3 (Close) outputs -------------------------------------------
     proximity_km: dict            # {supplier_id: float} — real $geoNear later
-    shortlist: list[dict]         # final shortlist entries (shortlist_ready.candidates shape)
+    # Final shortlist entries (shortlist_ready.candidates shape). Each entry additionally
+    # carries an integer `rank` (1-indexed, set by rank_assembly_node) and a plain-text
+    # `rationale` (set by summarize_node) explaining why the candidate holds that position.
+    shortlist: list[dict]
     approved_supplier_id: str | None   # always null until a human approves
 
     # --- Cross-cutting accumulators (mirrors risk_evaluator) ----------------

@@ -188,6 +188,21 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
         ))}
       </div>
 
+      {/* ── Rationale (plain text, preserves line breaks incl. glossary footer) ── */}
+      {supplier.rationale && (
+        <div style={{ marginBottom: spacing[300] }}>
+          <Body
+            style={{
+              fontSize: 14,
+              color: palette.gray.dark2,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {supplier.rationale}
+          </Body>
+        </div>
+      )}
+
       {/* ── Why multimodal ── */}
       <div style={{ marginBottom: spacing[300] }}>
         <Overline
