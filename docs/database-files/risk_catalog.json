@@ -1,0 +1,449 @@
+[{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f7f"
+  },
+  "risk_id": "RISK-GEO-001",
+  "risk_type": "geopolitical_tariff",
+  "name": "US-CN trade tariff escalation",
+  "description": "US import tariffs imposed on goods from China, affecting cost and lead times for CN-region suppliers.",
+  "applies_to_regions": [
+    "CN"
+  ],
+  "severity": 8,
+  "occurrence_base": 5,
+  "detection": 4,
+  "rpn_base": 160,
+  "alert_threshold_rpn": 260,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f84"
+  },
+  "risk_id": "RISK-CLM-001",
+  "risk_type": "climate_disruption",
+  "name": "Tropical storm — Oaxaca / Pacific coast MX",
+  "description": "Tropical storm or hurricane affecting fresh produce growing regions in Oaxaca and surrounding states.",
+  "applies_to_regions": [
+    "MX"
+  ],
+  "severity": 9,
+  "occurrence_base": 4,
+  "detection": 3,
+  "rpn_base": 108,
+  "alert_threshold_rpn": 220,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f81"
+  },
+  "risk_id": "RISK-LOG-001",
+  "risk_type": "logistics_disruption",
+  "name": "Shenzhen / Yantian port congestion",
+  "description": "Severe congestion at Yantian and Nansha terminals causing 12-18 day transit delays.",
+  "applies_to_regions": [
+    "CN",
+    "HK"
+  ],
+  "severity": 6,
+  "occurrence_base": 4,
+  "detection": 5,
+  "rpn_base": 120,
+  "alert_threshold_rpn": 180,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f83"
+  },
+  "risk_id": "RISK-LOG-003",
+  "risk_type": "logistics_disruption",
+  "name": "Panama Canal capacity restriction",
+  "description": "Reduced canal capacity due to drought, causing rerouting and 10-14 day delays for LATAM-US routes.",
+  "applies_to_regions": [
+    "MX",
+    "CO",
+    "PE",
+    "BR"
+  ],
+  "severity": 7,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 84,
+  "alert_threshold_rpn": 200,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f88"
+  },
+  "risk_id": "RISK-LOG-004",
+  "risk_type": "logistics_disruption",
+  "name": "US East Coast port labor disruption",
+  "description": "Strike or labor action at major US East Coast ports affecting inbound shipments.",
+  "applies_to_regions": [
+    "CN",
+    "VN",
+    "TW",
+    "IN",
+    "BR"
+  ],
+  "severity": 8,
+  "occurrence_base": 2,
+  "detection": 3,
+  "rpn_base": 48,
+  "alert_threshold_rpn": 180,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f82"
+  },
+  "risk_id": "RISK-LOG-002",
+  "risk_type": "logistics_disruption",
+  "name": "Rotterdam port congestion",
+  "description": "Congestion at Rotterdam causing delays for EU-origin shipments.",
+  "applies_to_regions": [
+    "NL",
+    "DE",
+    "BE"
+  ],
+  "severity": 5,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 60,
+  "alert_threshold_rpn": 150,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f85"
+  },
+  "risk_id": "RISK-CLM-002",
+  "risk_type": "climate_disruption",
+  "name": "Drought — California / US West",
+  "description": "Prolonged drought affecting agricultural output in California and US West Coast suppliers.",
+  "applies_to_regions": [
+    "US"
+  ],
+  "severity": 7,
+  "occurrence_base": 5,
+  "detection": 3,
+  "rpn_base": 105,
+  "alert_threshold_rpn": 200,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f80"
+  },
+  "risk_id": "RISK-GEO-002",
+  "risk_type": "geopolitical_tariff",
+  "name": "US-VN trade tariff escalation",
+  "description": "US tariff pressure on Vietnamese manufactured goods following trade policy shifts.",
+  "applies_to_regions": [
+    "VN"
+  ],
+  "severity": 6,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 72,
+  "alert_threshold_rpn": 180,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f86"
+  },
+  "risk_id": "RISK-CLM-003",
+  "risk_type": "climate_disruption",
+  "name": "Flooding — Thailand / Chao Phraya basin",
+  "description": "Seasonal flooding in central Thailand disrupting agricultural and manufacturing supply.",
+  "applies_to_regions": [
+    "TH"
+  ],
+  "severity": 7,
+  "occurrence_base": 4,
+  "detection": 4,
+  "rpn_base": 112,
+  "alert_threshold_rpn": 210,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a2c29d6aa8e334aa4699f87"
+  },
+  "risk_id": "RISK-GEO-003",
+  "risk_type": "geopolitical_tariff",
+  "name": "EU import restrictions — food safety compliance",
+  "description": "EU tightening food safety import requirements, affecting certification compliance timelines.",
+  "applies_to_regions": [
+    "MA",
+    "ZA",
+    "IN"
+  ],
+  "severity": 5,
+  "occurrence_base": 2,
+  "detection": 3,
+  "rpn_base": 30,
+  "alert_threshold_rpn": 120,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d7"
+  },
+  "risk_id": "RISK-GEO-005",
+  "risk_type": "geopolitical_tariff",
+  "name": "Cross-strait tension — Taiwan electronics supply chain risk",
+  "description": "Escalating cross-strait tensions raising relocation and export-control risk for Taiwan-based electronics and packaging manufacturers.",
+  "applies_to_regions": [
+    "TW"
+  ],
+  "severity": 7,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 84,
+  "alert_threshold_rpn": 170,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d8"
+  },
+  "risk_id": "RISK-CLM-005",
+  "risk_type": "climate_disruption",
+  "name": "Frost risk — Brazilian agricultural export belt",
+  "description": "Unseasonal frost affecting coffee and grain-adjacent agricultural regions, disrupting ambient grocery export volumes.",
+  "applies_to_regions": [
+    "BR"
+  ],
+  "severity": 6,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 72,
+  "alert_threshold_rpn": 150,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d9"
+  },
+  "risk_id": "RISK-GEO-006",
+  "risk_type": "geopolitical_tariff",
+  "name": "EU carbon border adjustment (CBAM) compliance pressure",
+  "description": "Tightening EU carbon border adjustment reporting requirements affecting German ambient grocery exporters.",
+  "applies_to_regions": [
+    "DE"
+  ],
+  "severity": 5,
+  "occurrence_base": 3,
+  "detection": 3,
+  "rpn_base": 45,
+  "alert_threshold_rpn": 130,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342db"
+  },
+  "risk_id": "RISK-GEO-007",
+  "risk_type": "geopolitical_tariff",
+  "name": "OFAC transshipment screening — Vietnam origin verification",
+  "description": "Increased customs and export-control scrutiny on goods transshipped through Vietnam to circumvent China-origin tariffs, raising certification and compliance requirements.",
+  "applies_to_regions": [
+    "VN"
+  ],
+  "severity": 6,
+  "occurrence_base": 3,
+  "detection": 3,
+  "rpn_base": 54,
+  "alert_threshold_rpn": 140,
+  "signal_source": "OFAC",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342da"
+  },
+  "risk_id": "RISK-LOG-006",
+  "risk_type": "logistics_disruption",
+  "name": "West Coast dockworker labor action — LA/Long Beach terminals",
+  "description": "Labor action at Los Angeles/Long Beach terminals disrupting inbound packaging material shipments.",
+  "applies_to_regions": [
+    "US"
+  ],
+  "severity": 6,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 72,
+  "alert_threshold_rpn": 160,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d4"
+  },
+  "risk_id": "RISK-LOG-005",
+  "risk_type": "logistics_disruption",
+  "name": "Typhoon-driven port congestion — Yokohama/Kobe terminals",
+  "description": "Seasonal typhoon activity disrupting vessel schedules and terminal operations at major Japanese ports, delaying ambient grocery and dairy shipments.",
+  "applies_to_regions": [
+    "JP"
+  ],
+  "severity": 6,
+  "occurrence_base": 4,
+  "detection": 4,
+  "rpn_base": 96,
+  "alert_threshold_rpn": 170,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d5"
+  },
+  "risk_id": "RISK-CLM-004",
+  "risk_type": "climate_disruption",
+  "name": "Severe winter storm — Ontario dairy corridor disruption",
+  "description": "Ice storms and extreme cold disrupting cold-chain logistics and dairy production/transport in Ontario.",
+  "applies_to_regions": [
+    "CA"
+  ],
+  "severity": 6,
+  "occurrence_base": 4,
+  "detection": 3,
+  "rpn_base": 72,
+  "alert_threshold_rpn": 150,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f7f30cdd8b908eba342d6"
+  },
+  "risk_id": "RISK-GEO-004",
+  "risk_type": "geopolitical_tariff",
+  "name": "Post-Brexit customs friction — Irish dairy exports",
+  "description": "Increased customs checks and certification requirements affecting Irish dairy exports to UK and EU markets.",
+  "applies_to_regions": [
+    "IE"
+  ],
+  "severity": 5,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 60,
+  "alert_threshold_rpn": 140,
+  "signal_source": "GDELT",
+  "has_physical_location": false
+},
+{
+  "_id": {
+    "$oid": "6a5f855e85f7d4650cbab601"
+  },
+  "risk_id": "RISK-LOG-007",
+  "risk_type": "logistics_disruption",
+  "name": "Polish freight corridor disruption — trucker protests delaying inbound/outbound cargo",
+  "description": "Trucker protests and border-crossing slowdowns disrupting Polish freight corridors, delaying packaging material shipments.",
+  "applies_to_regions": [
+    "PL"
+  ],
+  "severity": 5,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 60,
+  "alert_threshold_rpn": 140,
+  "signal_source": "GDELT",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f855e85f7d4650cbab602"
+  },
+  "risk_id": "RISK-CLM-006",
+  "risk_type": "climate_disruption",
+  "name": "Catalonia drought — agricultural and packaging supply strain",
+  "description": "Prolonged drought conditions in Catalonia straining fresh produce output and packaging material water-dependent processes.",
+  "applies_to_regions": [
+    "ES"
+  ],
+  "severity": 7,
+  "occurrence_base": 4,
+  "detection": 3,
+  "rpn_base": 84,
+  "alert_threshold_rpn": 180,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f855e85f7d4650cbab605"
+  },
+  "risk_id": "RISK-CLM-007",
+  "risk_type": "climate_disruption",
+  "name": "East Africa rainfall variability — fresh produce export risk",
+  "description": "Irregular rainfall patterns affecting Kenyan fresh produce yields and export volumes.",
+  "applies_to_regions": [
+    "KE"
+  ],
+  "severity": 6,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 72,
+  "alert_threshold_rpn": 160,
+  "signal_source": "NOAA",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f855e85f7d4650cbab603"
+  },
+  "risk_id": "RISK-LOG-008",
+  "risk_type": "logistics_disruption",
+  "name": "Brenner Pass corridor disruption — Northern Italy freight delays",
+  "description": "Alpine transit restrictions and rail/road disruption at the Brenner Pass corridor delaying Northern Italy packaging material freight.",
+  "applies_to_regions": [
+    "IT"
+  ],
+  "severity": 5,
+  "occurrence_base": 3,
+  "detection": 4,
+  "rpn_base": 60,
+  "alert_threshold_rpn": 140,
+  "signal_source": "GDELT",
+  "has_physical_location": true
+},
+{
+  "_id": {
+    "$oid": "6a5f855e85f7d4650cbab604"
+  },
+  "risk_id": "RISK-LOG-009",
+  "risk_type": "logistics_disruption",
+  "name": "Suez Canal transit disruption — Egyptian export corridor risk",
+  "description": "Vessel transit disruption or blockage at the Suez Canal delaying Egyptian fresh produce and ambient grocery export shipments.",
+  "applies_to_regions": [
+    "EG"
+  ],
+  "severity": 8,
+  "occurrence_base": 2,
+  "detection": 3,
+  "rpn_base": 48,
+  "alert_threshold_rpn": 160,
+  "signal_source": "MarineTraffic",
+  "has_physical_location": true
+}]

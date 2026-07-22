@@ -1,0 +1,142 @@
+[{
+  "_id": {
+    "$oid": "6a60c853c61abc6d8173c760"
+  },
+  "evaluation_id": "EVAL-a05efcce-ORK-IE-1784727635",
+  "supplier_id": "SUP-CORK-IE",
+  "supplier_name": "Kerry Foods (Cork) Ltd.",
+  "region": "IE",
+  "country": "Ireland",
+  "product_categories": [
+    "dairy"
+  ],
+  "session_id": "a05efcce-b142-4e8f-b115-8c2814387278",
+  "is_base": false,
+  "evaluated_at": "2026-07-22T13:40:35.116004+00:00",
+  "supplier_risk_level": "WATCH",
+  "requires_action": false,
+  "operational_context": {
+    "active_orders": 2,
+    "total_value_usd": 415000,
+    "days_until_due": 27,
+    "earliest_delivery_due": "2026-08-18",
+    "criticality": "high"
+  },
+  "risk_scores": [
+    {
+      "risk_id": "RISK-GEO-004",
+      "condition_id": "COND-A05EFCCE-GEO-E9D5CB",
+      "rpn_base": 60,
+      "rpn_dynamic": 107.33,
+      "rpn_status": "WATCH",
+      "triggered_by": {
+        "source": "GDELT",
+        "condition_score": 2.9814814814814814,
+        "historical_weight": 0.6,
+        "distance_decay": null,
+        "risk_type_triggered": "geopolitical_tariff"
+      }
+    }
+  ],
+  "natural_language_summary": "**Risk Summary: SUP-CORK-IE (Kerry Foods Cork)**\n\nKerry Foods is currently on WATCH status, with a dynamic RPN of 107.33 (elevated from a base of 60) driven by ongoing Ireland-UK trade monitoring, though no new certification requirements have been imposed this quarter. Operational exposure is material: 2 active orders totaling $415,000 are due in 27 days, and the supplier is flagged as high criticality. Historical precedent for the specific trigger is limited — the one prior Irish dairy post-Brexit certification event did not materialize (no delay or cost impact), suggesting the elevated score reflects sector-wide trade volatility rather than a realized disruption pattern at this supplier. However, comparable regulatory and customs episodes elsewhere in the portfolio (e.g., South African certification checks, Alpine corridor delays) have produced 9-day delays and $60–65K cost overruns, indicating a plausible downside if conditions escalate. Recommend continued monitoring; no immediate mitigation required, but confirm certification validity ahead of the 27-day delivery window.",
+  "memory_episodes_used": [
+    "MEM-20250815-SH087-O",
+    "MEM-20260601-BCNES-X",
+    "MEM-20260412-TORONTOCA-W",
+    "MEM-20250616-LAUS-R",
+    "MEM-20260427-TH055-K",
+    "MEM-20250915-SHZ441-A",
+    "MEM-20260312-CAPETOWN-ZA-F",
+    "MEM-20260606-MILANIT-M",
+    "MEM-20260220-CORK-IE-H"
+  ]
+},
+{
+  "_id": {
+    "$oid": "6a60c85ac61abc6d8173c761"
+  },
+  "evaluation_id": "EVAL-a05efcce-LIN-IE-1784727642",
+  "supplier_id": "SUP-DUBLIN-IE",
+  "supplier_name": "Leinster Fresh Dairy Co-op",
+  "region": "IE",
+  "country": "Ireland",
+  "product_categories": [
+    "dairy"
+  ],
+  "session_id": "a05efcce-b142-4e8f-b115-8c2814387278",
+  "is_base": false,
+  "evaluated_at": "2026-07-22T13:40:42.582857+00:00",
+  "supplier_risk_level": "WATCH",
+  "requires_action": false,
+  "operational_context": {
+    "active_orders": 13,
+    "total_value_usd": 2072000,
+    "days_until_due": 7,
+    "earliest_delivery_due": "2026-07-29",
+    "criticality": "high"
+  },
+  "risk_scores": [
+    {
+      "risk_id": "RISK-GEO-004",
+      "condition_id": "COND-A05EFCCE-GEO-E9D5CB",
+      "rpn_base": 60,
+      "rpn_dynamic": 134.17,
+      "rpn_status": "WATCH",
+      "triggered_by": {
+        "source": "GDELT",
+        "condition_score": 2.9814814814814814,
+        "historical_weight": 0.75,
+        "distance_decay": null,
+        "risk_type_triggered": "geopolitical_tariff"
+      }
+    }
+  ],
+  "natural_language_summary": "Leinster Fresh Dairy Co-op is currently in WATCH status, with a dynamic RPN of 134.17 more than doubling its baseline of 60.0, driven primarily by ongoing Ireland-UK trade monitoring rather than any new certification or compliance trigger this quarter. The elevated condition score (2.98) reflects sustained geopolitical friction, though no acute disruption is reported. Financial exposure is material: $2.07M across 13 active orders, with high criticality and only 7 days until due — leaving minimal buffer if cross-border logistics slip. Historical precedent is significant (weight 0.75), indicating this supplier and lane have faced comparable trade-related pressure before, supporting the WATCH rather than escalated designation. Recommend confirming shipment readiness and customs documentation this week, but no sourcing action required at this time.",
+  "memory_episodes_used": []
+},
+{
+  "_id": {
+    "$oid": "6a60c860c61abc6d8173c762"
+  },
+  "evaluation_id": "EVAL-a05efcce-LLE-MX-1784727648",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_name": "Valle Verde Productores S.C.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "session_id": "a05efcce-b142-4e8f-b115-8c2814387278",
+  "is_base": false,
+  "evaluated_at": "2026-07-22T13:40:48.928734+00:00",
+  "supplier_risk_level": "CRITICAL",
+  "requires_action": true,
+  "operational_context": {
+    "active_orders": 8,
+    "total_value_usd": 932000,
+    "days_until_due": 5,
+    "earliest_delivery_due": "2026-07-27",
+    "criticality": "high"
+  },
+  "risk_scores": [
+    {
+      "risk_id": "RISK-CLM-001",
+      "condition_id": "COND-A05EFCCE-CLI-9CF97C",
+      "rpn_base": 108,
+      "rpn_dynamic": 365.44,
+      "rpn_status": "CRITICAL",
+      "triggered_by": {
+        "source": "NOAA",
+        "condition_score": 2.602880658436214,
+        "historical_weight": 1.3,
+        "distance_decay": 1,
+        "risk_type_triggered": "climate_disruption"
+      }
+    }
+  ],
+  "natural_language_summary": "**Risk Summary: SUP-VALLE-MX (Valle Verde Productores S.C.)**\n\nValle Verde is currently at a CRITICAL risk level (dynamic RPN 365.44, up from a base of 108), driven by CONAGUA's above-average Pacific storm season outlook affecting Mexico's fresh produce corridor. Financial exposure is significant: 8 active orders totaling $932K are due within 5 days, leaving minimal buffer to reroute or hedge if disruption occurs. Historical precedent supports elevated concern — a prior Bajío drought event at this supplier materialized into a 13-day delay and $120K cost overrun, though a separate tropical storm threat did not impact deliveries. Given the tight due-date window and confirmed prior loss experience, expedited mitigation (safety stock confirmation, alternate sourcing, or shipment pre-staging) is warranted this week.",
+  "memory_episodes_used": [
+    "MEM-20250427-VALLEMX-T",
+    "MEM-20250620-VALLE-MX-B"
+  ]
+}]

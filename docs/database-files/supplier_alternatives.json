@@ -1,0 +1,214 @@
+[{
+  "_id": {
+    "$oid": "6a60c936c61abc6d8173c763"
+  },
+  "evaluation_id_ref": "EVAL-a05efcce-LIN-IE-1784727642",
+  "session_id": "a05efcce-b142-4e8f-b115-8c2814387278",
+  "blocked_supplier_id": "SUP-DUBLIN-IE",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": [
+    "geopolitical_tariff"
+  ],
+  "reference_point": {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ],
+    "assumed": true
+  },
+  "candidates_evaluated": 4,
+  "candidates_discarded": 0,
+  "candidates": [
+    {
+      "supplier_id": "SUP-BERLIN-DE",
+      "supplier_name": "Deutsche Frischware GmbH",
+      "location": "Germany",
+      "category": "dairy",
+      "proximity_km": 9320.1,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "weak_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_Berlin_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Deutsche Frischware GmbH, Siemensstraße 12, 14612 Falkensee, Brandenburg, Germany. Scope: food production — ambient and dairy. Audit type: Unannounced. Certificate date: 2025-10-15. Valid to 2027-09-30. ISO 22000:2018 also held — valid to 2027-09-30. Both issued by DQS GmbH.",
+            "valid_until": "2027-06-30T00:00:00Z"
+          },
+          "note": "Chunk text confirms BRC Grade A unannounced and ISO 22000:2018 by DQS GmbH, valid to 2027-09-30; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_Berlin_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: export@deutschefrischware.de | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Q3 Capacity Confirmation. Production facility at 62% capacity. No Rotterdam port disruptions currently affecting our Bremerhaven loading schedule. Standard transit Hamburg–Newark is 14 days. Q3 orders should be submitted by June 10.",
+            "valid_until": null
+          },
+          "note": "Email dated 2026-05-08 confirms 62% capacity, no port disruption, and 14-day Hamburg-Newark transit as claimed."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_Berlin_2025.pdf",
+            "page": 5,
+            "excerpt": "Sustainability audit August 2025 under ISO 14001. Facility achieved 100% renewable electricity via Ørsted Wind Germany PPA. Emergency generator backup provides 72 hours cold chain continuity. Scope 1+2 carbon intensity: 0.43 tCO2e per tonne of chilled product output. Reviewed the 2024 power outage event (August 14, 6.5 hours) — confirmed no temperature exceedances. Auditor: TÜV Rheinland Germany.",
+            "valid_until": null
+          },
+          "note": "ISO 14001 audit August 2025 by TÜV Rheinland confirms 100% renewable via Ørsted PPA and 0.43 tCO2e/tonne intensity."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-TORONTO-CA",
+      "supplier_name": "Great Lakes Dairy Partners Inc.",
+      "location": "Canada",
+      "category": "dairy",
+      "proximity_km": 3498.3,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "weak_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-TOR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_Toronto_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Great Lakes Dairy Partners Inc., 150 Confectionery Court, Brampton, Ontario L6T 4V3, Canada. Scope: dairy — milk, yogurt, cheese. Audit type: Unannounced. Valid to 2028-03-31. ISO 22000:2018 also held — valid to 2028-03-31. Certification body: Intertek.",
+            "valid_until": "2027-08-31T00:00:00Z"
+          },
+          "note": "Chunk explicitly states BRC Grade A (unannounced) and ISO 22000:2018 valid to 2028-03-31 by Intertek; certificate not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-TOR-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_Toronto_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 6 — CUSMA/USMCA Export Compliance. All dairy products exported to the USA under this Agreement are shipped under CUSMA (USMCA) preferential tariff treatment. The Supplier shall maintain current CFIA export certificates and US FDA facility registration (FEI number 3014588120) for the duration of this Agreement. Any suspension or lapse in either certification must be notified to FreshMart wi…",
+            "valid_until": null
+          },
+          "note": "Contract Article 6 confirms active CUSMA/USMCA export terms with CFIA and FDA (FEI 3014588120) obligations."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk addresses sustainability or environmental practices."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-CHICAGO-US",
+      "supplier_name": "Midwest Dairy Alliance LLC",
+      "location": "United States",
+      "category": "dairy",
+      "proximity_km": 2807.1,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "weak_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CHI-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_Chicago_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Midwest Dairy Alliance LLC, 1800 South Kilbourn Avenue, Chicago, Illinois 60623, USA. Scope: dairy processing — fluid milk, butter, cheese. Audit type: Unannounced. Valid to 2027-08-31. ISO 22000:2018 also held — valid to 2027-08-31. Both issued by NSF International.",
+            "valid_until": "2027-05-31T00:00:00Z"
+          },
+          "note": "Chunk text explicitly states BRC Grade A (unannounced) and ISO 22000:2018 valid to 2027-08-31, issued by NSF International; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CHI-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_Chicago_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: procurement-ops@midwestdairyalliance.com | To: procurement@freshmart.com | Date: 2026-04-30 | Subject: Q3 Capacity Confirmation. Facility operating at 68% capacity. Q3 volumes confirmed as per forecast. OTIF performance for Q1 2026: 98.4%. No supply chain disruptions anticipated for summer dairy season.",
+            "valid_until": null
+          },
+          "note": "Email dated 2026-04-30 confirms 68% capacity, Q1 2026 OTIF 98.4%, and no anticipated disruptions — matches claim."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited chunk addresses environmental or sustainability commitments."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-JP-033",
+      "supplier_name": "Osaka Quality Foods Ltd.",
+      "location": "Japan",
+      "category": "dairy",
+      "proximity_km": 9199.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 1
+      },
+      "precedent_summary": "weak_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-JP033-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_JP033_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Osaka Quality Foods Ltd., 3-14 Sakurajima, Konohana-ku, Osaka 554-0021, Japan. Scope: food production and distribution. Audit type: Announced. Certificate issue date: 2025-08-20. Valid to 2028-02-28. ISO 22000:2018 also held — valid to 2028-02-28. Certification body: NSF International.",
+            "valid_until": "2027-11-30T00:00:00Z"
+          },
+          "note": "Chunk text explicitly confirms BRC Grade A and ISO 22000:2018 by NSF International, valid to 2028-02-28; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk confirms active contract or recent operational correspondence."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk references environmental or sustainability commitments."
+        }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-07-22T13:44:22.769444+00:00"
+}]
