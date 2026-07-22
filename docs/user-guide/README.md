@@ -225,7 +225,7 @@ For the **Reflect and Critique phase** logs appear per supplier as they are audi
 
 ### Recommended Alternative Suppliers
 
-After the agent finishes, a list of **5 alternative suppliers** appears, ordered from most to least recommended will show.
+After the agent finishes, a list of **5 alternative suppliers** appears, ordered from most to least recommended.
 
 ![Alternative Suppliers](./images/alternative-suppliers.png)
 
