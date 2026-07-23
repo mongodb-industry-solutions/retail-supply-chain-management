@@ -130,7 +130,10 @@ assessment per supplier exposed to an active condition.
 `country`/`product_categories`; `operational_context`; `risk_scores[]`
 (per risk type: base RPN, `historical_weight` derived from precedent,
 resulting `rpn_dynamic` and status); `supplier_risk_level`;
-`requires_action`; `natural_language_summary`.
+`requires_action`; `natural_language_summary`; `glossary` (a structured
+list of `{term, definition}` pairs giving plain-English definitions for
+terms used in the narrative summary — sourced from a fixed internal
+dictionary, not written by the model).
 **Reads:** `alternative_finder` (to know why it was invoked).
 **Writes:** `risk_evaluator` only — every document in this collection is
 session-generated; there is no fixed reference data here. The sample
@@ -140,11 +143,18 @@ file in this folder shows the *shape* of that output, not a stable seed.
 **What it represents:** the output of `alternative_finder` — a shortlist
 of alternative suppliers proposed for a given risk evaluation, pending
 human approval.
-**Key fields:** `evaluation_id_ref`; candidate suppliers with
-`proximity_km` to a reference distribution point, and a compliance
-verdict per criterion (backed by cited `supplier_documents`); an
-`approved_supplier_id` field that starts `null` and is meant to be set
-by a human reviewer, never by the agent itself.
+**Key fields:** at the top level of the document, `evaluation_id_ref`;
+a `candidates[]` array (one entry per proposed alternative supplier);
+and an `approved_supplier_id` field that starts `null` and is meant to
+be set by a human reviewer, never by the agent itself. *Each entry
+inside `candidates[]`* carries: `proximity_km` to a reference
+distribution point; a compliance verdict per criterion (backed by cited
+`supplier_documents`); a `rank` (explicit 1-indexed position from a
+deterministic sort); a `rationale` (plain-language paragraph explaining
+why that candidate holds its position); and a `glossary` (same
+structured `{term, definition}` shape as in `supplier_risk_evaluations`
+— plain-English definitions from a fixed internal dictionary for the
+terms that candidate's `rationale` uses).
 **Reads:** none of the current modules (it's a terminal output, meant for
 a UI/reviewer). **Writes:** `alternative_finder` only — session-generated,
 same caveat as above: this is a shape reference, not a stable seed.

@@ -27,7 +27,6 @@ common envelope (event / layer / timestamp / session_id) from the README contrac
 
 import json
 import logging
-import re
 from datetime import datetime, timezone
 
 from langchain_anthropic import ChatAnthropic
@@ -36,6 +35,12 @@ from langchain_core.runnables import RunnableConfig
 
 from core.config import get_settings
 from core.db import get_database
+from core.json_utils import _extract_json
+from core.glossary import (
+    ALTERNATIVE_FINDER_TERMS,
+    SHARED_TERMS,
+    get_definitions,
+)
 from alternative_finder.schemas import AlternativeFinderState
 
 logger = logging.getLogger(__name__)
@@ -242,16 +247,21 @@ _AUDIT_SYSTEM_PROMPT = (
 )
 
 
+# Allowed glossary term NAMES, sourced from the shared GLOSSARY (SHARED +
+# ALTERNATIVE_FINDER subsets) instead of a hardcoded list, so the vocabulary
+# stays in lockstep with core.glossary. The LLM only decides which of these it
+# used; the definition wording is applied by code via get_definitions().
+_SUMMARIZE_ALLOWED_TERMS: list[str] = SHARED_TERMS + ALTERNATIVE_FINDER_TERMS
+
 _SUMMARIZE_SYSTEM_PROMPT = (
     "You are a sourcing analyst writing a short rationale for a RETAIL OPERATIONS MANAGER "
     "(no risk-management background) explaining why one candidate alternative supplier "
     "landed at its position in a ranked shortlist.\n\n"
     "Respond with ONLY a single JSON object, no prose outside it:\n"
-    '{ "rationale": "<plain text, see rules>" }\n\n'
+    '{ "rationale": "<plain text, see rules>", "terms": ["<allowed term>", ...] }\n\n'
     "The rationale value is PLAIN TEXT ONLY. NO markdown: no *, no **, no #, no backticks, "
     "no bullet-point syntax. Plain sentences and newlines only.\n\n"
-    "The rationale has TWO parts separated by a blank line.\n\n"
-    "PART 1 — one short paragraph (2-4 sentences) justifying THIS candidate's position:\n"
+    "The rationale is ONE short paragraph (2-4 sentences) justifying THIS candidate's position:\n"
     "- If rank is 1: state explicitly that it is the TOP RECOMMENDATION, justified only by "
     "its OWN compliant criteria, precedent, and proximity. Do NOT reference other candidates.\n"
     "- If rank is greater than 1: justify from its OWN evidence first, then close with EXACTLY "
@@ -261,35 +271,17 @@ _SUMMARIZE_SYSTEM_PROMPT = (
     "- Use the internal terms verbatim where relevant (e.g. compliance_certification, "
     "evidence_coverage, proximity_km, exact_track_record). NEVER rewrite, simplify, or paraphrase "
     "the term itself inside the paragraph — the term stays exactly as-is; the glossary explains it.\n\n"
-    "PART 2 — a glossary footer. Format EXACTLY:\n"
-    "----\n"
-    "term — plain one-line definition\n"
-    "term — plain one-line definition\n\n"
-    "Glossary rules:\n"
-    "- Include a line ONLY for terms you actually used in Part 1.\n"
-    "- Allowed terms (internal demo / risk-management vocabulary ONLY): RPN, historical_weight, "
-    "exact_track_record, semantic_precedent, compliance_certification, operational_status, "
-    "sustainability_practices, proximity_km, evidence_coverage, precedent. Define only those you used.\n"
-    "- Write each definition for someone from retail with zero risk-management familiarity — "
-    "everyday language, no jargon inside the definition itself.\n"
+    "Do NOT write any glossary footer or definitions yourself — that is appended for you.\n\n"
+    "'terms' — the list of allowed terms you actually used in the rationale:\n"
+    "- Allowed terms (internal demo / risk-management vocabulary ONLY): "
+    + ", ".join(_SUMMARIZE_ALLOWED_TERMS) + ".\n"
+    "- List ONLY terms you actually used in the rationale; use an empty list if you used none.\n"
+    "- Use each allowed term's EXACT wording verbatim, character for character — never alter, "
+    "abbreviate, or misspell it (e.g. it is 'compliance_certification', never "
+    "'compliant_certification').\n"
     "- Do NOT include MongoDB/Atlas/search concepts (vector search, autoEmbed, rankFusion, rerank, "
-    "etc.) — out of scope, never define them.\n"
-    "- If Part 1 used none of the allowed terms, omit the footer entirely (no dashes line)."
+    "etc.) — out of scope, never list them."
 )
-
-
-def _extract_json(text: str) -> dict:
-    """Parse the first JSON object out of an LLM response, tolerating ```json fences.
-
-    Mirrors risk_evaluator's Final-Answer parsing approach (regex + json.loads) since no
-    ``with_structured_output`` pattern exists anywhere in this codebase to match.
-    """
-    fenced = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-    candidate = fenced.group(1) if fenced else None
-    if candidate is None:
-        brace = re.search(r"\{.*\}", text, re.DOTALL)
-        candidate = brace.group(0) if brace else text
-    return json.loads(candidate)
 
 
 def _make_llm() -> ChatAnthropic:
@@ -1209,10 +1201,13 @@ async def summarize_node(state: AlternativeFinderState, config: RunnableConfig) 
     candidate's rank, proximity_km, evidence_coverage, precedent, and criteria (the exact
     shapes ``reflect_critique_node`` / ``rank_assembly_node`` already built). For rank > 1
     the top candidate's key stats are passed so the model can add ONE bounded comparative
-    sentence against the top pick only. Output is PLAIN TEXT (no markdown): a short
-    justification paragraph plus a glossary footer defining only the internal terms the
-    paragraph actually used. On any parse failure the candidate falls back to a
-    deterministic plain-text one-liner (never crashes the stream). Emits one
+    sentence against the top pick only. ``entry["rationale"]`` is the PLAIN-TEXT narrative
+    paragraph ONLY (no markdown, no appended footer); the definitions for the internal
+    terms it used are attached separately as ``entry["glossary"]`` — a list of
+    ``{"term", "definition"}`` dicts sourced from ``get_definitions`` — so the frontend can
+    render them as structured data. On any parse failure the candidate falls back to a
+    deterministic plain-text one-liner with an empty glossary (never crashes the stream).
+    Emits one
     ``agent_thought`` (step ``summarize``) per candidate — no new SSE event type.
     """
     session_id = state["session_id"]
@@ -1255,11 +1250,28 @@ async def summarize_node(state: AlternativeFinderState, config: RunnableConfig) 
         try:
             parsed = _extract_json(resp.content)
             rationale = str(parsed.get("rationale", "")).strip()
+            terms = parsed.get("terms", [])
+            if not isinstance(terms, list):
+                terms = []
         except (json.JSONDecodeError, ValueError):
             rationale = ""
+            terms = []
         if not rationale:
             rationale = _fallback_rationale(entry, total)
+            glossary: list[dict] = []
+        else:
+            # Definitions come verbatim from GLOSSARY; the LLM only chose which
+            # canonical keys it used (unknown/misspelled keys are silently dropped).
+            # Kept as STRUCTURED DATA ({term, definition}) rather than flattened into the
+            # rationale string, so the frontend renders each term separately (real bold)
+            # instead of relying on a plain-text footer with fragile line breaks.
+            definitions = get_definitions([str(t) for t in terms])
+            glossary = [
+                {"term": term, "definition": definition}
+                for term, definition in definitions
+            ]
         entry["rationale"] = rationale
+        entry["glossary"] = glossary
 
         await _emit(config, session_id, "agent_thought", layer=3, step="summarize",
                     text=f"Rationale drafted for {entry.get('supplier_name', sid)} (rank {rank}).")
