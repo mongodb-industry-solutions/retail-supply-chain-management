@@ -27,7 +27,6 @@ common envelope (event / layer / timestamp / session_id) from the README contrac
 
 import json
 import logging
-import re
 from datetime import datetime, timezone
 
 from langchain_anthropic import ChatAnthropic
@@ -36,6 +35,12 @@ from langchain_core.runnables import RunnableConfig
 
 from core.config import get_settings
 from core.db import get_database
+from core.json_utils import _extract_json
+from core.glossary import (
+    ALTERNATIVE_FINDER_TERMS,
+    SHARED_TERMS,
+    get_definitions,
+)
 from alternative_finder.schemas import AlternativeFinderState
 
 logger = logging.getLogger(__name__)
@@ -242,18 +247,41 @@ _AUDIT_SYSTEM_PROMPT = (
 )
 
 
-def _extract_json(text: str) -> dict:
-    """Parse the first JSON object out of an LLM response, tolerating ```json fences.
+# Allowed glossary term NAMES, sourced from the shared GLOSSARY (SHARED +
+# ALTERNATIVE_FINDER subsets) instead of a hardcoded list, so the vocabulary
+# stays in lockstep with core.glossary. The LLM only decides which of these it
+# used; the definition wording is applied by code via get_definitions().
+_SUMMARIZE_ALLOWED_TERMS: list[str] = SHARED_TERMS + ALTERNATIVE_FINDER_TERMS
 
-    Mirrors risk_evaluator's Final-Answer parsing approach (regex + json.loads) since no
-    ``with_structured_output`` pattern exists anywhere in this codebase to match.
-    """
-    fenced = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-    candidate = fenced.group(1) if fenced else None
-    if candidate is None:
-        brace = re.search(r"\{.*\}", text, re.DOTALL)
-        candidate = brace.group(0) if brace else text
-    return json.loads(candidate)
+_SUMMARIZE_SYSTEM_PROMPT = (
+    "You are a sourcing analyst writing a short rationale for a RETAIL OPERATIONS MANAGER "
+    "(no risk-management background) explaining why one candidate alternative supplier "
+    "landed at its position in a ranked shortlist.\n\n"
+    "Respond with ONLY a single JSON object, no prose outside it:\n"
+    '{ "rationale": "<plain text, see rules>", "terms": ["<allowed term>", ...] }\n\n'
+    "The rationale value is PLAIN TEXT ONLY. NO markdown: no *, no **, no #, no backticks, "
+    "no bullet-point syntax. Plain sentences and newlines only.\n\n"
+    "The rationale is ONE short paragraph (2-4 sentences) justifying THIS candidate's position:\n"
+    "- If rank is 1: state explicitly that it is the TOP RECOMMENDATION, justified only by "
+    "its OWN compliant criteria, precedent, and proximity. Do NOT reference other candidates.\n"
+    "- If rank is greater than 1: justify from its OWN evidence first, then close with EXACTLY "
+    "ONE sentence explaining why it ranks below the top candidate specifically (weaker evidence "
+    "coverage, fewer compliant criteria, farther away, or weaker precedent — whichever the data "
+    "shows). Never compare against any candidate other than the top one; never a pairwise sweep.\n"
+    "- Use the internal terms verbatim where relevant (e.g. compliance_certification, "
+    "evidence_coverage, proximity_km, exact_track_record). NEVER rewrite, simplify, or paraphrase "
+    "the term itself inside the paragraph — the term stays exactly as-is; the glossary explains it.\n\n"
+    "Do NOT write any glossary footer or definitions yourself — that is appended for you.\n\n"
+    "'terms' — the list of allowed terms you actually used in the rationale:\n"
+    "- Allowed terms (internal demo / risk-management vocabulary ONLY): "
+    + ", ".join(_SUMMARIZE_ALLOWED_TERMS) + ".\n"
+    "- List ONLY terms you actually used in the rationale; use an empty list if you used none.\n"
+    "- Use each allowed term's EXACT wording verbatim, character for character — never alter, "
+    "abbreviate, or misspell it (e.g. it is 'compliance_certification', never "
+    "'compliant_certification').\n"
+    "- Do NOT include MongoDB/Atlas/search concepts (vector search, autoEmbed, rankFusion, rerank, "
+    "etc.) — out of scope, never list them."
+)
 
 
 def _make_llm() -> ChatAnthropic:
@@ -1028,40 +1056,62 @@ def _precedent_summary(precedent: dict) -> str:
     return "none"
 
 
-async def close_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
-    """Compute real proximity, assemble the shortlist, persist pending approval — Stage 4.4.
+def _compliant_count(criteria: list[dict]) -> int:
+    """Number of criteria whose final audited status is ``compliant`` — the primary
+    ranking key. Deterministic count over the exact ``criteria`` list Layer 2 built."""
+    return sum(1 for c in (criteria or []) if c.get("status") == "compliant")
 
-    Deterministic by design: NO LLM call, so this layer emits no ``agent_thought`` events
-    (confirmed still true). Two real MongoDB operations against the live cluster:
 
-      1. ``$geoNear`` on ``suppliers`` — real spherical distance from each shortlist
-         survivor to the distribution-center reference point (see ``_DC_REFERENCE``; the
-         reference point is an explicit ASSUMPTION, surfaced in the event). Restricted to
-         the candidate ``supplier_id``s via the ``query`` filter. Distance is returned in
-         metres and converted to km. A candidate with no ``location`` (or otherwise not
-         returned by ``$geoNear``) gets ``proximity_km: null`` — a real data gap is
-         reported honestly, never back-filled with a placeholder distance and never
-         silently dropped from the shortlist.
-      2. ``insertOne`` into ``supplier_alternatives`` — persists this run's shortlist with
-         ``approved_supplier_id: null`` (approval is a human step elsewhere, NEVER set by
-         this agent). One document per run (``insertOne``, not upsert) so run history is
-         preserved and the pre-existing ``is_base`` baseline doc is never overwritten.
+def _coverage_ratio(evidence_coverage: dict | None) -> float:
+    """``criteria_verified / criteria_total`` as the secondary ranking key. A missing or
+    zero ``criteria_total`` yields 0.0 (no evidence backing => lowest, never a div-by-zero)."""
+    ec = evidence_coverage or {}
+    total = ec.get("criteria_total") or 0
+    if not total:
+        return 0.0
+    return (ec.get("criteria_verified") or 0) / total
 
-    ``approved_supplier_id`` is always null.
+
+def _rank_sort_key(entry: dict):
+    """Explicit ranking rule (see rank_assembly_node). Returned as a tuple consumed by a
+    single ``sorted(..., reverse=False)`` call, so every component is oriented ascending:
+
+      1. compliant criteria count — DESC (negated)
+      2. evidence-coverage ratio  — DESC (negated)
+      3. proximity_km             — ASC; a null distance (real geo gap) sorts LAST via +inf
+         so a missing distance never wins a tiebreak.
+    """
+    proximity = entry.get("proximity_km")
+    proximity_key = proximity if proximity is not None else float("inf")
+    return (
+        -_compliant_count(entry.get("criteria", [])),
+        -_coverage_ratio(entry.get("evidence_coverage")),
+        proximity_key,
+    )
+
+
+async def rank_assembly_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
+    """Compute proximity, then assemble and rank the shortlist — Layer 3 (deterministic).
+
+    First of the three Close-stage nodes (split out of the former single ``close_node``).
+    NO LLM call. Runs the ``$geoNear`` on ``suppliers`` (unchanged: real spherical distance
+    from each candidate to the assumed distribution-center reference point, candidates
+    missing ``location`` reported as ``proximity_km: null``), assembles each shortlist entry
+    with the same fields as before, then applies the OFFICIAL ranking rule (see
+    ``_rank_sort_key``) and stamps a 1-indexed integer ``rank`` on every entry so position is
+    an explicit field, never just array order. Emits ``layer_started`` for Layer 3; the
+    matching ``layer_completed`` is emitted by ``persist_node`` at the end of the stage.
     """
     session_id = state["session_id"]
     candidates = state["candidates"]
     audits = state["audits"]
-    disrupted_supplier_id = state.get("supplier_id", "")
-    risk_types = state.get("risk_types", [])
-    evaluation_id_ref = state["evaluation_id_ref"]
 
     await _emit(config, session_id, "layer_started", layer=3, label=_LAYER_LABELS[3])
 
     db = await get_database()
     candidate_ids = [c["supplier_id"] for c in candidates]
 
-    # --- 1. $geoNear on suppliers -----------------------------------------------------
+    # --- $geoNear on suppliers --------------------------------------------------------
     # $geoNear MUST be the first stage. Restrict to the candidate pool via `query`; a
     # candidate lacking `location` simply won't be returned -> reported as a data gap.
     proximity_km: dict = {}
@@ -1121,7 +1171,138 @@ async def close_node(state: AlternativeFinderState, config: RunnableConfig) -> d
             }
         )
 
-    # --- 2. insertOne into supplier_alternatives --------------------------------------
+    # --- Official ranking: sort by the explicit rule, then stamp a 1-indexed `rank` ----
+    shortlist.sort(key=_rank_sort_key)
+    for position, entry in enumerate(shortlist, start=1):
+        entry["rank"] = position
+
+    return {"proximity_km": proximity_km, "shortlist": shortlist}
+
+
+def _fallback_rationale(entry: dict, total: int) -> str:
+    """Deterministic plain-text rationale used when the LLM output cannot be parsed — never
+    crashes the stream (mirrors the generate/audit parse fallbacks). No glossary footer."""
+    ec = entry.get("evidence_coverage") or {}
+    verified = ec.get("criteria_verified", 0)
+    ctotal = ec.get("criteria_total", 0)
+    proximity = entry.get("proximity_km")
+    prox_txt = f"{proximity} km from the distribution center" if proximity is not None else "no proximity data on file"
+    return (
+        f"Ranked #{entry.get('rank')} of {total}: "
+        f"{_compliant_count(entry.get('criteria', []))} criteria compliant, "
+        f"{verified}/{ctotal} evidence-backed, {prox_txt}."
+    )
+
+
+async def summarize_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
+    """Generate a plain-text per-candidate rationale for the shortlist — Layer 3 (LLM).
+
+    Second of the three Close-stage nodes. One LLM call PER candidate, given that
+    candidate's rank, proximity_km, evidence_coverage, precedent, and criteria (the exact
+    shapes ``reflect_critique_node`` / ``rank_assembly_node`` already built). For rank > 1
+    the top candidate's key stats are passed so the model can add ONE bounded comparative
+    sentence against the top pick only. ``entry["rationale"]`` is the PLAIN-TEXT narrative
+    paragraph ONLY (no markdown, no appended footer); the definitions for the internal
+    terms it used are attached separately as ``entry["glossary"]`` — a list of
+    ``{"term", "definition"}`` dicts sourced from ``get_definitions`` — so the frontend can
+    render them as structured data. On any parse failure the candidate falls back to a
+    deterministic plain-text one-liner with an empty glossary (never crashes the stream).
+    Emits one
+    ``agent_thought`` (step ``summarize``) per candidate — no new SSE event type.
+    """
+    session_id = state["session_id"]
+    shortlist = state["shortlist"]
+
+    if not shortlist:
+        return {"shortlist": shortlist}
+
+    llm = _make_llm()
+    total = len(shortlist)
+
+    # Ranked #1 is the reference for every rank > 1 comparison (single top pick only).
+    top = shortlist[0]
+    top_stats = {
+        "supplier_name": top.get("supplier_name"),
+        "compliant_count": _compliant_count(top.get("criteria", [])),
+        "evidence_coverage": top.get("evidence_coverage"),
+        "proximity_km": top.get("proximity_km"),
+        "precedent_summary": top.get("precedent_summary"),
+    }
+
+    new_thoughts = []
+    for entry in shortlist:
+        sid = entry["supplier_id"]
+        rank = entry.get("rank")
+        payload = {
+            "supplier_name": entry.get("supplier_name"),
+            "rank": rank,
+            "total_candidates": total,
+            "proximity_km": entry.get("proximity_km"),
+            "evidence_coverage": entry.get("evidence_coverage"),
+            "precedent": (state["audits"].get(sid, {}) or {}).get("precedent", {}),
+            "criteria": entry.get("criteria", []),
+            "top_candidate": None if rank == 1 else top_stats,
+        }
+        resp = await llm.ainvoke([
+            SystemMessage(content=_SUMMARIZE_SYSTEM_PROMPT),
+            HumanMessage(content=json.dumps(payload, default=str)),
+        ])
+        try:
+            parsed = _extract_json(resp.content)
+            rationale = str(parsed.get("rationale", "")).strip()
+            terms = parsed.get("terms", [])
+            if not isinstance(terms, list):
+                terms = []
+        except (json.JSONDecodeError, ValueError):
+            rationale = ""
+            terms = []
+        if not rationale:
+            rationale = _fallback_rationale(entry, total)
+            glossary: list[dict] = []
+        else:
+            # Definitions come verbatim from GLOSSARY; the LLM only chose which
+            # canonical keys it used (unknown/misspelled keys are silently dropped).
+            # Kept as STRUCTURED DATA ({term, definition}) rather than flattened into the
+            # rationale string, so the frontend renders each term separately (real bold)
+            # instead of relying on a plain-text footer with fragile line breaks.
+            definitions = get_definitions([str(t) for t in terms])
+            glossary = [
+                {"term": term, "definition": definition}
+                for term, definition in definitions
+            ]
+        entry["rationale"] = rationale
+        entry["glossary"] = glossary
+
+        await _emit(config, session_id, "agent_thought", layer=3, step="summarize",
+                    text=f"Rationale drafted for {entry.get('supplier_name', sid)} (rank {rank}).")
+        new_thoughts.append({"step": "summarize", "text": rationale})
+
+    return {
+        "shortlist": shortlist,
+        "agent_thoughts": state["agent_thoughts"] + new_thoughts,
+    }
+
+
+async def persist_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
+    """Persist the ranked, rationalised shortlist pending human approval — Layer 3 (deterministic).
+
+    Third of the three Close-stage nodes. NO LLM call. ``insertOne`` into
+    ``supplier_alternatives`` (unchanged shape, now with per-candidate ``rank`` +
+    ``rationale`` carried inside each ``candidates[]`` entry), emits the terminal
+    ``shortlist_ready`` (unchanged event type, same ``candidates`` array) and the Layer 3
+    ``layer_completed``. ``approved_supplier_id`` is ALWAYS null (human approval only);
+    ``insertOne``, never upsert, so run history and the ``is_base`` baseline are preserved.
+    """
+    session_id = state["session_id"]
+    shortlist = state["shortlist"]
+    disrupted_supplier_id = state.get("supplier_id", "")
+    risk_types = state.get("risk_types", [])
+    evaluation_id_ref = state["evaluation_id_ref"]
+
+    db = await get_database()
+    geo_gap_count = sum(1 for entry in shortlist if entry.get("proximity_km") is None)
+
+    # --- insertOne into supplier_alternatives -----------------------------------------
     # Shape note (reported in the stage deliverable): the ONE pre-existing document is an
     # `is_base` baseline (status "no_action_required", empty candidates). We keep its field
     # names where they carry over (evaluation_id_ref, blocked_supplier_id, is_base,
@@ -1174,12 +1355,8 @@ async def close_node(state: AlternativeFinderState, config: RunnableConfig) -> d
         summary=(
             f"Shortlist of {len(shortlist)} persisted (id {supplier_alternatives_id}), "
             "pending approval"
-            + (f"; {len(geo_gap_ids)} without proximity data" if geo_gap_ids else "")
+            + (f"; {geo_gap_count} without proximity data" if geo_gap_count else "")
         ),
     )
 
-    return {
-        "proximity_km": proximity_km,
-        "shortlist": shortlist,
-        "approved_supplier_id": None,
-    }
+    return {"approved_supplier_id": None}

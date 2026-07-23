@@ -8,7 +8,9 @@ strict sequence (linear, no conditional branches):
       → plan_node             (layer 0) — Plan
       → funnel_node           (layer 1) — Deterministic Funnel
       → reflect_critique_node (layer 2) — Reflect & Critique
-      → close_node            (layer 3) — Close
+      → rank_assembly_node    (layer 3) — Close: proximity + ranking (deterministic)
+      → summarize_node        (layer 3) — Close: per-candidate rationale (LLM)
+      → persist_node          (layer 3) — Close: persist + shortlist_ready
     END
 
 Same conveyor-belt bridge as ``risk_evaluator``: the FastAPI router creates an
@@ -33,10 +35,12 @@ from langgraph.graph import END, START, StateGraph
 from alternative_finder.nodes import (
     PlanResolutionError,
     _emit,
-    close_node,
     funnel_node,
+    persist_node,
     plan_node,
+    rank_assembly_node,
     reflect_critique_node,
+    summarize_node,
 )
 from alternative_finder.schemas import AlternativeFinderState
 
@@ -45,13 +49,19 @@ builder = StateGraph(AlternativeFinderState)
 builder.add_node("plan_node", plan_node)
 builder.add_node("funnel_node", funnel_node)
 builder.add_node("reflect_critique_node", reflect_critique_node)
-builder.add_node("close_node", close_node)
+# Layer 3 (Close) is split into three nodes: deterministic rank-assembly, an LLM
+# summariser that adds a per-candidate rationale, then the (unchanged) persist step.
+builder.add_node("rank_assembly_node", rank_assembly_node)
+builder.add_node("summarize_node", summarize_node)
+builder.add_node("persist_node", persist_node)
 
 builder.add_edge(START, "plan_node")
 builder.add_edge("plan_node", "funnel_node")
 builder.add_edge("funnel_node", "reflect_critique_node")
-builder.add_edge("reflect_critique_node", "close_node")
-builder.add_edge("close_node", END)
+builder.add_edge("reflect_critique_node", "rank_assembly_node")
+builder.add_edge("rank_assembly_node", "summarize_node")
+builder.add_edge("summarize_node", "persist_node")
+builder.add_edge("persist_node", END)
 
 graph = builder.compile()
 

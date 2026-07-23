@@ -13,6 +13,7 @@ import { riskConfig } from "../../data/suppliers";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import SupplierTitle from "../shared/SupplierTitle";
 import ReadMore from "../shared/ReadMore";
+import GlossaryList from "../shared/GlossaryList";
 import {IconButton} from "@leafygreen-ui/icon-button";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import DocModelModal from "../modals/DocModelModal";
@@ -132,6 +133,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
         </div>
         {/* Impact reason (short, bolded) */}
         <ReadMore text={supplier.natural_language_summary} weight="medium" />
+        <GlossaryList terms={supplier.glossary} />
 
         {/* Condition badges with RPN delta */}
         <div

@@ -10,6 +10,7 @@ import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { useDispatch } from "react-redux";
 import SupplierTitle from "../shared/SupplierTitle";
+import GlossaryList from "../shared/GlossaryList";
 import { setCertOpened } from "@/redux/slices/GlobalSlice";
 import { Code, Panel } from "@leafygreen-ui/code";
 
@@ -187,6 +188,21 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
           </div>
         ))}
       </div>
+
+      {/* ── Rationale (narrative prose) + structured glossary ── */}
+      {supplier.rationale && (
+        <div style={{ marginBottom: spacing[300] }}>
+          <Body
+            style={{
+              fontSize: 14,
+              color: palette.gray.dark2,
+            }}
+          >
+            {supplier.rationale}
+          </Body>
+          <GlossaryList terms={supplier.glossary} />
+        </div>
+      )}
 
       {/* ── Why multimodal ── */}
       <div style={{ marginBottom: spacing[300] }}>

@@ -1,0 +1,825 @@
+[{
+  "_id": {
+    "$oid": "6a47fbdeaa8e334aa469a40a"
+  },
+  "memory_id": "MEM-20250915-SHZ441-A",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "US-CN tariff escalation affected lead time and packaging cost out of Shenzhen.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 278,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 18,
+      "cost_overrun_usd": 340000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": null,
+      "outcome": "no_viable_alternative_found_in_time"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Risk confirmed, but no replacement with valid certification was found in time.",
+  "auto_embed_text": "Geopolitical tariff risk materialized for SUP-SHENZHEN-441 · packaging materials · 18 day delay · no alternative found in time",
+  "recorded_at": "2025-09-16T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a47fbdeaa8e334aa469a40b"
+  },
+  "memory_id": "MEM-20250620-VALLE-MX-B",
+  "supplier_id": "SUP-VALLE-MX",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Tropical storm off the Oaxaca coast — avocado/citrus supplier with cold-chain certification.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 235,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-SINALOA-MX",
+      "outcome": "approved_as_precaution_not_needed"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "good",
+  "proposal_feedback": "The alternative was approved as a precaution; the storm dissipated before making landfall and there was no real impact.",
+  "auto_embed_text": "Climate disruption risk did not materialize for SUP-VALLE-MX · fresh produce · storm dissipated · precautionary approval only",
+  "recorded_at": "2025-06-21T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a47fbdeaa8e334aa469a40c"
+  },
+  "memory_id": "MEM-20260110-JP033-C",
+  "supplier_id": "SUP-JP-033",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Congestion at the Yantian terminal affected the distribution route for dairy and ambient grocery.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 190,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 6,
+      "cost_overrun_usd": 42000
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "absorbed_with_safety_stock"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Never escalated to an alternative search — the delay was minor and was absorbed with safety stock.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-JP-033 · ambient grocery and dairy · minor delay absorbed with safety stock · no escalation",
+  "recorded_at": "2026-01-11T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a47fbdeaa8e334aa469a40d"
+  },
+  "memory_id": "MEM-20251203-SINALOA-MX-D",
+  "supplier_id": "SUP-SINALOA-MX",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Panama Canal capacity restriction affected the LATAM-US route for tomatoes and peppers.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 205,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 11,
+      "cost_overrun_usd": 88000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-VALLE-MX",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time, with no additional impact on the end customer.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-SINALOA-MX · fresh produce · Panama Canal restriction · alternative approved successfully",
+  "recorded_at": "2025-12-04T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a47fbdeaa8e334aa469a40e"
+  },
+  "memory_id": "MEM-20260218-TW204-E",
+  "supplier_id": "SUP-TW-204",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "US-CN tariff escalation, indirect exposure via a Taiwan-based packaging supplier (Taipei Precision Packaging).",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 260,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "tariff_scope_excluded_this_category"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The tariff ultimately did not apply to this product category — risk was correctly evaluated but never materialized.",
+  "auto_embed_text": "Geopolitical tariff risk did not materialize for SUP-TW-204 · packaging materials · category excluded from tariff scope · no escalation",
+  "recorded_at": "2026-02-19T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8b0a994c3d8692c7d67b"
+  },
+  "memory_id": "MEM-20260220-CORK-IE-H",
+  "supplier_id": "SUP-CORK-IE",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-004",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Anticipated post-Brexit certification requirement change for Irish dairy — existing certification expected to need re-validation.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 178,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "requirement_change_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The anticipated certification change did not materialize this cycle — existing certification remained valid and no new checks were imposed.",
+  "auto_embed_text": "Geopolitical tariff risk did not materialize for SUP-CORK-IE · dairy · anticipated post-Brexit certification change · existing certification stayed valid · no escalation",
+  "recorded_at": "2026-02-21T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8b0a994c3d8692c7d67d"
+  },
+  "memory_id": "MEM-20260514-CAIRO-EG-J",
+  "supplier_id": "SUP-CAIRO-EG",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-009",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Suez Canal transit slowdown delayed fresh produce and ambient grocery shipments out of Egypt.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 200,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 8,
+      "cost_overrun_usd": 47000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-NAIROBI-KE",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Nairobi fresh-produce supplier covered the shortfall with no additional impact on the end customer.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-CAIRO-EG · fresh produce and ambient grocery · Suez Canal transit slowdown · 8 day delay · alternative SUP-NAIROBI-KE approved successfully",
+  "recorded_at": "2026-05-15T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8b0a994c3d8692c7d679"
+  },
+  "memory_id": "MEM-20260312-CAPETOWN-ZA-F",
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "New South African customs documentation requirements imposed extra origin/certification checks on fresh produce exports.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 215,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 9,
+      "cost_overrun_usd": 65000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": null,
+      "outcome": "resolved_with_expedited_certification"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Escalated, but no supplier switch was needed — the original supplier resolved it directly by expediting the required certification.",
+  "auto_embed_text": "Geopolitical tariff risk materialized for SUP-CAPETOWN-ZA · fresh produce · new SA customs documentation requirements · 9 day delay · resolved via expedited certification, no alternative needed",
+  "recorded_at": "2026-03-13T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8b0a994c3d8692c7d67a"
+  },
+  "memory_id": "MEM-20260405-VN204-G",
+  "supplier_id": "SUP-VN-204",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-007",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "OFAC transshipment screening flagged the shipment for extended origin verification on packaging materials out of Vietnam.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 248,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 14,
+      "cost_overrun_usd": 52000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": null,
+      "outcome": "resolved_after_extended_origin_verification"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Escalated, but resolved through documentation — origin was verified and no supplier switch was needed.",
+  "auto_embed_text": "Geopolitical tariff risk materialized for SUP-VN-204 · packaging materials · OFAC transshipment screening · 14 day delay for extended origin verification · resolved via documentation, no alternative needed",
+  "recorded_at": "2026-04-06T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8b0a994c3d8692c7d67c"
+  },
+  "memory_id": "MEM-20260128-NAIROBI-KE-I",
+  "supplier_id": "SUP-NAIROBI-KE",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-007",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Below-average short-rains season materially reduced fresh produce yield in the Kenyan growing region.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 222,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 10,
+      "cost_overrun_usd": 71000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": null,
+      "outcome": "absorbed_with_partial_yield_shortfall"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Escalated, but mitigated with the existing supplier's buffer stock rather than a switch — a partial yield shortfall was absorbed.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-NAIROBI-KE · fresh produce · below-average short-rains reduced yield · 10 day delay · absorbed with buffer stock, partial shortfall, no alternative needed",
+  "recorded_at": "2026-01-29T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b4"
+  },
+  "memory_id": "MEM-20260606-MILANIT-M",
+  "supplier_id": "SUP-MILAN-IT",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-008",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Alpine freight corridor closure delayed packaging material shipments out of northern Italy.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 198,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 9,
+      "cost_overrun_usd": 60000
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "absorbed_with_safety_stock"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The delay was contained and absorbed with safety stock — no supplier switch was required.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-MILAN-IT · packaging materials · Alpine freight corridor closure · 9 day delay · absorbed with safety stock, no escalation",
+  "recorded_at": "2026-06-07T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b8"
+  },
+  "memory_id": "MEM-20260522-ROTTNL-Q",
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-002",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Anticipated strike action at the Rotterdam terminal was called off before affecting shipments.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 170,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "disruption_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The threatened strike was called off — shipments were unaffected and no escalation was needed.",
+  "auto_embed_text": "Logistics disruption risk did not materialize for SUP-ROTTERDAM-NL · packaging materials and ambient grocery · anticipated terminal strike called off · no escalation",
+  "recorded_at": "2026-05-23T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899ba"
+  },
+  "memory_id": "MEM-20260616-FRESNOUS-S",
+  "supplier_id": "SUP-FRESNO-US",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-006",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Forecast rail disruption on the US west-coast produce corridor was resolved before impacting Fresno shipments.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 168,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "disruption_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The forecast rail disruption was resolved before it affected shipments — no escalation required.",
+  "auto_embed_text": "Logistics disruption risk did not materialize for SUP-FRESNO-US · fresh produce · forecast rail disruption resolved early · no escalation",
+  "recorded_at": "2026-06-17T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899bd"
+  },
+  "memory_id": "MEM-20260303-LIMAPE-V",
+  "supplier_id": "SUP-LIMA-PE",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Anticipated Callao port slowdown eased before affecting Lima fresh produce shipments.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 174,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "disruption_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The anticipated port slowdown eased in time — shipments proceeded normally with no escalation.",
+  "auto_embed_text": "Logistics disruption risk did not materialize for SUP-LIMA-PE · fresh produce · anticipated Callao port slowdown eased · no escalation",
+  "recorded_at": "2026-03-04T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b2"
+  },
+  "memory_id": "MEM-20260427-TH055-K",
+  "supplier_id": "SUP-TH-055",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Seasonal monsoon flooding in central Thailand reduced fresh produce availability and slowed inland transport.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 210,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 7,
+      "cost_overrun_usd": 55000
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "absorbed_with_safety_stock"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Minor delay absorbed with safety stock — no escalation to an alternative search was needed.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-TH-055 · fresh produce and ambient grocery · monsoon flooding · 7 day delay · absorbed with safety stock, no escalation",
+  "recorded_at": "2026-04-28T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b3"
+  },
+  "memory_id": "MEM-20260402-IN077-L",
+  "supplier_id": "SUP-IN-077",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Anticipated duty revision on Indian ambient grocery imports was under review — an increase was expected but not confirmed.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 176,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "requirement_change_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The anticipated duty change was not imposed this cycle — risk was correctly evaluated but never materialized.",
+  "auto_embed_text": "Geopolitical tariff risk did not materialize for SUP-IN-077 · ambient grocery · anticipated duty increase under review · no change imposed · no escalation",
+  "recorded_at": "2026-04-03T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899bc"
+  },
+  "memory_id": "MEM-20250924-SAOPAULOBR-U",
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-003",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Santos port backlog delayed packaging and ambient grocery exports out of São Paulo.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 220,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 10,
+      "cost_overrun_usd": 80000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-MILAN-IT",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Milan packaging supplier covered the shortfall with no additional customer impact.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-SAOPAULO-BR · packaging materials and ambient grocery · Santos port backlog · 10 day delay · alternative SUP-MILAN-IT approved successfully",
+  "recorded_at": "2025-09-25T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b9"
+  },
+  "memory_id": "MEM-20250616-LAUS-R",
+  "supplier_id": "SUP-LOSANGELES-US",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-002",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Wildfire smoke and regional power curtailments disrupted packaging production in the Los Angeles area.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 244,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 12,
+      "cost_overrun_usd": 95000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-WARSAW-PL",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Warsaw packaging supplier covered the shortfall with no additional customer impact.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-LOSANGELES-US · packaging materials · wildfire smoke and power curtailments · 12 day delay · alternative SUP-WARSAW-PL approved successfully",
+  "recorded_at": "2025-06-17T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899be"
+  },
+  "memory_id": "MEM-20260412-TORONTOCA-W",
+  "supplier_id": "SUP-TORONTO-CA",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-004",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "An extreme winter storm across Ontario disrupted cold-chain dairy distribution from Toronto.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 196,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 6,
+      "cost_overrun_usd": 40000
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "absorbed_with_safety_stock"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The cold-chain delay was minor and absorbed with safety stock — no supplier switch was needed.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-TORONTO-CA · dairy · extreme winter storm disrupted cold chain · 6 day delay · absorbed with safety stock, no escalation",
+  "recorded_at": "2026-04-13T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b5"
+  },
+  "memory_id": "MEM-20251014-GZ112-N",
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Forecast typhoon-related port closures at Guangzhou were expected to disrupt packaging shipments.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 182,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "disruption_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The forecast port closures did not occur — shipments proceeded on schedule with no escalation.",
+  "auto_embed_text": "Logistics disruption risk did not materialize for SUP-GUANGZHOU-112 · packaging materials · forecast typhoon port closures · disruption avoided · no escalation",
+  "recorded_at": "2025-10-15T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b6"
+  },
+  "memory_id": "MEM-20250815-SH087-O",
+  "supplier_id": "SUP-SHANGHAI-087",
+  "risk_type": "geopolitical_tariff",
+  "risk_id_ref": "RISK-GEO-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "US-CN tariff escalation raised duties on ambient grocery imports out of Shanghai.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 272,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 16,
+      "cost_overrun_usd": 210000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": null,
+      "outcome": "no_viable_alternative_found_in_time"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "Risk confirmed and escalated, but no compliant replacement was found in time within the tariff window.",
+  "auto_embed_text": "Geopolitical tariff risk materialized for SUP-SHANGHAI-087 · ambient grocery · US-CN tariff escalation · 16 day delay · no alternative found in time",
+  "recorded_at": "2025-08-16T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899b7"
+  },
+  "memory_id": "MEM-20260211-BERLINDE-P",
+  "supplier_id": "SUP-BERLIN-DE",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-002",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "North Sea port congestion disrupted ambient grocery and dairy distribution routes into Germany.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 214,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 8,
+      "cost_overrun_usd": 70000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-ROTTERDAM-NL",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Rotterdam supplier covered the ambient grocery shortfall with no additional customer impact.",
+  "auto_embed_text": "Logistics disruption risk materialized for SUP-BERLIN-DE · ambient grocery and dairy · North Sea port congestion · 8 day delay · alternative SUP-ROTTERDAM-NL approved successfully",
+  "recorded_at": "2026-02-12T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899bb"
+  },
+  "memory_id": "MEM-20250427-VALLEMX-T",
+  "supplier_id": "SUP-VALLE-MX",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-001",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Severe drought across the Bajío region cut avocado and citrus yields at the Valle supplier.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 250,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 13,
+      "cost_overrun_usd": 120000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-SINALOA-MX",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Sinaloa supplier covered the yield shortfall with no additional customer impact.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-VALLE-MX · fresh produce · severe Bajío drought cut yields · 13 day delay · alternative SUP-SINALOA-MX approved successfully",
+  "recorded_at": "2025-04-28T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899bf"
+  },
+  "memory_id": "MEM-20260601-BCNES-X",
+  "supplier_id": "SUP-BARCELONA-ES",
+  "risk_type": "climate_disruption",
+  "risk_id_ref": "RISK-CLM-006",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Prolonged drought and heatwave in Catalonia reduced fresh produce yields at the Barcelona supplier.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 228,
+    "actual_impact": {
+      "occurred": true,
+      "delay_days": 9,
+      "cost_overrun_usd": 68000
+    },
+    "resolution": {
+      "action_taken": "escalated_to_alternative_finder",
+      "alt_supplier_id": "SUP-CAIRO-EG",
+      "outcome": "approved_and_successful"
+    }
+  },
+  "evaluation_quality": "accurate",
+  "proposal_quality": "good",
+  "proposal_feedback": "Alternative approved in time; the Cairo fresh-produce supplier covered the shortfall with no additional customer impact.",
+  "auto_embed_text": "Climate disruption risk materialized for SUP-BARCELONA-ES · fresh produce · Catalonia drought and heatwave cut yields · 9 day delay · alternative SUP-CAIRO-EG approved successfully",
+  "recorded_at": "2026-06-02T00:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6a5f8f7a2ebf44adaac899c0"
+  },
+  "memory_id": "MEM-20260611-WARSAWPL-Y",
+  "supplier_id": "SUP-WARSAW-PL",
+  "risk_type": "logistics_disruption",
+  "risk_id_ref": "RISK-LOG-007",
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null,
+  "origin": "seed_curated",
+  "episode": {
+    "condition_summary": "Anticipated congestion on the Poland-Germany freight corridor cleared before affecting Warsaw shipments.",
+    "condition_id_ref": null,
+    "rpn_at_trigger": 166,
+    "actual_impact": {
+      "occurred": false,
+      "delay_days": 0,
+      "cost_overrun_usd": 0
+    },
+    "resolution": {
+      "action_taken": "no_escalation",
+      "alt_supplier_id": null,
+      "outcome": "disruption_did_not_materialize"
+    }
+  },
+  "evaluation_quality": "overcautious",
+  "proposal_quality": "n/a",
+  "proposal_feedback": "The anticipated corridor congestion cleared in time — shipments were unaffected and no escalation was needed.",
+  "auto_embed_text": "Logistics disruption risk did not materialize for SUP-WARSAW-PL · packaging materials · anticipated border-crossing congestion cleared · no escalation",
+  "recorded_at": "2026-06-12T00:00:00.000Z"
+}]

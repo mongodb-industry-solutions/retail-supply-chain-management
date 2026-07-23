@@ -106,6 +106,19 @@ class OperationalContext(BaseModel):
     criticality: Literal["high", "medium", "low"]
 
 
+class GlossaryEntry(BaseModel):
+    """One plain-English glossary definition for a term used in a risk narrative.
+
+    Carried as structured data alongside ``natural_language_summary`` (rather than
+    appended to it as a plain-text footer) so the frontend can render each term in real
+    bold and preserve per-entry spacing wherever the summary is shown.  Definitions are
+    sourced verbatim from ``core.glossary.GLOSSARY`` via ``get_definitions``.
+    """
+
+    term: str
+    definition: str
+
+
 class SupplierEvaluation(BaseModel):
     """Full risk profile for one supplier, as sent in the ``agent_response`` SSE event
     and persisted in ``supplier_risk_evaluations``.
@@ -131,6 +144,7 @@ class SupplierEvaluation(BaseModel):
     operational_context: OperationalContext
     risk_scores: list[RiskScore]
     natural_language_summary: str
+    glossary: list[GlossaryEntry] = []
     session_id: str
 
 

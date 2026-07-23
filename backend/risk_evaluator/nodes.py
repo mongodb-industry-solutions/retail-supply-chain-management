@@ -47,6 +47,12 @@ from langchain_core.runnables import RunnableConfig
 
 from core.config import get_settings
 from core.db import get_database
+from core.glossary import (
+    GLOSSARY,
+    RISK_EVALUATOR_TERMS,
+    SHARED_TERMS,
+    get_definitions,
+)
 from risk_evaluator.schemas import (
     EvaluationResult,
     OperationalContext,
@@ -1096,6 +1102,77 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
         ])
         natural_language_summary = response.content
 
+        # --- Second pass: glossary detection + plain-text cleanup ------------------------
+        # A SECOND LLM call refines the draft above. It (a) detects which glossary CONCEPTS
+        # the draft actually expresses — even when paraphrased in plain English ("historical
+        # weight", "dynamic RPN", "condition score") rather than the snake_case field name,
+        # (b) maps each to its canonical GLOSSARY key, (c) may lightly reword one sentence
+        # for clarity without changing meaning, and (d) strips any leaked markdown so the
+        # final text is plain only. The model NEVER writes definitions — it only selects
+        # canonical keys; definition text comes verbatim from GLOSSARY via get_definitions.
+        # On any failure the ORIGINAL draft is used with NO footer (never crash the stream).
+        from core.json_utils import _extract_json  # shared JSON parser (ADR 005)
+
+        _draft_summary = str(natural_language_summary)
+        _glossary_terms = SHARED_TERMS + RISK_EVALUATOR_TERMS
+        _term_defs = "\n".join(f"- {t}: {GLOSSARY[t]}" for t in _glossary_terms)
+        # Glossary is kept as STRUCTURED DATA (list of {term, definition}) rather than
+        # flattened into the summary string, so the frontend can render it separately (with
+        # real bold per term) wherever natural_language_summary is shown — including via
+        # ReadMore.jsx, which does not preserve the plain-text line breaks a footer needs.
+        glossary: list[dict] = []
+        try:
+            _refine_resp = await llm.ainvoke([
+                SystemMessage(
+                    content=(
+                        "You refine a supply-chain risk summary for a procurement manager. "
+                        "You NEVER write or alter any definition text; you only decide which "
+                        "of the provided canonical glossary keys are present in the summary.\n\n"
+                        "Do ALL of the following:\n"
+                        "1. Identify which glossary CONCEPTS are actually present in the "
+                        "summary, even when paraphrased in plain English rather than written "
+                        "as the internal snake_case name (e.g. the text may say 'historical "
+                        "weight', 'dynamic RPN', 'condition score', or 'historical precedent' "
+                        "— detect the concept, not a literal string).\n"
+                        "2. Map each detected concept to its canonical key exactly as listed "
+                        "below (e.g. 'historical weight' -> 'historical_weight').\n"
+                        "3. You MAY lightly reword a single sentence to use more precise "
+                        "wording where it improves clarity, without changing the meaning.\n"
+                        "4. If the summary contains ANY markdown syntax (**, #, leading bullet "
+                        "dashes, backticks), strip it — the output must be plain text only.\n\n"
+                        "Canonical glossary keys and their meanings (for detection only — do "
+                        "NOT copy or restate these definitions in your output):\n"
+                        f"{_term_defs}\n\n"
+                        "Respond with ONLY a single JSON object, no prose outside it:\n"
+                        '{"summary": "<final plain-text summary>", "terms": ["<canonical key>", ...]}\n'
+                        "'terms' must contain only canonical keys from the list above that are "
+                        "present in the summary; use an empty list if none apply."
+                    )
+                ),
+                HumanMessage(content=_draft_summary),
+            ])
+            _refined = _extract_json(_refine_resp.content)
+            _refined_summary = str(_refined.get("summary", "")).strip()
+            _refined_terms = _refined.get("terms", [])
+            if not _refined_summary or not isinstance(_refined_terms, list):
+                raise ValueError("refine pass returned an empty/invalid summary")
+            _definitions = get_definitions([str(t) for t in _refined_terms])
+            # Narrative text only — no footer appended. The glossary rides alongside as data.
+            natural_language_summary = _refined_summary
+            glossary = [
+                {"term": term, "definition": definition}
+                for term, definition in _definitions
+            ]
+        except (json.JSONDecodeError, ValueError, KeyError, TypeError) as exc:
+            # Fall back to the original draft with an empty glossary. This path does not
+            # strip markdown from the draft — acceptable, matches today's existing behavior.
+            logger.warning(
+                "generate_summary: glossary refine pass failed for %s — %s",
+                supplier_id, exc,
+            )
+            natural_language_summary = _draft_summary
+            glossary = []
+
         supplier_risk_level = max(
             (s.rpn_status for s in scores),
             key=lambda st: _STATUS_RANK.get(st, 0),
@@ -1120,6 +1197,7 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
             "operational_context": op_ctx,
             "risk_scores": [s.model_dump() for s in scores],
             "natural_language_summary": natural_language_summary,
+            "glossary": glossary,
             "memory_episodes_used": [ep.get("memory_id", "") for ep in episodes],
         }
 
@@ -1141,6 +1219,7 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
                 operational_context=OperationalContext(**op_ctx),
                 risk_scores=scores,
                 natural_language_summary=natural_language_summary,
+                glossary=glossary,
                 session_id=state["session_id"],
             )
         )

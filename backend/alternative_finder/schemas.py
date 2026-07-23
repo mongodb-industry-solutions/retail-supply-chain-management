@@ -50,7 +50,14 @@ class AlternativeFinderState(TypedDict):
 
     # --- Layer 3 (Close) outputs -------------------------------------------
     proximity_km: dict            # {supplier_id: float} — real $geoNear later
-    shortlist: list[dict]         # final shortlist entries (shortlist_ready.candidates shape)
+    # Final shortlist entries (shortlist_ready.candidates shape). Each entry additionally
+    # carries an integer `rank` (1-indexed, set by rank_assembly_node), a plain-text
+    # `rationale` (narrative only, set by summarize_node) explaining why the candidate holds
+    # that position, and a `glossary` list of {term, definition} dicts (also set by
+    # summarize_node) defining the internal terms the rationale used — structured data, not
+    # flattened into the rationale string. Purely additive: same candidates[] array, same
+    # shortlist_ready event, no new SSE event type.
+    shortlist: list[dict]
     approved_supplier_id: str | None   # always null until a human approves
 
     # --- Cross-cutting accumulators (mirrors risk_evaluator) ----------------

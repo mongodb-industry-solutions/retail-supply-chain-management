@@ -14,6 +14,7 @@ import { spacing } from "@leafygreen-ui/tokens";
 import SectionHeader from "../shared/SectionHeader";
 import SupplierTitle from "../shared/SupplierTitle";
 import ReadMore from "../shared/ReadMore";
+import GlossaryList from "../shared/GlossaryList";
 import ReActAgent from "../shared/ReActAgent";
 import LogDrawer from "../shared/LogDrawer";
 import WhyMongoDB from "../shared/WhyMongoDB";
@@ -148,6 +149,7 @@ export default function Step3() {
               </Badge>
             ))}
             <ReadMore text={selectedSupplier.natural_language_summary} />
+            <GlossaryList terms={selectedSupplier.glossary} />
           </div>
           {selectedSupplierAlertTypes.map((alertType) => {
             const cfg =
