@@ -13,6 +13,7 @@ import SupplierTitle from "../shared/SupplierTitle";
 import { setCertOpened } from "@/redux/slices/GlobalSlice";
 import { Code, Panel } from "@leafygreen-ui/code";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
+import Tooltip from "@leafygreen-ui/tooltip";
 import ReadMore from "../shared/ReadMore";
 
 function RRFBar({ textScore, vectorScore }) {
@@ -108,15 +109,20 @@ function EvidenceHeader({ passed, title, exts, glossary = null }) {
       />
       <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{title}</span>
       {glossary && (
-        <InfoSprinkle
-          triggerProps={{
-            onMouseDown: () => {},
-            onMouseOver: () => {},
-            "aria-label": "aria-label",
-          }}
+        <Tooltip
+          trigger={
+            <span
+              role="img"
+              aria-label={`${title} info`}
+              className="d-inline-flex"
+              style={{ cursor: "help", color: palette.gray.base }}
+            >
+              <Icon glyph="InfoWithCircle" />
+            </span>
+          }
         >
           {glossary?.definition}
-        </InfoSprinkle>
+        </Tooltip>
       )}
       <div className="d-flex me-2">
         {exts.map((ext) => (
