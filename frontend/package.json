@@ -18,6 +18,7 @@
     "@leafygreen-ui/expandable-card": "^5.2.4",
     "@leafygreen-ui/icon": "^13.4.0",
     "@leafygreen-ui/icon-button": "^17.1.5",
+    "@leafygreen-ui/info-sprinkle": "^5.0.11",
     "@leafygreen-ui/leafygreen-provider": "^4.0.7",
     "@leafygreen-ui/modal": "^17.1.7",
     "@leafygreen-ui/ordered-list": "^3.0.11",

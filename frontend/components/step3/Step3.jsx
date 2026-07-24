@@ -149,7 +149,6 @@ export default function Step3() {
               </Badge>
             ))}
             <ReadMore text={selectedSupplier.natural_language_summary} />
-            <GlossaryList terms={selectedSupplier.glossary} />
           </div>
           {selectedSupplierAlertTypes.map((alertType) => {
             const cfg =
