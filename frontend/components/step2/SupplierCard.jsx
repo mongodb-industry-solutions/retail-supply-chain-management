@@ -14,33 +14,87 @@ import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import SupplierTitle from "../shared/SupplierTitle";
 import ReadMore from "../shared/ReadMore";
 import GlossaryList from "../shared/GlossaryList";
-import {IconButton} from "@leafygreen-ui/icon-button";
+import { IconButton } from "@leafygreen-ui/icon-button";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import DocModelModal from "../modals/DocModelModal";
+import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 
-function ConditionBadgeWithRPN({ risk, triggeredBy }) {
+function ConditionBadgeWithRPN({ risk, triggeredBy, glossary }) {
   const cfg =
     conditionConfig[RISK_TYPE_MAP[triggeredBy.risk_type_triggered]] || null;
 
   return (
-    <div className="d-flex align-items-center gap-2">
-      {cfg !== null && (
-        <Badge variant={cfg.variant}>
-          {cfg.icon} {cfg.label}
-        </Badge>
-      )}
-      {risk && (
-        <Body style={{ fontSize: 13, margin: 0 }}>
-          RPN:{" "}
-          <span style={{ color: palette.gray.dark1 }}>
-            {risk.rpn_base} base
-          </span>
-          <span style={{ color: palette.red.base, margin: "0 4px" }}>→</span>
-          <span style={{ color: palette.red.base, fontWeight: 700 }}>
-            {risk.rpn_dynamic} dynamic
-          </span>
+    <div className="d-flex flex-column gap-2">
+      <div className="w-100">
+        {cfg !== null && (
+          <Badge variant={cfg.variant}>
+            {cfg.icon} {cfg.label}
+          </Badge>
+        )}
+      </div>
+      <div
+        className="d-flex flex-row gap-1"
+        style={{ marginTop: spacing[200] }}
+      >
+        <Body
+          style={{
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
+          }}
+        >
+          RPN Change
         </Body>
-      )}
+        <InfoSprinkle
+          triggerProps={{
+            onMouseDown: () => {},
+            onMouseOver: () => {},
+            "aria-label": "aria-label",
+          }}
+        >
+          {glossary?.find((term) => term.term === "RPN")?.definition}
+        </InfoSprinkle>
+        {risk && (
+          <Body style={{ fontSize: 13, margin: 0 }}>
+            <span style={{ color: palette.gray.dark1 }}>
+              {risk.rpn_base} base
+            </span>
+            <span style={{ color: palette.red.base, margin: "0 4px" }}>→</span>
+            <span style={{ color: palette.red.base, fontWeight: 700 }}>
+              {risk.rpn_dynamic} dynamic
+            </span>
+          </Body>
+        )}
+      </div>
+      <div
+        className="d-flex flex-row gap-1"
+        style={{ marginTop: spacing[200] }}
+      >
+        <Body
+          style={{
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
+          }}
+        >
+          Historical Weight
+        </Body>
+        <InfoSprinkle
+          triggerProps={{
+            onMouseDown: () => {},
+            onMouseOver: () => {},
+            "aria-label": "aria-label",
+          }}
+        >
+          {
+            glossary?.find((term) => term.term === "historical_weight")
+              ?.definition
+          }
+        </InfoSprinkle>
+        {risk?.triggered_by?.historical_weight}
+      </div>
     </div>
   );
 }
@@ -94,10 +148,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
               {supplier.operational_context.criticality}
             </Badge>
             {supplier?.product_categories?.map((category) => (
-              <Badge
-                key={category}
-                variant="lightgray"
-              >
+              <Badge key={category} variant="lightgray">
                 {category.replace(/_/g, " ").toUpperCase()}
               </Badge>
             ))}
@@ -109,7 +160,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             </IconButton>
           </div>
         </div>
-        <div className="d-flex flex-row align-items-center gap-3 mb-2">
+        <div className="d-flex flex-row gap-3 mb-2">
           <Body
             style={{
               fontSize: 14,
@@ -133,8 +184,16 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
         </div>
         {/* Impact reason (short, bolded) */}
         <ReadMore text={supplier.natural_language_summary} weight="medium" />
-        <GlossaryList terms={supplier.glossary} />
-
+        <Body
+          style={{
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
+          }}
+        >
+          RISK SCORES:
+        </Body>
         {/* Condition badges with RPN delta */}
         <div
           className="d-flex flex-column gap-1"
@@ -145,6 +204,7 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
               key={risk.risk_id}
               risk={risk}
               triggeredBy={risk.triggered_by}
+              glossary={supplier.glossary}
             />
           ))}
         </div>

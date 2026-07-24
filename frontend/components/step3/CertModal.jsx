@@ -284,7 +284,7 @@ function SimulatedDocument({ citation }) {
 export default function CertModal() {
   const dispatch = useDispatch();
   const certOpened = useSelector((s) => s.Global.certOpened);
-  const [view, setView] = useState("document");
+  const [view, setView] = useState("model");
 
   const onHide = () => dispatch(setCertOpened(null));
   const citation = certOpened?.citation;
