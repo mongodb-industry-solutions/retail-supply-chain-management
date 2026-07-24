@@ -1224,6 +1224,14 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
             )
         )
 
+    # Order suppliers most-urgent first (CRITICAL > ALERT > WATCH) using the
+    # already-computed supplier_risk_level and _STATUS_RANK. Stable sort keeps
+    # insertion order within each level.
+    evaluated_suppliers.sort(
+        key=lambda ev: _STATUS_RANK.get(ev.supplier_risk_level, 0),
+        reverse=True,
+    )
+
     result = EvaluationResult(
         session_id=state["session_id"],
         conditions=state["conditions"],
