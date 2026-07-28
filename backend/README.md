@@ -184,11 +184,9 @@ backend/
 │   ├── graph.py             StateGraph, compiled WITHOUT a checkpointer
 │   ├── nodes.py             plan_node → funnel_node → reflect_critique_node → rank_assembly_node → summarize_node → persist_node
 │   └── schemas.py           AlternativeFinderState (TypedDict)
-│
-└── dataset/                 Seed files and setup guide
 ```
 
-Architecture Decision Records live outside this folder, in [`docs/adr/`](../docs/adr/) — see the [ADR index](#architecture-decision-records) below.
+Architecture Decision Records live outside this folder, in [`docs/adr/`](../docs/adr/) — see the [ADR index](#architecture-decision-records) below. The seed files and their setup guide also live outside this folder, in [`docs/database-files/`](../docs/database-files/).
 
 ---
 
@@ -219,7 +217,8 @@ Eight MongoDB collections in two groups.
 > (memory vector search; without it `risk_evaluator`'s memory tools fail and
 > weights fall back to `1.0` silently) and, for `alternative_finder`, the
 > `supplier_documents` vector + full-text indexes, the native `$rerank` project
-> setting, and the `suppliers` 2dsphere index. See `dataset/` for setup.
+> setting, and the `suppliers` 2dsphere index. See
+> [`../docs/database-files/`](../docs/database-files/) for setup.
 
 ---
 
@@ -282,7 +281,7 @@ The `-N` flag disables curl buffering so SSE events appear in real time.
 ### Prerequisites
 - Python 3.13+
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) — `curl -LsSf https://astral.sh/uv/install.sh | sh`
-- A MongoDB Atlas cluster with the seed data and indexes loaded (see `dataset/`)
+- A MongoDB Atlas cluster with the seed data and indexes loaded (see [`../docs/database-files/`](../docs/database-files/))
 
 ### Setup
 ```bash

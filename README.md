@@ -59,7 +59,7 @@ This README helps developers understand the purpose, structure, and deployment p
 - [`risk_evaluator` README](./backend/risk_evaluator/README.md)
 - [`alternative_finder` README](./backend/alternative_finder/README.md)
 - [Architecture Decision Records](./docs/adr/) — the reasoning behind each design choice, including what's built vs. designed-but-not-yet-implemented
-- [Dataset & seed setup](./backend/dataset/) — sample suppliers, orders, risk catalog, and historical memory episodes to populate your own Atlas cluster
+- [Dataset & seed setup](./docs/database-files/) — sample suppliers, orders, risk catalog, and historical memory episodes to populate your own Atlas cluster
 
 ---
 
@@ -69,9 +69,9 @@ This README helps developers understand the purpose, structure, and deployment p
 retail-supply-chain-management/
 ├── frontend/               # Next.js app
 ├── backend/                # FastAPI backend (vertical slice architecture)
-│   └── dataset/            # Seed data for suppliers, orders, risk catalog, agent memory
 ├── docs/
 │   ├── adr/                # Architecture Decision Records (backend-tagged; frontend series to follow)
+│   ├── database-files/     # Seed data (suppliers, orders, risk catalog, agent memory) + setup guide
 │   └── images/              # Diagrams used in this README
 ├── docker-compose.yml      # Orchestrates services
 └── makefile                # Dev commands
@@ -87,7 +87,7 @@ retail-supply-chain-management/
 - Anthropic API key — used by `risk_evaluator` and `alternative_finder` for their LLM calls (risk summaries, planning, auditing, rationales)
 - Voyage AI API key — used by Atlas for `agent_memory` / `supplier_documents` auto-embedding and the native `$rerank` stage in `alternative_finder`
 - [Atlas Charts](https://www.mongodb.com/products/charts) dashboard configured with your cluster
-- Sample data loaded into your cluster — see [`backend/dataset/`](./backend/dataset/) for the seed files (suppliers, purchase orders, risk catalog, supplier documents, and historical `agent_memory` episodes)
+- Sample data loaded into your cluster — see [`docs/database-files/`](./docs/database-files/) for the seed files (suppliers, purchase orders, risk catalog, supplier documents, and historical `agent_memory` episodes)
 - Environment configuration files (`.env`) for each service, using the example files as a template:
   - [frontend](./frontend/EXAMPLE.env)
   - [backend](./backend/.env.example)
