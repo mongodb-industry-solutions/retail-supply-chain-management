@@ -18,8 +18,17 @@ live Atlas infrastructure in five stages (2026-07-07).
 
 ## Decision
 
-`alternative_finder` is built as a `LangGraph` `StateGraph` with four
-sequential nodes, one per layer:
+`alternative_finder` is built as a `LangGraph` `StateGraph` organised around
+four conceptual layers. **In code today these four layers are implemented
+across six sequential nodes** — the Close layer is split into three nodes
+(`rank_assembly_node`, `summarize_node`, `persist_node`). The full node
+sequence is:
+
+```
+plan_node → funnel_node → reflect_critique_node → rank_assembly_node → summarize_node → persist_node
+```
+
+The four layers map onto those nodes as follows:
 
 1. **Plan** — one real Mongo read of the triggering
    `supplier_risk_evaluations` document (plus `risk_catalog` for risk-type
@@ -31,14 +40,21 @@ sequential nodes, one per layer:
    `supplier_documents`, then a native Voyage `$rerank` stage, narrowing a
    pool of dozens of suppliers down to 5 candidates entirely inside the
    database.
-3. **Reflect & Critique** — two separate LLM calls per candidate (Generate,
-   then Audit — see ADR-XXX on precedent signals for why these and the two
-   memory mechanisms are never fused), grounded in real
+3. **Reflect & Critique** (`reflect_critique_node`) — two separate LLM calls
+   per candidate (Generate, then Audit — see ADR-008 on precedent signals for
+   why these and the two memory mechanisms are never fused), grounded in real
    `supplier_documents` chunks and real `agent_memory` precedent.
-4. **Close** — no LLM call. Real `$geoNear` proximity to a distribution
-   center, then a single `insertOne` into `supplier_alternatives` with
-   `approved_supplier_id` always `null` (see ADR-XXX on the human-approval
-   gate).
+4. **Close** — implemented as three nodes, **not fully deterministic** as
+   originally scoped:
+   - `rank_assembly_node` — no LLM. Real `$geoNear` proximity to an (assumed)
+     distribution-center reference point, then a deterministic ranking rule
+     that stamps a 1-indexed `rank` on each candidate.
+   - `summarize_node` — **one LLM call per candidate** that writes a
+     plain-text `rationale` (and selects glossary terms). This is the one
+     place the Close layer invokes the LLM.
+   - `persist_node` — no LLM. A single `insertOne` into
+     `supplier_alternatives` with `approved_supplier_id` always `null`
+     (human-approval gate), emitting the terminal `shortlist_ready` event.
 
 Each node emits real events over a documented SSE contract
 (`alternative_finder_started`, `layer_started`/`layer_completed`,
@@ -49,10 +65,15 @@ running at each moment, not just a generic "thinking" spinner.
 
 ## Consequences
 
-- LLM calls are isolated to exactly two of the four layers (Plan, Reflect &
-  Critique). The Funnel and Close layers are fully deterministic — no
-  `agent_thought` event is ever emitted for them, which is itself a
-  verifiable property of the running system, not just a design intention.
+- LLM calls appear in three of the six nodes: `plan_node` (one call),
+  `reflect_critique_node` (two per candidate), and `summarize_node` (one per
+  candidate). The **Funnel layer is fully deterministic** — no LLM, and it
+  emits no `agent_thought` event, which is a verifiable property of the
+  running system. Note the Close layer is *not* uniformly deterministic:
+  `rank_assembly_node` and `persist_node` are, but `summarize_node` makes an
+  LLM call. (An earlier version of this ADR described Close as fully
+  deterministic; that no longer holds since Close was split to add the
+  per-candidate rationale.)
 - The "146 documents → 50 → 5" (or whatever the live counts are for a given
   run) reduction in the Funnel layer is the centerpiece demo moment: it
   happens entirely via MongoDB aggregation stages (`$rankFusion`, native
