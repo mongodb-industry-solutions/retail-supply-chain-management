@@ -6,18 +6,17 @@ This README helps developers understand the purpose, structure, and deployment p
 
 ## Overview
 
-<table>
-  <tr>
-    <td width="420" valign="top">
-      <img src="docs/images/architecture_overview.png" width="400" alt="Agentic Supplier Management"/>
-    </td>
-    <td valign="top">
-      This demo showcases <b>Agentic Supplier Management</b>, built on <b>MongoDB</b> to detect supply chain disruptions in real time and surface alternative suppliers using AI agents.<br><br>
-      When an external signal is detected — a geopolitical tariff, a climate event, or a logistics disruption — two LangGraph agents run in sequence: <b>risk_evaluator</b> evaluates supplier risk using dynamic RPN scoring and historical memory retrieved from Atlas Vector Search, and <b>alternative_finder</b> surfaces validated alternative suppliers using in-database hybrid search and native reranking. In the demo both are triggered by explicit frontend actions, not automatically.<br><br>
-      MongoDB Atlas serves as the <a href="https://www.mongodb.com/resources/solutions/use-cases/implementing-an-operational-data-layer"><b>Operational Data Layer (ODL)</b></a> — a single platform where operational data, vector embeddings, and historical agent memory all live together. By unifying data storage, search, and AI infrastructure in one place, the demo shows how retailers can build intelligent, agentic supply chain workflows without complex multi-system architectures.
-    </td>
-  </tr>
-</table>
+This demo showcases **Agentic Supplier Management** — a working example of how retailers can detect supply chain disruptions in real time and surface alternative suppliers using AI agents, all built on MongoDB.
+
+Retail supply chains are a board-level concern, not a back-office logistics function — a single geopolitical announcement or shipping bottleneck can change supplier costs overnight. Responding fast enough takes a data foundation that moves as quickly as the disruption itself, not a patchwork of legacy ERP tables, a separate vector database, a separate memory store, and disconnected search tools stitched together with custom pipelines.
+
+This is the pattern MongoDB calls a [converged datastore](https://www.mongodb.com/company/blog/technical/converged-datastore-for-agentic-ai) for agentic AI: the business entities an application operates on, the vector embeddings its agents reason over, and the operational state those agents accumulate across sessions all live together under one API, one query language, one security model. This demo is a working, code-verified example of that pattern applied to supplier risk management — not a slide deck version of it.
+
+It also means the agents can reason semantically instead of matching exact fields. Rather than a procurement manager filtering suppliers by attribute, `alternative_finder` takes a flagged supplier's risk profile and searches real contracts, certifications, and historical outcomes to surface an alternative that actually fits the situation — not just one that matches a keyword.
+
+When an external signal is detected — a geopolitical tariff, a climate event, or a logistics disruption — two LangGraph agents run in sequence: **risk_evaluator** evaluates supplier risk using dynamic [RPN scoring](https://en.wikipedia.org/wiki/Failure_mode_and_effects_analysis) and historical memory retrieved from Atlas Vector Search, and **alternative_finder** surfaces validated alternative suppliers using in-database hybrid search and native reranking.
+
+![Agentic Supplier Management](docs/images/architecture_overview.png)
 
 ---
 
