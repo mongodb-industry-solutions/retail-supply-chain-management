@@ -8,10 +8,10 @@ This README helps developers understand the purpose, structure, and deployment p
 
 <table>
   <tr>
-    <td width="300">
-      <img src="docs/images/overview.png" width="280" alt="Agentic Supplier Management"/>
+    <td width="420" valign="top">
+      <img src="docs/images/architecture_overview.png" width="400" alt="Agentic Supplier Management"/>
     </td>
-    <td>
+    <td valign="top">
       This demo showcases <b>Agentic Supplier Management</b>, built on <b>MongoDB</b> to detect supply chain disruptions in real time and surface alternative suppliers using AI agents.<br><br>
       When an external signal is detected — a geopolitical tariff, a climate event, or a logistics disruption — two LangGraph agents run in sequence: <b>risk_evaluator</b> evaluates supplier risk using dynamic RPN scoring and historical memory retrieved from Atlas Vector Search, and <b>alternative_finder</b> surfaces validated alternative suppliers using in-database hybrid search and native reranking. In the demo both are triggered by explicit frontend actions, not automatically.<br><br>
       MongoDB Atlas serves as the <a href="https://www.mongodb.com/resources/solutions/use-cases/implementing-an-operational-data-layer"><b>Operational Data Layer (ODL)</b></a> — a single platform where operational data, vector embeddings, and historical agent memory all live together. By unifying data storage, search, and AI infrastructure in one place, the demo shows how retailers can build intelligent, agentic supply chain workflows without complex multi-system architectures.
@@ -42,7 +42,8 @@ This README helps developers understand the purpose, structure, and deployment p
 
 ## 🧩 Architecture Overview
 
-![Architecture Overview](docs/images/architecture_overview.png)
+> 🚧 **Diagram in progress** — a detailed architecture diagram for this
+> section is being prepared. Check back soon.
 
 | Component | Description |
 |-----------|-------------|
