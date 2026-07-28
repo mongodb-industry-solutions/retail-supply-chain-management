@@ -52,7 +52,7 @@ would be independent microservices in production, running as one FastAPI app
 for demo simplicity. **No slice imports from another slice.** They integrate
 purely through shared MongoDB collections plus two identifiers that flow through
 the request path — `session_id` and `evaluation_id`. This is the Operational
-Data Layer pattern of [ADR-005](./adrs/005-operational-data-layer.md).
+Data Layer pattern of [ADR-005](../docs/adr/005-backend-operational-data-layer.md).
 
 ```
 Frontend
@@ -111,7 +111,8 @@ See each module README for the node sequences, the exact filters/queries, the
 MongoDB capabilities used (`$geoWithin`, `$vectorSearch`, `$rankFusion`, native
 `$rerank`, `$geoNear`, aggregations), the ReAct parsing/fallback behavior, the
 real SSE event types, and the confirmed dead code (`risk_evaluator`'s
-`retrieve_memory`, and the `voyageai/rerank.py` stub).
+`retrieve_memory`). Note that `$rerank` runs natively in-pipeline inside
+`alternative_finder` — no external Voyage API call is made at runtime (ADR-007).
 
 ---
 
@@ -120,7 +121,7 @@ real SSE event types, and the confirmed dead code (`risk_evaluator`'s
 The intended long-term design is a "closure loop": as real disruptions resolve,
 their outcomes are written back into `agent_memory` as episodes, which future
 evaluations then read as precedent. That architecture is described in
-[ADR-009](./adrs/009-agent_memory_single_writer.md).
+[ADR-009](../docs/adr/009-backend-agent_memory_single_writer.md).
 
 **None of it runs today.** As a hypothetical future process it would look like:
 
@@ -184,13 +185,10 @@ backend/
 │   ├── nodes.py             plan_node → funnel_node → reflect_critique_node → rank_assembly_node → summarize_node → persist_node
 │   └── schemas.py           AlternativeFinderState (TypedDict)
 │
-├── voyageai/                DEAD STUB — rerank.py returns documents[:top_k], imported by nothing.
-│   └── rerank.py            Real reranking is the in-pipeline $rerank inside alternative_finder.
-│
-├── dataset/                 Seed files and setup guide
-│
-└── adrs/                    Architecture Decision Records (001–009)
+└── dataset/                 Seed files and setup guide
 ```
+
+Architecture Decision Records live outside this folder, in [`docs/adr/`](../docs/adr/) — see the [ADR index](#architecture-decision-records) below.
 
 ---
 
@@ -239,7 +237,7 @@ X-Session-ID: sess-abc123
 > without one and run in-memory per request; isolation comes from the fresh
 > per-request state plus `session_id` document filtering, not from
 > `thread_id`-namespaced checkpoints. See
-> [ADR-004](./adrs/004-langgraph-checkpointing.md).
+> [ADR-004](../docs/adr/004-backend-langgraph-checkpointing.md).
 
 ---
 
@@ -339,15 +337,15 @@ SSE stream. Terminal event `shortlist_ready` carries the persisted
 
 ## Architecture Decision Records
 
-- [001 — Vertical Slice Architecture](./adrs/001-architecture-overview.md)
-- [002 — Motor Async Driver](./adrs/002-async-motor.md)
-- [003 — SSE + Change Streams](./adrs/003-sse-change-stream.md)
-- [004 — LangGraph Checkpointing](./adrs/004-langgraph-checkpointing.md)
-- [005 — Operational Data Layer](./adrs/005-operational-data-layer.md)
-- [006 — alternative_finder Four-Layer Architecture](./adrs/006-alternative_finder_four_layer_architecture.md)
-- [007 — Native In-Pipeline Reranking](./adrs/007-native_reranking.md)
-- [008 — Two Separate Precedent Signals](./adrs/008-precedent_signals_no_fusion.md)
-- [009 — agent_memory Single-Writer Closure Loop (designed, not built)](./adrs/009-agent_memory_single_writer.md)
+- [001 — Vertical Slice Architecture](../docs/adr/001-backend-architecture-overview.md)
+- [002 — Motor Async Driver](../docs/adr/002-backend-async-motor.md)
+- [003 — SSE + Change Streams](../docs/adr/003-backend-sse-change-stream.md)
+- [004 — LangGraph Checkpointing](../docs/adr/004-backend-langgraph-checkpointing.md)
+- [005 — Operational Data Layer](../docs/adr/005-backend-operational-data-layer.md)
+- [006 — alternative_finder Four-Layer Architecture](../docs/adr/006-backend-alternative_finder_four_layer_architecture.md)
+- [007 — Native In-Pipeline Reranking](../docs/adr/007-backend-native_reranking.md)
+- [008 — Two Separate Precedent Signals](../docs/adr/008-backend-precedent_signals_no_fusion.md)
+- [009 — agent_memory Single-Writer Closure Loop (designed, not built)](../docs/adr/009-backend-agent_memory_single_writer.md)
 
 > Several ADRs document forward-looking designs that are **not yet implemented**
 > in code — the Change Stream activation (003), the LangGraph checkpointer

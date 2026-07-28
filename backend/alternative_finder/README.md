@@ -63,9 +63,9 @@ deterministic fallback so the stream never crashes.
   the pool + `doc_type_hint`) with a full-text arm (`$search` on `chunk_text`),
   weights `{vector: 0.7, text: 0.3}`.
 - **Native `$rerank`** (Voyage `rerank-2.5`) chained after `$rankFusion` — the
-  candidate-narrowing never leaves Atlas. This is the real reranker; the
-  `backend/voyageai/rerank.py` module is a **dead stub** (`return
-  documents[:top_k]`) and is **not** used here.
+  candidate-narrowing never leaves Atlas. `$rerank` runs natively in-pipeline
+  here; no external Voyage API call is made at runtime (see
+  [ADR-007](../../docs/adr/007-backend-native_reranking.md)).
 - **`$vectorSearch`** over `agent_memory` (`agent_memory_autoembed_index`,
   autoembed, filtered by `risk_type`) for semantic precedent; wrapped in
   try/except so an index/feature problem degrades to "no precedent" rather than

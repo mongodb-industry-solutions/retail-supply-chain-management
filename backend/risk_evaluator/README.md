@@ -147,7 +147,7 @@ Two things worth knowing:
 - No checkpointing — the whole run lives in memory for the duration of the
   request. Session isolation comes from the fresh per-request state plus
   `session_id` filtering on documents, not from a LangGraph checkpointer (see
-  [ADR-004](../adrs/004-langgraph-checkpointing.md)).
+  [ADR-004](../../docs/adr/004-backend-langgraph-checkpointing.md)).
 
 ---
 
