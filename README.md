@@ -45,15 +45,14 @@ When an external signal is detected — a geopolitical tariff, a climate event, 
 7. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used throughout for operational context (e.g. active purchase orders per supplier) alongside the search stages above.
 8. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — powers the geospatial queries on `suppliers.location`.
 9. [Compound indexes](https://www.mongodb.com/docs/manual/core/index-compound/) — e.g. `supplier_id + risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
-10. [Atlas Scheduled Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/) — a daily cron-based cleanup job removes demo-session data. (Earlier documentation mentioned a [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/) on `external_conditions` for the same purpose — that index was never actually created; the Scheduled Trigger is the real cleanup mechanism today.)
+10. **Session cleanup** — demo-session data in `external_conditions` needs periodic cleanup; either a [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/) or an [Atlas Scheduled Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/) can implement this — a good example of MongoDB giving you more than one way to solve the same operational need.
 
 
 ---
 
 ## 🧩 Architecture Overview
 
-> 🚧 **Diagram in progress** — a detailed architecture diagram for this
-> section is being prepared. Check back soon.
+![Architecture Overview](docs/images/architecture_detailed.jpg)
 
 | Component | Description |
 |-----------|-------------|
@@ -145,12 +144,6 @@ Each session is fully isolated by a `session_id` generated in the browser — no
 
 ## 🍃 Why MongoDB for Agentic Supply Chain Management
 
-Retail supply chains are a board-level concern, not a back-office logistics function — a single geopolitical announcement or shipping bottleneck can change supplier costs overnight. Responding fast enough requires a data foundation that moves as quickly as the disruption itself, not a patchwork of legacy ERP tables, a separate vector database, a separate memory store, and disconnected search tools stitched together with custom pipelines.
-
-This is the industry pattern MongoDB calls a [converged datastore](https://www.mongodb.com/company/blog/technical/converged-datastore-for-agentic-ai) for agentic AI: the business entities an application operates on, the vector embeddings its agents reason over, and the operational state those agents accumulate across sessions all live together under one API, one query language, one security model. This demo is a working, code-verified example of that pattern applied to supplier risk management.
-
-### Key Advantages — demonstrated in this repo today
-
 - **Flexible document model for supplier data that varies by region**  
   A supplier in Shenzhen carries `tariff_exposure_rating`; a fresh-produce supplier in Mexico carries `cold_chain_certified`. Both live in the same `suppliers` collection — no rigid shared schema, no sparse columns, no joins to assemble a full supplier profile.
 
@@ -163,15 +156,6 @@ This is the industry pattern MongoDB calls a [converged datastore](https://www.m
 - **Session isolation without extra infrastructure**  
   Each demo run is scoped by a `session_id` carried on the `X-Session-ID` header and stored on every document each module writes — no Redis, no separate session store.
 
-### Where this demo shows the target architecture, not (yet) the running one
-
-Being transparent here is itself part of what this repo is meant to teach — a real, MongoDB-native agentic system, and the honest gap between its design and its current implementation:
-
-- **Agent state persistence.** The converged-datastore pattern extends to the agent's own runtime state — LangGraph's MongoDB checkpointer (`thread_id = session_id`) would give each run resumable, replayable state stored in Atlas, alongside everything else. **Not implemented today** — both graphs run in-memory per request. See [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).
-- **Reactive activation via Change Streams.** The design calls for `risk_evaluator` to wake up automatically on a Change Stream watching for new disruption signals, instead of waiting for an explicit frontend call — matching how a real ERP integration would trigger it. **Not implemented today** — `stream_listener.py` is a stub; both agents are frontend-triggered. See [ADR-003](./docs/adr/003-backend-sse-change-stream.md).
-- **A self-sustaining memory loop.** The converged-datastore promise for agent memory is that it compounds over time from real outcomes, not just seed data. The design calls for a single dedicated process that writes real disruption *outcomes* back into `agent_memory` as they resolve. **Not implemented today** — `agent_memory` is 100% read-only across the codebase, populated only by hand-curated seed episodes. See [ADR-009](./docs/adr/009-backend-agent_memory_single_writer.md).
-
-Each of these is a natural next step for this platform, and each is deliberately documented as a design decision rather than left implicit — the [ADRs](./docs/adr/) are where to look for the full reasoning, tradeoffs, and what it would take to close each gap.
 
 ---
 
