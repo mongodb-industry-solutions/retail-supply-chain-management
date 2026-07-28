@@ -22,20 +22,31 @@ When an external signal is detected — a geopolitical tariff, a climate event, 
 
 ## Discover in this Demo
 
-- **Real-time disruption signal ingestion**  
-  Three signal types — geopolitical tariffs, climate events, and logistics disruptions — are generated per demo session. Signal content varies each run so different suppliers enter alert or critical state, simulating real-world unpredictability.
+- **Watch the agents work, not just their output**
+  The UI streams every step live: which supplier the agent is looking at, which MongoDB operation it just ran — a vector search, a geospatial query, a rerank — and what it found. You see the agent's reasoning and the real data behind it side by side, not just a final answer.
 
-- **Agentic risk evaluation with RPN scoring**  
-  `risk_evaluator` (LangGraph + Claude) detects active conditions, matches affected suppliers (geospatial and region queries), calculates dynamic Risk Priority Number (RPN) scores, runs a ReAct loop that retrieves historical memory from prior incidents via Atlas Vector Search, and generates a natural-language risk summary.
+- **`risk_evaluator` — real risk math over simulated signals**
+  LangGraph + Claude. Detects the session's disruption signals (simulated for the demo, but structurally identical to a real feed), matches exposed suppliers with geospatial (`$geoWithin`) and region queries, scores dynamic RPN risk, and runs a ReAct loop that retrieves historical memory via Atlas Vector Search before writing a natural-language summary.
 
-- **AI-powered alternative supplier discovery**  
-  `alternative_finder` (LangGraph) is human-in-the-loop. When a procurement manager decides to act on a flagged supplier, it plans a search from that supplier's risk evaluation, narrows candidates entirely inside MongoDB using `$rankFusion` hybrid search and a native `$rerank` stage, audits each candidate against its own cited documents and historical precedent, and ranks the survivors by proximity (`$geoNear`) and evidence coverage. The final approval is always left to the human.
+- **`alternative_finder` — every kind of search MongoDB can do, chained together**
+  LangGraph. Narrows candidates with `$rankFusion` hybrid search (vector + full-text), reranks natively in-pipeline with `$rerank`, cross-checks each candidate against its own cited documents and historical precedent, then ranks survivors by `$geoNear` proximity. Human-in-the-loop: the final pick is always the procurement manager's call.
 
-- **Live streaming progress via SSE**  
-  Both agents stream step-by-step progress to the frontend in real time using Server-Sent Events — no polling, no page reloads.
+- **One dataset, every collection type in play**
+  Suppliers, purchase orders, a risk catalog, supplier documents, and historical `agent_memory` episodes all live in [`docs/database-files/`](./docs/database-files/) — real enough to run the full demo end to end, or swap in your own data and watch the same agents respond to it.
 
-- **MongoDB as the unified operational and AI layer**  
-  Suppliers, purchase orders, risk catalogs, historical `agent_memory` episodes, and vector embeddings all live in MongoDB Atlas. Atlas Vector Search, `$rankFusion`, native `$rerank`, and `$geoNear` power `alternative_finder`'s in-database candidate search. (Note: the two agents run in-memory per request — there is no LangGraph checkpointer wired in today; see [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).)
+### MongoDB Atlas capabilities used in this demo
+
+1. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` (risk precedent) and `supplier_documents` (certifications, contracts), with Atlas Auto-Embedding — no separate embedding pipeline to maintain.
+2. [`$rankFusion`](https://www.mongodb.com/docs/atlas/atlas-vector-search/hybrid-search/) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
+3. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as an aggregation stage inside Atlas; candidates are never pulled out to an external API to be reranked.
+4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search over `supplier_documents` chunks, the lexical half of the hybrid search.
+5. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `risk_evaluator`, so a physical disruption (a storm, a port closure) only affects suppliers actually within its radius.
+6. [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/) — proximity ranking in `alternative_finder`, factoring distance-to-distribution-center into how alternative suppliers are ranked.
+7. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used throughout for operational context (e.g. active purchase orders per supplier) alongside the search stages above.
+8. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — powers the geospatial queries on `suppliers.location`.
+9. [Compound indexes](https://www.mongodb.com/docs/manual/core/index-compound/) — e.g. `supplier_id + risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
+10. [Atlas Scheduled Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/) — a daily cron-based cleanup job removes demo-session data. (Earlier documentation mentioned a [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/) on `external_conditions` for the same purpose — that index was never actually created; the Scheduled Trigger is the real cleanup mechanism today.)
+
 
 ---
 
