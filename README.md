@@ -14,7 +14,7 @@ This README helps developers understand the purpose, structure, and deployment p
     <td>
       This demo showcases <b>Agentic Supplier Management</b>, built on <b>MongoDB</b> to detect supply chain disruptions in real time and surface alternative suppliers using AI agents.<br><br>
       When an external signal is detected — a geopolitical tariff, a climate event, or a logistics disruption — two LangGraph agents run in sequence: <b>risk_evaluator</b> evaluates supplier risk using dynamic RPN scoring and historical memory retrieved from Atlas Vector Search, and <b>alternative_finder</b> surfaces validated alternative suppliers using in-database hybrid search and native reranking. In the demo both are triggered by explicit frontend actions, not automatically.<br><br>
-      MongoDB Atlas serves as the <a href="https://www.mongodb.com/resources/solutions/use-cases/implementing-an-operational-data-layer"><b>Operational Data Layer (ODL)</b></a> — a single platform where operational data, vector embeddings, and agent state all live together. By unifying data storage, search, and AI infrastructure in one place, the demo shows how retailers can build intelligent, agentic supply chain workflows without complex multi-system architectures.
+      MongoDB Atlas serves as the <a href="https://www.mongodb.com/resources/solutions/use-cases/implementing-an-operational-data-layer"><b>Operational Data Layer (ODL)</b></a> — a single platform where operational data, vector embeddings, and historical agent memory all live together. By unifying data storage, search, and AI infrastructure in one place, the demo shows how retailers can build intelligent, agentic supply chain workflows without complex multi-system architectures.
     </td>
   </tr>
 </table>
@@ -36,7 +36,7 @@ This README helps developers understand the purpose, structure, and deployment p
   Both agents stream step-by-step progress to the frontend in real time using Server-Sent Events — no polling, no page reloads.
 
 - **MongoDB as the unified operational and AI layer**  
-  Suppliers, purchase orders, risk catalogs, historical `agent_memory` episodes, and vector embeddings all live in MongoDB Atlas. Atlas Vector Search, `$rankFusion`, native `$rerank`, and `$geoNear` power `alternative_finder`'s in-database candidate search. (Note: the two agents run in-memory per request — there is no LangGraph checkpointer wired in today; see backend ADR-004.)
+  Suppliers, purchase orders, risk catalogs, historical `agent_memory` episodes, and vector embeddings all live in MongoDB Atlas. Atlas Vector Search, `$rankFusion`, native `$rerank`, and `$geoNear` power `alternative_finder`'s in-database candidate search. (Note: the two agents run in-memory per request — there is no LangGraph checkpointer wired in today; see [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).)
 
 ---
 
@@ -52,7 +52,14 @@ This README helps developers understand the purpose, structure, and deployment p
 | **`alternative_finder`** | Human-in-the-loop LangGraph `StateGraph` (4 conceptual layers across 6 nodes) that runs `$rankFusion` hybrid search + native `$rerank`, audits candidates against cited documents and precedent, and ranks them by `$geoNear` proximity and evidence. |
 | **MongoDB Atlas** | Operational Data Layer — stores suppliers, purchase orders, risk catalog, `agent_memory`, and the three session-scoped outputs. Atlas Vector Search / `$rankFusion` / native `$rerank` power the in-database search. (No LangGraph checkpoint state is persisted today — the graphs run in-memory.) |
 
-👉 For technical deep dives, see the [Frontend README](./frontend/README.md) and [Backend README](./backend/README.md).
+👉 For technical deep dives:
+- [Frontend README](./frontend/README.md)
+- [Backend README](./backend/README.md) — architecture, data model, SSE contracts
+- [`ingestion_engine` README](./backend/ingestion_engine/README.md)
+- [`risk_evaluator` README](./backend/risk_evaluator/README.md)
+- [`alternative_finder` README](./backend/alternative_finder/README.md)
+- [Architecture Decision Records](./docs/adr/) — the reasoning behind each design choice, including what's built vs. designed-but-not-yet-implemented
+- [Dataset & seed setup](./backend/dataset/) — sample suppliers, orders, risk catalog, and historical memory episodes to populate your own Atlas cluster
 
 ---
 
@@ -62,7 +69,10 @@ This README helps developers understand the purpose, structure, and deployment p
 retail-supply-chain-management/
 ├── frontend/               # Next.js app
 ├── backend/                # FastAPI backend (vertical slice architecture)
-├── docs/                   # Images, setup and architecture decision records
+│   └── dataset/            # Seed data for suppliers, orders, risk catalog, agent memory
+├── docs/
+│   ├── adr/                # Architecture Decision Records (backend-tagged; frontend series to follow)
+│   └── images/             # Diagrams used in this README
 ├── docker-compose.yml      # Orchestrates services
 └── makefile                # Dev commands
 ```
@@ -77,6 +87,7 @@ retail-supply-chain-management/
 - Anthropic API key — used by `risk_evaluator` and `alternative_finder` for their LLM calls (risk summaries, planning, auditing, rationales)
 - Voyage AI API key — used by Atlas for `agent_memory` / `supplier_documents` auto-embedding and the native `$rerank` stage in `alternative_finder`
 - [Atlas Charts](https://www.mongodb.com/products/charts) dashboard configured with your cluster
+- Sample data loaded into your cluster — see [`backend/dataset/`](./backend/dataset/) for the seed files (suppliers, purchase orders, risk catalog, supplier documents, and historical `agent_memory` episodes)
 - Environment configuration files (`.env`) for each service, using the example files as a template:
   - [frontend](./frontend/EXAMPLE.env)
   - [backend](./backend/.env.example)
@@ -123,24 +134,33 @@ Each session is fully isolated by a `session_id` generated in the browser — no
 
 ## 🍃 Why MongoDB for Agentic Supply Chain Management
 
-MongoDB Atlas is a powerful **Operational Data Layer (ODL)** for agentic workflows. It eliminates the need for separate vector databases, message queues, or state stores.
+Retail supply chains are a board-level concern, not a back-office logistics function — a single geopolitical announcement or shipping bottleneck can change supplier costs overnight. Responding fast enough requires a data platform that moves as quickly as the disruption itself, not a patchwork of legacy ERP tables, spreadsheets, and disconnected search tools.
 
-### Key Advantages
+This demo is a working example of what that looks like: MongoDB Atlas as the single **Operational Data Layer (ODL)** underneath both the operational data (suppliers, orders, risk catalog) and the AI capabilities (vector search, hybrid search, native reranking) the agents depend on — without a separate vector database, message broker, or search engine bolted on the side.
 
-- **Flexible document model**  
-  Model rich supply chain data — suppliers with per-region risk profiles, purchase orders, and risk catalogs — in a single document. No rigid schemas or painful joins.
+### Key Advantages — demonstrated in this repo today
 
-- **Built-in vector and hybrid search**  
-  Atlas Vector Search powers the hybrid search used by `alternative_finder` to find alternative suppliers, combining semantic similarity with full-text matching via `$rankFusion` and narrowing results with a native in-pipeline `$rerank` stage — no separate search infrastructure and no external rerank API call needed.
+- **Flexible document model for supplier data that varies by region**  
+  A supplier in Shenzhen carries `tariff_exposure_rating`; a fresh-produce supplier in Mexico carries `cold_chain_certified`. Both live in the same `suppliers` collection, no rigid shared schema, no sparse columns, no joins to assemble a full supplier profile.
+
+- **Semantic discovery, not keyword matching**  
+  `alternative_finder` narrows candidates using `$rankFusion` (combining vector similarity and full-text search) and Atlas's native `$rerank` stage — entirely inside the aggregation pipeline, no document ever leaves Atlas to be reranked by an external service. This is what lets the agent go beyond an exact attribute filter and surface a supplier whose profile is *semantically* close to what the risk context calls for.
+
+- **Historical memory as a first-class, queryable collection**  
+  `agent_memory` stores past disruption episodes and is read via `$vectorSearch` by both agents — `risk_evaluator` to weight its RPN score, `alternative_finder` to check precedent on a candidate. It's operational data, not a separate memory store bolted onto the LLM.
 
 - **Session isolation without extra infrastructure**  
-  Each demo run is scoped by a `session_id` carried on the `X-Session-ID` header and stored on the documents each module writes, so reads and writes never leak between runs. (The LangGraph MongoDB checkpointer described in backend ADR-004 is a designed enhancement, not yet wired in — the graphs currently run in-memory per request.)
+  Each demo run is scoped by a `session_id` carried on the `X-Session-ID` header and stored on every document each module writes — no Redis, no separate session store.
 
-- **Data lifecycle and reactive activation**  
-  Session-scoped documents are cleaned up on demo reset. A Change-Stream–based activation model for `risk_evaluator` (waking the agent on new signal inserts instead of a frontend call) is documented as a production reference in backend ADR-003, but it is **not implemented** — `stream_listener.py` is a stub and both agents are frontend-triggered today.
+### Where this demo shows the target architecture, not (yet) the running one
 
-- **Simplified architecture**  
-  One platform for operational data, search, and AI state. No ETL pipelines between systems, no synchronization lag, no separate vector store to manage.
+Being transparent here is itself part of what this repo is meant to teach — a real MongoDB-based agentic system, and the honest gap between its design and its current implementation:
+
+- **Agent state persistence.** The design calls for LangGraph's MongoDB checkpointer (`thread_id = session_id`), giving each agent run resumable, replayable state stored in Atlas. **Not implemented today** — both graphs run in-memory per request. See [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).
+- **Reactive activation via Change Streams.** The design calls for `risk_evaluator` to wake up automatically on a MongoDB Change Stream watching for new disruption signals, instead of waiting for an explicit frontend call — matching how a real ERP integration would trigger it. **Not implemented today** — `stream_listener.py` is a stub; both agents are frontend-triggered. See [ADR-003](./docs/adr/003-backend-sse-change-stream.md).
+- **A self-sustaining memory loop.** The design calls for a single dedicated process that writes real disruption *outcomes* back into `agent_memory` as they resolve, so precedent compounds over time instead of relying only on hand-curated seed episodes. **Not implemented today** — `agent_memory` is 100% read-only across the codebase. See [ADR-009](./docs/adr/009-backend-agent_memory_single_writer.md).
+
+Each of these is a natural next step for this platform, and each is deliberately documented as a design decision rather than left implicit — the [ADRs](./docs/adr/) are where to look for the full reasoning, tradeoffs, and what it would take to close each gap.
 
 ---
 
