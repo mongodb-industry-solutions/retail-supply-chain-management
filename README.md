@@ -72,7 +72,7 @@ retail-supply-chain-management/
 │   └── dataset/            # Seed data for suppliers, orders, risk catalog, agent memory
 ├── docs/
 │   ├── adr/                # Architecture Decision Records (backend-tagged; frontend series to follow)
-│   └── images/             # Diagrams used in this README
+│   └── images/              # Diagrams used in this README
 ├── docker-compose.yml      # Orchestrates services
 └── makefile                # Dev commands
 ```
@@ -134,31 +134,31 @@ Each session is fully isolated by a `session_id` generated in the browser — no
 
 ## 🍃 Why MongoDB for Agentic Supply Chain Management
 
-Retail supply chains are a board-level concern, not a back-office logistics function — a single geopolitical announcement or shipping bottleneck can change supplier costs overnight. Responding fast enough requires a data platform that moves as quickly as the disruption itself, not a patchwork of legacy ERP tables, spreadsheets, and disconnected search tools.
+Retail supply chains are a board-level concern, not a back-office logistics function — a single geopolitical announcement or shipping bottleneck can change supplier costs overnight. Responding fast enough requires a data foundation that moves as quickly as the disruption itself, not a patchwork of legacy ERP tables, a separate vector database, a separate memory store, and disconnected search tools stitched together with custom pipelines.
 
-This demo is a working example of what that looks like: MongoDB Atlas as the single **Operational Data Layer (ODL)** underneath both the operational data (suppliers, orders, risk catalog) and the AI capabilities (vector search, hybrid search, native reranking) the agents depend on — without a separate vector database, message broker, or search engine bolted on the side.
+This is the industry pattern MongoDB calls a [converged datastore](https://www.mongodb.com/company/blog/technical/converged-datastore-for-agentic-ai) for agentic AI: the business entities an application operates on, the vector embeddings its agents reason over, and the operational state those agents accumulate across sessions all live together under one API, one query language, one security model. This demo is a working, code-verified example of that pattern applied to supplier risk management.
 
 ### Key Advantages — demonstrated in this repo today
 
 - **Flexible document model for supplier data that varies by region**  
-  A supplier in Shenzhen carries `tariff_exposure_rating`; a fresh-produce supplier in Mexico carries `cold_chain_certified`. Both live in the same `suppliers` collection, no rigid shared schema, no sparse columns, no joins to assemble a full supplier profile.
+  A supplier in Shenzhen carries `tariff_exposure_rating`; a fresh-produce supplier in Mexico carries `cold_chain_certified`. Both live in the same `suppliers` collection — no rigid shared schema, no sparse columns, no joins to assemble a full supplier profile.
 
 - **Semantic discovery, not keyword matching**  
-  `alternative_finder` narrows candidates using `$rankFusion` (combining vector similarity and full-text search) and Atlas's native `$rerank` stage — entirely inside the aggregation pipeline, no document ever leaves Atlas to be reranked by an external service. This is what lets the agent go beyond an exact attribute filter and surface a supplier whose profile is *semantically* close to what the risk context calls for.
+  `alternative_finder` narrows candidates using `$rankFusion` (combining vector similarity and full-text search) and Atlas's native `$rerank` stage — entirely inside the aggregation pipeline, so no document ever leaves Atlas to be reranked by an external service. This is what lets the agent surface a supplier whose profile is *semantically* close to what the risk context calls for, not just one that matches an exact filter.
 
-- **Historical memory as a first-class, queryable collection**  
-  `agent_memory` stores past disruption episodes and is read via `$vectorSearch` by both agents — `risk_evaluator` to weight its RPN score, `alternative_finder` to check precedent on a candidate. It's operational data, not a separate memory store bolted onto the LLM.
+- **Agent memory as operational data, not a bolted-on store**  
+  `agent_memory` holds past disruption episodes and is queried via `$vectorSearch` by both agents — `risk_evaluator` to weight its RPN score, `alternative_finder` to check precedent on a candidate — in the same collection model, same query language, same cluster as every other operational document. No separate memory service, no synchronization between two systems to keep consistent.
 
 - **Session isolation without extra infrastructure**  
   Each demo run is scoped by a `session_id` carried on the `X-Session-ID` header and stored on every document each module writes — no Redis, no separate session store.
 
 ### Where this demo shows the target architecture, not (yet) the running one
 
-Being transparent here is itself part of what this repo is meant to teach — a real MongoDB-based agentic system, and the honest gap between its design and its current implementation:
+Being transparent here is itself part of what this repo is meant to teach — a real, MongoDB-native agentic system, and the honest gap between its design and its current implementation:
 
-- **Agent state persistence.** The design calls for LangGraph's MongoDB checkpointer (`thread_id = session_id`), giving each agent run resumable, replayable state stored in Atlas. **Not implemented today** — both graphs run in-memory per request. See [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).
-- **Reactive activation via Change Streams.** The design calls for `risk_evaluator` to wake up automatically on a MongoDB Change Stream watching for new disruption signals, instead of waiting for an explicit frontend call — matching how a real ERP integration would trigger it. **Not implemented today** — `stream_listener.py` is a stub; both agents are frontend-triggered. See [ADR-003](./docs/adr/003-backend-sse-change-stream.md).
-- **A self-sustaining memory loop.** The design calls for a single dedicated process that writes real disruption *outcomes* back into `agent_memory` as they resolve, so precedent compounds over time instead of relying only on hand-curated seed episodes. **Not implemented today** — `agent_memory` is 100% read-only across the codebase. See [ADR-009](./docs/adr/009-backend-agent_memory_single_writer.md).
+- **Agent state persistence.** The converged-datastore pattern extends to the agent's own runtime state — LangGraph's MongoDB checkpointer (`thread_id = session_id`) would give each run resumable, replayable state stored in Atlas, alongside everything else. **Not implemented today** — both graphs run in-memory per request. See [ADR-004](./docs/adr/004-backend-langgraph-checkpointing.md).
+- **Reactive activation via Change Streams.** The design calls for `risk_evaluator` to wake up automatically on a Change Stream watching for new disruption signals, instead of waiting for an explicit frontend call — matching how a real ERP integration would trigger it. **Not implemented today** — `stream_listener.py` is a stub; both agents are frontend-triggered. See [ADR-003](./docs/adr/003-backend-sse-change-stream.md).
+- **A self-sustaining memory loop.** The converged-datastore promise for agent memory is that it compounds over time from real outcomes, not just seed data. The design calls for a single dedicated process that writes real disruption *outcomes* back into `agent_memory` as they resolve. **Not implemented today** — `agent_memory` is 100% read-only across the codebase, populated only by hand-curated seed episodes. See [ADR-009](./docs/adr/009-backend-agent_memory_single_writer.md).
 
 Each of these is a natural next step for this platform, and each is deliberately documented as a design decision rather than left implicit — the [ADRs](./docs/adr/) are where to look for the full reasoning, tradeoffs, and what it would take to close each gap.
 
