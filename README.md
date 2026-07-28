@@ -58,6 +58,7 @@ When an external signal is detected — a geopolitical tariff, a climate event, 
 |-----------|-------------|
 | **Frontend (Next.js)** | Full-stack frontend that delivers the step-by-step demo UI, manages session isolation, and streams agent progress in real time. Includes an Atlas Charts dashboard for supply chain visualization. |
 | **Backend (FastAPI)** | Cleanly architected as vertical slices — three logical services (`ingestion_engine`, `risk_evaluator`, `alternative_finder`) running as a single FastAPI app for demo simplicity. Slices never import from each other; they integrate only through shared MongoDB collections and the `session_id` / `evaluation_id` identifiers. |
+| **`ingestion_engine`** | Not an agent — fully deterministic. Picks up to 3 suppliers with active orders, matches them to a base disruption signal, and calibrates a `condition_score` (reading `agent_memory` for a historical weighting factor) to guarantee at least one supplier reaches CRITICAL each session. |
 | **`risk_evaluator`** | Real 5-node LangGraph `StateGraph` that detects disruption signals, matches affected suppliers, calculates dynamic RPN scores, runs a ReAct loop to retrieve historical memory, and generates a Claude-powered natural-language summary. |
 | **`alternative_finder`** | Human-in-the-loop LangGraph `StateGraph` (4 conceptual layers across 6 nodes) that runs `$rankFusion` hybrid search + native `$rerank`, audits candidates against cited documents and precedent, and ranks them by `$geoNear` proximity and evidence. |
 | **MongoDB Atlas** | Operational Data Layer — stores suppliers, purchase orders, risk catalog, `agent_memory`, and the three session-scoped outputs. Atlas Vector Search / `$rankFusion` / native `$rerank` power the in-database search. (No LangGraph checkpoint state is persisted today — the graphs run in-memory.) |
@@ -144,17 +145,6 @@ Each session is fully isolated by a `session_id` generated in the browser — no
 
 ## 🍃 Why MongoDB for Agentic Supply Chain Management
 
-- **Flexible document model for supplier data that varies by region**  
-  A supplier in Shenzhen carries `tariff_exposure_rating`; a fresh-produce supplier in Mexico carries `cold_chain_certified`. Both live in the same `suppliers` collection — no rigid shared schema, no sparse columns, no joins to assemble a full supplier profile.
-
-- **Semantic discovery, not keyword matching**  
-  `alternative_finder` narrows candidates using `$rankFusion` (combining vector similarity and full-text search) and Atlas's native `$rerank` stage — entirely inside the aggregation pipeline, so no document ever leaves Atlas to be reranked by an external service. This is what lets the agent surface a supplier whose profile is *semantically* close to what the risk context calls for, not just one that matches an exact filter.
-
-- **Agent memory as operational data, not a bolted-on store**  
-  `agent_memory` holds past disruption episodes and is queried via `$vectorSearch` by both agents — `risk_evaluator` to weight its RPN score, `alternative_finder` to check precedent on a candidate — in the same collection model, same query language, same cluster as every other operational document. No separate memory service, no synchronization between two systems to keep consistent.
-
-- **Session isolation without extra infrastructure**  
-  Each demo run is scoped by a `session_id` carried on the `X-Session-ID` header and stored on every document each module writes — no Redis, no separate session store.
 
 
 ---
