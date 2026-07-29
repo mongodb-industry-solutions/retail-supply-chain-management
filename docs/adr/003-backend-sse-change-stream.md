@@ -1,7 +1,7 @@
 # ADR 003 — SSE Streaming + MongoDB Change Streams for Agent Activation
 
 ## Status
-Accepted
+Accepted. The SSE half of this decision is fully implemented and running; the Change Stream half is a documented production reference that was never wired in. See **Current implementation status**.
 
 ## Context
 
@@ -36,7 +36,7 @@ data: {"event": "stream_end"}
 Both agents are activated by explicit frontend POSTs — this is a human-driven flow that matches the demo's step-by-step UX:
 
 - `risk_evaluator` — activated by `POST /api/simulation/evaluate` after the ingestion step completes. The frontend drives the sequence.
-- `alternative_finder` — activated by `POST /api/agent/find-alternatives` after the user reviews the risk evaluation results. Human-in-the-loop by design.
+- `alternative_finder` — activated by `POST /api/alternative-finder/find` after the user reviews the risk evaluation results. Human-in-the-loop by design.
 
 #### Production
 
@@ -53,9 +53,15 @@ Both agents are activated by explicit frontend POSTs — this is a human-driven 
   streams results to frontend via SSE
 ```
 
-- `alternative_finder` — remains frontend-triggered (`POST /api/agent/find-alternatives`). Human-in-the-loop is intentional regardless of environment.
+- `alternative_finder` — remains frontend-triggered (`POST /api/alternative-finder/find`). Human-in-the-loop is intentional regardless of environment.
 
 See `risk_evaluator/stream_listener.py` for the Change Stream implementation stub.
+
+## Current implementation status
+
+- **SSE — real and running.** Both agent endpoints stream Server-Sent Events today via `sse_starlette.EventSourceResponse`, backed by an `asyncio.Queue` that a background graph task drains. `risk_evaluator` is triggered by `POST /api/simulation/evaluate`; `alternative_finder` by `POST /api/alternative-finder/find`. Both require the `X-Session-ID` header (HTTP 400 if missing/empty).
+- **Event shapes differ from the illustrative examples above.** The `node_complete` / `llm_token` / `stream_end` snippets in this ADR are conceptual. The events actually emitted are: for `risk_evaluator` — `tool_start`, `tool_end`, `atlas_operation`, `agent_thought`, `agent_response`, `error`, plus a `None` sentinel that closes the stream (keyed on a `type` field); for `alternative_finder` — `alternative_finder_started`, `layer_started`/`layer_completed`, `atlas_operation`, `agent_thought`, `candidate_generated`/`candidate_audited`, `tool_start`/`tool_end`, `shortlist_ready`, `error`, `stream_end`, plus a `None` sentinel (keyed on an `event` field). There is no LLM token-level streaming today. See each module's README for the exact contract.
+- **Change Stream activation — not yet implemented.** `stream_listener.py` is a stub whose body is `pass`; no Change Stream watches `external_conditions`, and nothing resumes from an oplog token. `risk_evaluator` is activated *only* by the explicit frontend POST. The Change Stream flow in the "Production" section is a designed reference, not running behavior.
 
 ## In Production
 

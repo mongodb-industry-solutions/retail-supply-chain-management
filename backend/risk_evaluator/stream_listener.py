@@ -3,7 +3,7 @@
 # In production, this would replace the HTTP endpoint in router.py: the risk evaluator
 # would wake up automatically when new disruption signals are written, without any
 # direct call from the frontend or ingestion engine.
-# Reference: ADR 003 (adrs/003-sse-change-stream.md)
+# Reference: ADR 003 (docs/adr/003-backend-sse-change-stream.md)
 
 
 async def watch_external_conditions(session_id: str):

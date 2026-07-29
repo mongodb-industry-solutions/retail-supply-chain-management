@@ -1,399 +1,160 @@
-# Risk Evaluator
+# `risk_evaluator` — dynamic RPN risk evaluation
 
-## 1. Overview
-
-The risk evaluator is a LangGraph-powered agent pipeline that detects active supply chain risk signals for a session, identifies which suppliers are geographically or regionally exposed, calculates a dynamic Risk Priority Number (RPN) for each supplier–signal pair (with haversine distance decay for physical events), and runs a ReAct reasoning loop that queries Atlas Vector Search to surface historical precedent before amplifying or attenuating scores. A final LLM call produces a natural-language risk summary per supplier. The entire pipeline streams progress to the frontend as Server-Sent Events so the procurement manager sees each reasoning step in real time rather than waiting for a single large payload.
+A real LangGraph `StateGraph` that, for one demo session, detects the active
+disruption signals, finds exposed suppliers, scores each (supplier, signal)
+pair with a dynamic RPN, adjusts those scores using historical precedent
+retrieved from `agent_memory`, and writes a natural-language risk evaluation
+per supplier. Progress streams to the frontend over Server-Sent Events.
 
 ---
 
-## 2. How to Run the Backend Locally
+## The graph — 5 nodes, fixed linear sequence
+
+The graph is a real `StateGraph` (`graph.py`) compiled **without a
+checkpointer** — it runs in-memory per request, seeded with a fresh state each
+time. There is **no conditional branching**; the order is always:
+
+```
+START → detect_conditions → match_suppliers → calculate_rpn → reason_and_retrieve → generate_summary → END
+```
+
+- **`detect_conditions`** — deterministic. `find` on `external_conditions`
+  with `{"session_id": ..., "is_demo_trigger": true}` (the signals
+  `ingestion_engine` planted).
+- **`match_suppliers`** — deterministic. For each signal: physical signals
+  (`has_physical_location: true`) use an Atlas **geospatial** query
+  (`$geoWithin $centerSphere`) on `suppliers.location`; non-physical signals
+  match by region (`{"region": {"$in": affected_regions}}`). Enriches each
+  matched supplier with operational context from `purchase_orders`
+  (`status: "active"`).
+- **`calculate_rpn`** — deterministic. Looks up FMEA fields in `risk_catalog`
+  and computes `rpn_dynamic = severity × (occurrence_base × condition_score) ×
+  detection`, applying a haversine distance decay (floor 0.70) for physical
+  signals. Sets `rpn_status` (CRITICAL/ALERT/WATCH/OK) against
+  `alert_threshold_rpn`.
+- **`reason_and_retrieve`** — the LLM ReAct loop (details below).
+- **`generate_summary`** — the LLM narrative + the only DB write (details
+  below).
+
+Only the last two nodes use the LLM (Claude via LangChain). The first three
+are fully deterministic.
+
+---
+
+## The ReAct loop (`reason_and_retrieve`)
+
+This node derives a `historical_weight` per supplier that amplifies (`>1.0`)
+or attenuates (`<1.0`) each supplier's `rpn_dynamic`.
+
+- **It is one shared loop for the whole run — not per supplier.** A single
+  loop runs, and the LLM returns one `Final Answer` weight map covering every
+  scored supplier. Suppliers can legitimately share the same weight.
+- **Max 4 iterations** (`for _iteration in range(4)`), to bound latency/cost.
+- **Three read-only Atlas tools** the LLM may call:
+  - `search_supplier_memory` — `$vectorSearch` on `agent_memory`, filtered
+    `supplier_id $in` (batched across suppliers).
+  - `search_combined_episodes` — `$vectorSearch` on `agent_memory`, filtered
+    `risk_type $in` (cross-supplier precedent).
+  - `get_order_detail` — aggregation on `purchase_orders` (active orders).
+- **Parsing strategy (not structured output):** the LLM's raw text is parsed
+  with regexes — `Thought:`, `Action:`, and `Final Answer:`. The Final Answer
+  JSON is extracted with `re.search(r"Final Answer:\s*(\{.*\})")` and read with
+  `json.loads`. Tool-call arguments are parsed in three widening passes
+  (strict `json.loads` → `ast.literal_eval` → manual top-level comma split).
+- **Failure fallback:** if the Final Answer can't be parsed, it logs a warning
+  and leaves weights empty — it does **not** crash. Any supplier not named in
+  the Final Answer defaults to `historical_weight = 1.0` (neutral). Tool
+  exceptions are also caught and logged without breaking the graph.
+- After the loop, each score's `rpn_dynamic` is rescaled by the weight and its
+  `rpn_status` recomputed against the catalog threshold; the surfaced episodes
+  are carried forward for the summary.
+
+> **`retrieve_memory` is confirmed dead code.** A single-pass, one-query-per-
+> supplier version still exists in `nodes.py` but is **not** added to the
+> compiled graph and never runs. It was superseded by `reason_and_retrieve`
+> and kept only for reference.
+
+---
+
+## Collections it touches
+
+| Op | Collection | Where | Filter / capability |
+|----|-----------|-------|--------------------|
+| READ | `external_conditions` | detect_conditions | `{session_id, is_demo_trigger:true}` (Query) |
+| READ | `suppliers` | match_suppliers | `$geoWithin $centerSphere` (Geospatial) or `{region:{$in}}` |
+| READ | `purchase_orders` | match_suppliers, get_order_detail | `{supplier_id, status:"active"}`; aggregation in the tool |
+| READ | `risk_catalog` | calculate_rpn, reason_and_retrieve | `{risk_id}` |
+| READ | `agent_memory` | search_supplier_memory / search_combined_episodes | `$vectorSearch` (autoembed, `agent_memory_autoembed_index`), LLM-gated |
+| **WRITE** | `supplier_risk_evaluations` | generate_summary | `insert_one` — one per non-OK supplier |
+
+MongoDB capabilities used: Query, Geospatial (`$geoWithin $centerSphere`),
+Aggregation, and `$vectorSearch` with Atlas server-side auto-embedding. **No**
+`$rankFusion`, native `$rerank`, `$search`, or `$geoNear` in this module.
+**`agent_memory` is read only — this module never writes to it.**
+
+### What `generate_summary` writes
+
+`generate_summary` calls Claude to write a summary per WATCH/ALERT/CRITICAL
+supplier (OK-only suppliers are skipped), then a second LLM pass selects
+glossary terms and cleans up the text (on failure it falls back to the draft
+with an empty glossary). It **inserts a hand-built dict** into
+`supplier_risk_evaluations` — **not** the `SupplierEvaluation` Pydantic model.
+The persisted doc adds `is_base`, `evaluated_at`, and `memory_episodes_used`,
+and **omits the `location`/GeoPoint** that the Pydantic model requires (that
+field is present only in the SSE payload). So the schema describes the SSE
+event, not the stored document.
+
+---
+
+## Invocation contract
+
+- **Endpoint:** `POST /api/simulation/evaluate` (mounted in `main.py`).
+- **Header:** `X-Session-ID` required → **HTTP 400** if missing/empty.
+- **Request body:** none. (Call `/api/simulation/start` first so there are
+  signals to read.)
+- **Response:** an SSE stream (`EventSourceResponse`).
+
+### SSE events actually emitted
+
+Each frame is `data: <json>` with **no SSE `event:` field** — the client
+switches on the JSON `type` key:
+
+| `type` | Meaning |
+|--------|---------|
+| `tool_start` / `tool_end` | a node started / finished |
+| `atlas_operation` | a MongoDB op ran (`feature` ∈ Query / Geospatial / Vector Search / Aggregation) |
+| `agent_thought` | a ReAct `Thought:` line |
+| `agent_response` | terminal result — `{"type":"agent_response","data": <EvaluationResult>}` |
+| `error` | `{"type":"error","message": ...}` on any unhandled exception |
+| *(none)* | a `None` sentinel is placed on the queue to close the stream |
 
 ```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-
-### Required environment variables
-
-Create a `.env` file in the `backend/` directory with the following variables (no defaults — all are required unless noted):
-
-| Variable | Notes |
-|---|---|
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `DATABASE_NAME` | Optional — defaults to `retail-supply-chain-risk` |
-| `LLM_API_KEY` | API key forwarded as `api-key` header to the LLM proxy |
-| `LLM_BASE_URL` | Base URL of the LLM proxy (e.g. Amazon Bedrock gateway) |
-| `ANTHROPIC_MODEL` | Model identifier (e.g. `claude-sonnet-4-6`) |
-| `VOYAGE_API_KEY` | Voyage AI key used by Atlas autoembedding |
-| `CORS_ORIGINS` | Optional — defaults to `["*"]` |
-
-### MongoDB Atlas requirements
-
-**Cluster:** any M0 or higher (M10+ recommended for production).
-
-**Database name:** `retail-supply-chain-risk` (matches `DATABASE_NAME`).
-
-**Collections that must exist before starting the server:**
-
-| Collection | Purpose |
-|---|---|
-| `suppliers` | Supplier master data with `location` (GeoJSON Point) and `region` fields |
-| `risk_catalog` | Risk rules: `risk_type`, `severity`, `occurrence_base`, `detection`, `alert_threshold_rpn` |
-| `purchase_orders` | Active orders per supplier |
-| `external_conditions` | Base condition documents seeded with `is_base: true` |
-| `agent_memory` | Historical risk episodes used by Vector Search |
-| `supplier_risk_evaluations` | Created automatically; stores one document per evaluated supplier per session |
-
-**Atlas Search indexes that must exist:**
-
-| Index name | Collection | Type | Field |
-|---|---|---|---|
-| `agent_memory_autoembed_index` | `agent_memory` | Vector Search | `auto_embed_text` |
-
-The `suppliers` collection also requires a `2dsphere` index on the `location` field for `$geoWithin` queries.
-
----
-
-## 3. API Endpoints
-
-Both endpoints require the `X-Session-ID` request header. The value is a free-form string that scopes all database reads and writes to a single simulation run.
-
-### a. `POST /api/simulation/start`
-
-**Purpose:** Seeds the session with demo risk signals. Selects up to three `(supplier, risk_type)` pairs from live database data, generates a condition document for each, inserts them into `external_conditions` with `is_demo_trigger: true`, and returns the inserted documents. This endpoint must be called before `/evaluate` — without seeded signals the evaluator finds nothing to process.
-
-**Request headers:**
-
-```
-X-Session-ID: <your-session-id>
-```
-
-**Request body:** none.
-
-**Response:**
-
-```json
-{
-  "session_id": "string",
-  "signals": [
-    {
-      "condition_id": "COND-ABCD1234-EAR-F3A9B2",
-      "session_id": "string",
-      "is_demo_trigger": true,
-      "is_base": false,
-      "risk_catalog_ref": "string",
-      "risk_type_triggered": "string",
-      "condition_score": 1.15,
-      "source": "string",
-      "raw_headline": "string",
-      "has_physical_location": true,
-      "epicentre": { "type": "Point", "coordinates": [longitude, latitude] },
-      "impact_radius_km": 300,
-      "affected_regions": ["string"],
-      "detected_at": "2026-06-26T10:00:00Z",
-      "valid_until": null
-    }
-  ]
-}
-```
-
-`signals` is empty if no suitable `(supplier, risk_catalog)` pairs exist in the database.
-
----
-
-### b. `POST /api/simulation/evaluate`
-
-**Purpose:** Runs the five-node LangGraph pipeline for the session and streams every progress event and the final result as Server-Sent Events. Each SSE frame carries a single JSON object in its `data` field.
-
-**Request headers:**
-
-```
-X-Session-ID: <your-session-id>
-```
-
-**Request body:** none.
-
-**Response:** `Content-Type: text/event-stream`
-
-Each frame has the shape:
-
-```
-data: <JSON string>\n\n
-```
-
-#### SSE event types
-
-##### `tool_start`
-
-Emitted at the beginning of each pipeline node. Use this to show a "running" indicator in the UI.
-
-```json
-{
-  "type": "tool_start",
-  "message": "Detecting active risk signals..."
-}
-```
-
-`message` values match one of the five node labels:
-- `"Detecting active risk signals..."`
-- `"Matching exposed suppliers..."`
-- `"Calculating dynamic RPN scores..."`
-- `"Reasoning and retrieving memory..."`
-- `"Generating risk summary..."`
-
----
-
-##### `tool_end`
-
-Emitted when a node finishes. The `message` value is identical to the corresponding `tool_start` message, allowing you to match start/end pairs.
-
-```json
-{
-  "type": "tool_end",
-  "message": "Detecting active risk signals..."
-}
+curl -N -X POST http://localhost:8000/api/simulation/evaluate \
+  -H "X-Session-ID: demo-session-123"
 ```
 
 ---
 
-##### `atlas_operation`
+## Internal state notes
 
-Emitted each time a node issues a MongoDB query. Use this to render the "Atlas features in use" panel. The `feature` field maps to a specific MongoDB capability.
+State is a `TypedDict` (`RiskEvaluatorState`) — type hints only, not enforced.
+Two things worth knowing:
 
-```json
-{
-  "type": "atlas_operation",
-  "feature": "Query",
-  "collection": "external_conditions",
-  "detail": "3 active conditions found for session abc123"
-}
-```
-
-Possible `feature` values:
-
-| Value | MongoDB capability | Typical collections |
-|---|---|---|
-| `"Query"` | `find` / `find_one` equality or range filter | `external_conditions`, `risk_catalog` |
-| `"Geospatial"` | `$geoWithin $centerSphere` | `suppliers` |
-| `"Vector Search"` | `$vectorSearch` with `queryText` autoembedding | `agent_memory` |
-| `"Aggregation"` | `$match` + `$project` + `$limit` aggregation pipeline | `purchase_orders`, `agent_memory` |
+- **`historical_weight` (a state key) is dead state.** `reason_and_retrieve`
+  returns it, but no downstream node reads `state["historical_weight"]`; the
+  effective weight is carried on each `RiskScore.triggered_by.historical_weight`
+  instead. (It is also not in the initial state dict.)
+- No checkpointing — the whole run lives in memory for the duration of the
+  request. Session isolation comes from the fresh per-request state plus
+  `session_id` filtering on documents, not from a LangGraph checkpointer (see
+  [ADR-004](../../docs/adr/004-backend-langgraph-checkpointing.md)).
 
 ---
 
-##### `agent_thought`
+## Cross-module dependencies
 
-Emitted inside the `reason_and_retrieve` ReAct loop each time the LLM produces a `Thought:` line. Use this to show the agent's reasoning in a collapsible panel.
-
-```json
-{
-  "type": "agent_thought",
-  "message": "Supplier SUP-042 has an active ALERT status and two orders due in 8 days. I should search for past earthquake episodes in this region."
-}
-```
-
----
-
-##### `agent_response`
-
-Emitted exactly once, after `generate_summary` completes. This is the final structured result. The `data` field is the serialized `EvaluationResult`.
-
-```json
-{
-  "type": "agent_response",
-  "data": {
-    "session_id": "string",
-    "conditions": [
-      {
-        "_id": "string — Mongo ObjectId, serialized to string",
-        "condition_id": "COND-ABCD1234-EAR-F3A9B2",
-        "risk_catalog_ref": "string",
-        "risk_type_triggered": "string",
-        "source": "string",
-        "raw_headline": "string",
-        "affected_regions": ["string"],
-        "condition_score": 1.38,
-        "has_physical_location": true,
-        "epicentre": { "type": "Point", "coordinates": [longitude, latitude] },
-        "impact_radius_km": 100,
-        "detected_at": "string",
-        "valid_until": null,
-        "is_base": false,
-        "is_demo_trigger": true,
-        "session_id": "string"
-      }
-    ],
-    "suppliers": [
-      {
-        "supplier_id": "SUP-042",
-        "supplier_name": "string",
-        "region": "string",
-        "country": "string",
-        "product_categories": ["string"],
-        "location": { "type": "Point", "coordinates": [longitude, latitude] },
-        "supplier_risk_level": "CRITICAL",
-        "requires_action": true,
-        "operational_context": {
-          "active_orders": 3,
-          "total_value_usd": 120000.0,
-          "earliest_delivery_due": "2026-07-04",
-          "days_until_due": 8,
-          "criticality": "high"
-        },
-        "risk_scores": [
-          {
-            "risk_id": "RISK-EQ-001",
-            "condition_id": "COND-ABCD1234-EAR-F3A9B2",
-            "rpn_base": 200.0,
-            "rpn_dynamic": 246.5,
-            "rpn_status": "CRITICAL",
-            "triggered_by": {
-              "source": "USGS",
-              "condition_score": 1.38,
-              "historical_weight": 1.2,
-              "distance_decay": 0.85,
-              "risk_type_triggered": "climate_disruption"
-            }
-          }
-        ],
-        "natural_language_summary": "string — 3-5 sentence narrative written by the LLM",
-        "session_id": "string"
-      }
-    ]
-  }
-}
-```
-
-`rpn_status` is one of `"CRITICAL"`, `"ALERT"`, `"WATCH"`, `"OK"`.  
-`supplier_risk_level` is the highest `rpn_status` across all scores for that supplier.  
-`requires_action` is `true` when at least one score is `CRITICAL` or `ALERT`.  
-`distance_decay` is `null` for region-based (non-physical) conditions.  
-`operational_context.criticality` is constrained to exactly `"high"`, `"medium"`, or `"low"`.  
-`location` is copied as-is from the supplier's `location` field in the `suppliers` collection (GeoJSON Point).  
-`risk_scores[].triggered_by.risk_type_triggered` comes from the **`risk_catalog`** document's own `risk_type` field for that `risk_id` (e.g. `"geopolitical_tariff"`, `"climate_disruption"`, `"logistics_disruption"`) — it is a different value from the `risk_type_triggered` field on the `external_conditions` document shown under `conditions` above.
-
-> **Note on Insomnia vs. browser:** Insomnia displays the full raw SSE stream including all intermediate events. A browser `EventSource` object receives the same bytes but fires separate `onmessage` callbacks per frame — you will not see a single combined response body.
-
----
-
-## 4. SSE Event Sequence
-
-A normal run produces events in this order:
-
-```
-tool_start  ("Detecting active risk signals...")
-atlas_operation  [Query on external_conditions]
-tool_end    ("Detecting active risk signals...")
-
-tool_start  ("Matching exposed suppliers...")
-atlas_operation  [Geospatial on suppliers]  ← only for physical conditions
-tool_end    ("Matching exposed suppliers...")
-
-tool_start  ("Calculating dynamic RPN scores...")
-atlas_operation  [Query on risk_catalog]   ← one per supplier–signal pair
-tool_end    ("Calculating dynamic RPN scores...")
-
-tool_start  ("Reasoning and retrieving memory...")
-agent_thought   ← one or more, interleaved with tool calls
-atlas_operation [Vector Search on agent_memory]   ← per ReAct tool call
-atlas_operation [Aggregation on purchase_orders]  ← if get_order_detail called
-agent_thought   ← after each Observation, until Final Answer
-tool_end    ("Reasoning and retrieving memory...")
-
-tool_start  ("Generating risk summary...")
-tool_end    ("Generating risk summary...")
-agent_response  ← final structured payload
-```
-
-The stream closes after `agent_response`. If the pipeline fails, an `{"type": "error", "message": "..."}` frame is emitted before the stream closes.
-
----
-
-## 5. Frontend Integration Notes
-
-### Consuming SSE in JavaScript
-
-**Option A — `EventSource` (simplest, GET only):**
-
-```js
-// EventSource only supports GET; use fetch for POST
-```
-
-**Option B — `fetch` with `ReadableStream` (required here because the endpoint is POST):**
-
-```js
-const response = await fetch('/api/simulation/evaluate', {
-  method: 'POST',
-  headers: { 'X-Session-ID': sessionId },
-});
-
-const reader = response.body.getReader();
-const decoder = new TextDecoder();
-let buffer = '';
-
-while (true) {
-  const { done, value } = await reader.read();
-  if (done) break;
-  buffer += decoder.decode(value, { stream: true });
-  const frames = buffer.split('\n\n');
-  buffer = frames.pop(); // keep incomplete frame
-  for (const frame of frames) {
-    const line = frame.trim();
-    if (line.startsWith('data:')) {
-      const event = JSON.parse(line.slice(5).trim());
-      handleEvent(event);
-    }
-  }
-}
-```
-
-### Mapping event types to UI elements
-
-| Event type | Suggested UI action |
-|---|---|
-| `tool_start` | Show step as "running" (spinner, highlighted row) |
-| `tool_end` | Mark step as "complete" (check mark, dim row) |
-| `atlas_operation` | Append an entry to the "Atlas features" side panel |
-| `agent_thought` | Append text to a collapsible "Agent reasoning" log |
-| `agent_response` | Render supplier cards with risk badges, hide progress panel |
-
-**Mapping `atlas_operation.feature` to icons/colors:**
-
-| `feature` | Suggested icon | Suggested color |
-|---|---|---|
-| `"Query"` | magnifying glass | blue |
-| `"Geospatial"` | map pin / globe | green |
-| `"Vector Search"` | sparkle / neural net | purple |
-| `"Aggregation"` | bar chart / funnel | orange |
-
-### What `historical_weight` means and when it is 1.0
-
-`triggered_by.historical_weight` reflects how past episodes for this supplier influence the current RPN:
-
-- `> 1.0` (e.g. `1.2`) — historical episodes confirmed impact occurred; risk is amplified.
-- `< 1.0` (e.g. `0.9`) — episodes were found but no actual impact occurred; risk is attenuated.
-- `= 1.0` — no relevant historical episodes were found in Atlas Vector Search, or the supplier was not searched because all its scores were `OK`. The weight is neutral and does not change `rpn_dynamic`.
-
----
-
-## 6. Data Notes
-
-### Read-only collections
-
-The risk evaluator only reads from these collections — it never inserts or updates them:
-
-- `suppliers`
-- `risk_catalog`
-- `purchase_orders`
-- `external_conditions`
-- `agent_memory`
-
-### Written per session
-
-One collection receives writes during an evaluation run:
-
-- `supplier_risk_evaluations` — one document inserted per supplier that has at least one `WATCH`, `ALERT`, or `CRITICAL` score. Documents include `evaluation_id`, `session_id`, `evaluated_at`, all risk scores, and the LLM-generated summary. The `historical_weight` derived by `reason_and_retrieve` is applied to each score's `rpn_dynamic`/`rpn_status` and persisted on `risk_scores[].triggered_by.historical_weight`; the `memory_id`s of the episodes actually surfaced for that supplier are persisted in `memory_episodes_used`. Both were previously computed and discarded — they are now genuinely applied and stored.
-
-### Session isolation
-
-Every document written to `supplier_risk_evaluations` carries a `session_id` field matching the `X-Session-ID` header. Reads in `detect_conditions` filter `external_conditions` by `session_id` as well. Each session is therefore fully isolated: concurrent simulation runs do not interfere with each other.
+- Reads the `external_conditions` documents that `ingestion_engine` wrote
+  (same `session_id`, `is_demo_trigger: true`).
+- Its `supplier_risk_evaluations` output (keyed by `evaluation_id`) is what
+  `alternative_finder` later reads via `evaluation_id_ref`.
+- Does not import either other module.

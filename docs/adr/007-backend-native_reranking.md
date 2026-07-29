@@ -10,9 +10,10 @@ candidates. Two ways to do this were available:
 
 1. Fetch the fused candidates in application code, then call Voyage AI's
    reranking model via an external HTTP request (the `voyageai` Python
-   SDK), the same way the pre-rebuild stub's `rerank.py` docstring
-   *claimed* to work (its actual code just sliced the list —
-   confirmed non-functional by the 2026-07-03 audit).
+   SDK), the same way the pre-rebuild `backend/voyageai/rerank.py` stub's
+   docstring *claimed* to work (its actual code just sliced the list —
+   confirmed non-functional by the 2026-07-03 audit; the stub has since
+   been deleted).
 2. Use MongoDB Atlas's native `$rerank` aggregation stage, which runs the
    reranking model call as part of the same aggregation pipeline, without
    the application ever handling the raw candidate documents or making a
@@ -74,6 +75,22 @@ Relevance score is read via `{"$meta": "score"}` (not `relevanceScore` or
   point this demo makes about MongoDB's own retrieval/ranking
   capabilities — "the database narrowed this, not a prompt or an external
   service" is a deliberate part of the narrative this module demonstrates.
+
+  Beyond the narrative, the external-call path was worse on three concrete
+  counts. It moves data for no reason: every fused candidate chunk would have
+  to be pulled out of Atlas into the backend, serialized to Voyage over the
+  network, and then discarded once the shortlist came back — paying two extra
+  network hops and the full candidate payload to produce a result the database
+  can compute in place. It adds a second failure domain and a second set of
+  credentials: an application-held `VOYAGE_API_KEY`, its own rate limits,
+  timeouts, and retry logic, all of which the native stage folds into the
+  single aggregation call the pipeline already makes. And it splits the
+  ranking logic across two systems — `$rankFusion` weights in the pipeline,
+  rerank parameters in Python — so tuning retrieval would mean reasoning about
+  two places that must stay in sync. The native stage keeps the entire
+  narrowing decision expressible as one pipeline that can be read, explained,
+  and tuned as a unit. The tradeoff accepted in exchange is the Preview status
+  and the manual Atlas project-level setup documented above.
 - **No reranking step at all** (ship candidates straight from
   `$rankFusion`'s fused order). Considered as a fallback if the native
   stage had turned out to be unavailable on this cluster/project — it
