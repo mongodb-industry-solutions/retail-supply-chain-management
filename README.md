@@ -157,6 +157,9 @@ An autonomous agent making decisions over sensitive operational data raises the 
 ### 4. Build once, run anywhere
 As agentic workloads scale, hyperscaler capacity itself is becoming a real constraint — not just a preference. An agentic platform locked to a single cloud provider doesn't scale with the business if that provider runs short on capacity. Being [multi-cloud in MongoDB](https://www.mongodb.com/company/newsroom/press-releases/mongodb-delivers-accurate-ai-retrieval-wherever-enterprise-data-lives) means the same document model and query API run unchanged across AWS, Azure, GCP, and on-prem — that constraint never becomes the application's problem. That's what build once, run anywhere actually means in practice.
 
+### 5. Control context, control costs
+As agents get more capable, token spend becomes a real budget line, not a rounding error — [multi-agent systems can burn up to 15x more tokens than a single chat conversation](https://www.mongodb.com/company/blog/technical/why-multi-agent-systems-need-memory-engineering), and that cost compounds with every redundant retrieval and every irrelevant detail dragged into a prompt. The only way to control it is by controlling context: [being the data layer that stores and retrieves agent memory](https://www.mongodb.com/resources/basics/artificial-intelligence/database-role-agent-memory) lets MongoDB return exactly what an agent needs, precisely when it needs it — cutting the token overhead that comes from re-fetching, over-fetching, or re-summarizing the same context across sessions.
+
 ---
 
 ## 👥 Authors
