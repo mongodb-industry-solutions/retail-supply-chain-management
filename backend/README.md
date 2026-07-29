@@ -251,7 +251,7 @@ SSE stream. Terminal event `shortlist_ready` carries the persisted
 - [003 — SSE + Change Streams](../docs/adr/003-backend-sse-change-stream.md)
 - [004 — LangGraph Checkpointing](../docs/adr/004-backend-langgraph-checkpointing.md)
 - [005 — Operational Data Layer](../docs/adr/005-backend-operational-data-layer.md)
-- [006 — alternative_finder Four-Layer Architecture](../docs/adr/006-backend-alternative_finder_four_layer_architecture.md)
+- [006 — Context-Engineered Four-Layer Architecture for alternative_finder](../docs/adr/006-backend-context-engineered-four-layer-architecture.md.md)
 - [007 — Native In-Pipeline Reranking](../docs/adr/007-backend-native_reranking.md)
 - [008 — Two Separate Precedent Signals](../docs/adr/008-backend-precedent_signals_no_fusion.md)
 - [009 — agent_memory Single-Writer Closure Loop (designed, not built)](../docs/adr/009-backend-agent_memory_single_writer.md)
