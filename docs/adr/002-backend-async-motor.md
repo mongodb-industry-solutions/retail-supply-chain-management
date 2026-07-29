@@ -15,7 +15,7 @@ Replace PyMongo with **Motor** (`motor.motor_asyncio.AsyncIOMotorClient`) as the
 
 Motor is the official async Python driver for MongoDB, built on top of PyMongo. It exposes an identical API to PyMongo but returns coroutines instead of blocking. This means all `find`, `insert_one`, `aggregate`, and change stream operations are naturally awaitable.
 
-PyMongo remains a dependency because Motor uses it internally and because the LangGraph MongoDB checkpointer (`langgraph-checkpoint-mongodb`) targets the sync PyMongo client.
+PyMongo remains a transitive dependency because Motor is built on top of it. It would also be required by the LangGraph MongoDB checkpointer (`langgraph-checkpoint-mongodb`), which targets the sync PyMongo client — but note that no checkpointer is wired into either graph today, so PyMongo's presence is currently due solely to Motor's internal use of it. See ADR-004 for the checkpointer status.
 
 ### Singleton Pattern
 

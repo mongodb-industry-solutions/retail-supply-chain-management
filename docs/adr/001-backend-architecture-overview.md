@@ -1,7 +1,7 @@
 # ADR 001 — Vertical Slice Architecture for Agentic Demo
 
 ## Status
-Accepted
+Accepted. The vertical-slice decision is fully realized in code; see **Current implementation status** below for the two places where this ADR's supporting language describes a production reference rather than running behavior.
 
 ## Context
 
@@ -25,7 +25,6 @@ The `core/` package provides shared infrastructure (DB connection, settings, ses
 | `risk_evaluator` | Activated by frontend POST; runs LangGraph RPN evaluation; streams risk summary via SSE |
 | `alternative_finder` | Activated by frontend POST (human-in-the-loop); runs LangGraph supplier search; streams results via SSE |
 | `core` | DB singleton, settings, session header dependency, shared exceptions |
-| `voyageai` | Thin wrapper around MongoDB-native Voyage AI reranker |
 
 ## Activation model
 
@@ -34,6 +33,14 @@ In this demo both agents are activated by explicit frontend POST requests — th
 In a production system, `risk_evaluator` would be activated by a MongoDB Change Stream watching `external_conditions` for new `is_demo_trigger: true` inserts — no frontend call required. The Change Stream activation pattern is documented in `stream_listener.py` and ADR 003 as a production reference.
 
 `alternative_finder` remains frontend-triggered in production — it is a human-in-the-loop step that only runs when the procurement manager decides to act on a flagged supplier.
+
+## Current implementation status
+
+Verified against the code today:
+
+- **Vertical slices with no cross-slice imports — real.** `ingestion_engine`, `risk_evaluator`, and `alternative_finder` each own their router/logic/schemas, import only from `core/`, and never import one another. Inter-slice communication happens exclusively through shared MongoDB collections (ingestion writes `external_conditions` → `risk_evaluator` reads it; `risk_evaluator` writes `supplier_risk_evaluations` → `alternative_finder` reads it by `evaluation_id`). This is the ODL pattern of ADR-005 and it matches the running code.
+- **Change Stream activation for `risk_evaluator` — not yet implemented.** `stream_listener.py` is a stub (`pass`); no Change Stream runs today. Both agents are activated only by their explicit frontend POSTs. The Change Stream model is a production reference — see ADR-003.
+- **LangGraph checkpointer — not yet implemented.** Neither graph compiles with a checkpointer; both run in-memory per request. See ADR-004.
 
 ## Consequences
 

@@ -27,15 +27,17 @@ The rule is simple: **the owner writes, consumers read.**
 
 ```
 ingestion_engine   →  writes  external_conditions
-risk_evaluator     →  writes  supplier_risk_evaluations, agent_memory
-alternative_finder →  writes  supplier_alternatives, agent_memory
-seed data          →  populates  suppliers, purchase_orders, risk_catalog, supplier_documents
+risk_evaluator     →  writes  supplier_risk_evaluations
+alternative_finder →  writes  supplier_alternatives
+seed data          →  populates  suppliers, purchase_orders, risk_catalog, supplier_documents, agent_memory
 
 risk_evaluator     ←  reads   external_conditions, suppliers, purchase_orders, risk_catalog, agent_memory
-alternative_finder ←  reads   supplier_risk_evaluations, suppliers, supplier_documents, risk_catalog
+alternative_finder ←  reads   supplier_risk_evaluations, suppliers, purchase_orders, supplier_documents, risk_catalog, agent_memory
 ```
 
 No service calls another service's API. No message broker. The data itself is the communication channel.
+
+> **Current implementation status — `agent_memory` is read-only today.** The ODL ownership design assigns `agent_memory` a single writer (the closure loop of ADR-009), but **no code in the repo writes to `agent_memory`** — all three modules only read it, and no scheduled job or trigger produces closure episodes. Today `agent_memory` is populated exclusively by hand-curated seed data. The single-writer closure loop is designed-but-unbuilt; see ADR-009.
 
 ---
 
@@ -84,7 +86,9 @@ In production, the risk_evaluator doesn't need to be called — it watches `exte
 Session-scoped documents expire after 2 hours without any service needing to manage cleanup logic. The store manages its own state lifecycle.
 
 **3. The shared schema is the contract.**  
-When the ingestion_engine writes to `external_conditions`, the document structure it writes is the contract the risk_evaluator depends on. This is enforced via Pydantic models in `core/schemas/` — changing the schema in one place propagates the contract to all readers at compile time, not at runtime.
+When the ingestion_engine writes to `external_conditions`, the document structure it writes is the contract the risk_evaluator depends on.
+
+> **Current implementation status.** This contract is a convention today, **not enforced by a shared `core/schemas/` package** — that package does not exist. `core/` holds only infrastructure (`config`, `db`, `session`, `exceptions`, `json_utils`, `glossary`). Each slice defines its own Pydantic models in its local `schemas.py`, and the persisted documents are in several cases hand-built dicts that diverge from those models (e.g. `risk_evaluator` writes `supplier_risk_evaluations` as a dict that adds `is_base`/`evaluated_at`/`memory_episodes_used` and omits the model's `location`). The "compile-time propagation" described here is the intended target, not current behavior.
 
 ---
 
@@ -92,7 +96,7 @@ When the ingestion_engine writes to `external_conditions`, the document structur
 
 The main risk of a shared database is schema coupling: if one service changes the structure of a document, it can silently break all readers. We mitigate this with two practices:
 
-**Pydantic models in `core/`** — all document schemas live in `core/schemas/`, not inside individual slices. Every read and write goes through these models. A breaking schema change fails loudly at the slice boundary, not silently in production.
+**Pydantic models per slice** — the intended mitigation is that document schemas are shared and every read and write goes through them, so a breaking change fails loudly at the slice boundary. *Current status:* there is no shared `core/schemas/` package; each slice keeps its own `schemas.py`, and not every write goes through a model (some are hand-built dicts). Consolidating schemas into a shared, enforced location remains future work.
 
 **ODL ownership rule** — only the owning service writes to a collection. Schema changes are always initiated by the owner, never by a consumer. The owner is responsible for backward compatibility or coordinating the migration.
 

@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     llm_api_key: str
     llm_base_url: str
     anthropic_model: str
-    voyage_api_key: str
     cors_origins: list[str] = ["*"]
 
     class Config:
