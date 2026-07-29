@@ -4,7 +4,7 @@ FastAPI backend for the Retail Supply Chain Risk demo. It ingests demo
 disruption signals, evaluates supplier exposure with a LangGraph agent, and
 surfaces validated alternative suppliers with a second LangGraph agent — both
 agents stream their reasoning to the frontend via Server-Sent Events. MongoDB
-Atlas is the operational database and the vector-search layer.
+Atlas is the unified intelligence layer.
 
 Per-module detail lives in each slice's README:
 [`ingestion_engine`](./ingestion_engine/README.md) ·
@@ -22,6 +22,8 @@ are at risk. This system monitors external signals, calculates a dynamic risk
 score per supplier (the RPN — Risk Priority Number), and when a supplier crosses
 the critical threshold it can pre-populate a shortlist of alternatives for the
 manager to review and approve.
+
+![Architecture Overview](../docs/images/architecture_detailed.jpg)
 
 **Core principle: the system informs, it does not act.** `alternative_finder`
 always leaves `approved_supplier_id: null` — no downstream/ERP action fires
