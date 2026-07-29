@@ -83,21 +83,6 @@ real SSE event types, and the confirmed dead code (`risk_evaluator`'s
 ---
 
 
-What is actually true in the current code:
-
-- **`agent_memory` is 100% read-only.** All three modules only read it. A
-  repo-wide search finds **no write** to `agent_memory` anywhere.
-- **There is no writer** — no scheduled job, no Atlas Trigger, no Change Stream,
-  no closure process of any kind produces episodes.
-- `agent_memory` is populated **only by hand-curated seed data**. In
-  particular, no code produces the `episode.resolution.alt_supplier_id` shape
-  that `alternative_finder`'s exact-track-record lookup depends on, so that
-  lookup structurally returns nothing today.
-
-Treat this whole section as a design target, not current behavior.
-
----
-
 ## Folder structure
 
 ```
