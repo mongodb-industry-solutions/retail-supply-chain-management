@@ -28,12 +28,12 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
   LangGraph. Narrows candidates with `$rankFusion` hybrid search (vector + full-text), reranks natively in-pipeline with `$rerank`, cross-checks each candidate against its own cited documents and historical precedent, then ranks survivors by `$geoNear` proximity. Human-in-the-loop: the final pick is always the procurement manager's call.
 
 - **One dataset, every collection type in play**
-  Suppliers, purchase orders, a risk catalog, supplier documents, and historical `agent_memory` episodes all live in [`docs/database-files/`](./docs/database-files/) — real enough to run the full demo end to end, or swap in your own data and watch the same agents respond to it.
+  Suppliers, purchase orders, a risk catalog, supplier documents, and historical agent memory episodes all live in [`docs/database-files/`](./docs/database-files/) — so you can run the full demo end to end.
 
 ### MongoDB Atlas capabilities used in this demo
 
 1. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` (risk precedent) and `supplier_documents` (certifications, contracts), with Atlas Auto-Embedding — no separate embedding pipeline to maintain.
-2. [`$rankFusion`](https://www.mongodb.com/docs/atlas/atlas-vector-search/hybrid-search/) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
+2. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
 3. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as an aggregation stage inside Atlas; candidates are never pulled out to an external API to be reranked.
 4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search over `supplier_documents` chunks, the lexical half of the hybrid search.
 5. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `risk_evaluator`, so a physical disruption (a storm, a port closure) only affects suppliers actually within its radius.
@@ -58,7 +58,7 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
 | **`ingestion_engine`** | Not an agent — fully deterministic. Picks up to 3 suppliers with active orders, matches them to a base disruption signal, and calibrates a `condition_score` (reading `agent_memory` for a historical weighting factor) to guarantee at least one supplier reaches CRITICAL each session. |
 | **`risk_evaluator`** | Real 5-node LangGraph `StateGraph` that detects disruption signals, matches affected suppliers, calculates dynamic RPN scores, runs a ReAct loop to retrieve historical memory, and generates a Claude-powered natural-language summary. |
 | **`alternative_finder`** | Human-in-the-loop LangGraph `StateGraph` (4 conceptual layers across 6 nodes) that runs `$rankFusion` hybrid search + native `$rerank`, audits candidates against cited documents and precedent, and ranks them by `$geoNear` proximity and evidence. |
-| **MongoDB Atlas** | Operational Data Layer — stores suppliers, purchase orders, risk catalog, `agent_memory`, and the three session-scoped outputs. Atlas Vector Search / `$rankFusion` / native `$rerank` power the in-database search. (No LangGraph checkpoint state is persisted today — the graphs run in-memory.) |
+| **MongoDB Atlas** | The unified intelligence layer: stores `suppliers`, `purchase_orders`, `risk_catalog`, and `supplier_documents` (chunked + auto-embedded on write), plus `agent_memory` and the three session-scoped outputs — `external_conditions`, `supplier_risk_evaluations`, and `supplier_alternatives`. Atlas is also the search engine itself: Vector Search, Atlas Search, `$rankFusion`, and native `$rerank` run as pipeline stages in-database — no external vector DB, no separate embedding service, no data leaving Atlas. Same platform scales, secure and governed by default. |
 
 👉 For technical deep dives:
 - [Frontend README](./frontend/README.md)
@@ -151,7 +151,7 @@ Agentic systems need operational data, vector embeddings, full-text search, and 
 Agentic workloads deal with messy, evolving, real-world entities — suppliers, contracts, incidents — that don't fit a fixed relational shape and never stop changing. A [flexible, document-native schema](https://www.mongodb.com/company/blog/technical/from-prompt-production-mongodb-atlas-agentic-dev) lets that data evolve at the pace of the business, not the pace of a migration.
 
 ### 3. Trustworthy, secure, and governed by default
-An autonomous agent making decisions over sensitive operational data raises the stakes on security, not just the convenience. Nothing about agentic AI matters if the platform underneath it can't be trusted — [encryption, access control, and governance need to be defaults built into the platform](https://www.mongodb.com/company/blog/technical/agent-harness-why-llm-is-smallest-part-of-your-agent-system), not something bolted on after an agent is already querying live data.
+An autonomous agent making decisions over sensitive operational data raises the stakes on security, not just the convenience. Nothing about agentic AI matters if the platform underneath it can't be trusted — [encryption, access control, and governance need to be defaults built into the platform](https://www.mongodb.com/products/capabilities/security), not something bolted on after an agent is already querying live data.
 
 
 ### 4. Build once, run anywhere
