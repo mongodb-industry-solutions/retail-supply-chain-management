@@ -1,19 +1,35 @@
-# ADR 004 — LangGraph with MongoDB Checkpointer Scoped by session_id
+# ADR 004 — Session Isolation: Why This Demo Doesn't Use a LangGraph Checkpointer
 
 ## Status
-Accepted as a design decision, **not yet implemented in code.** The rationale below stands as the intended approach; see **Current implementation status** for what the graphs actually do today (in-memory, no checkpointer).
+Accepted. This demo isolates sessions without a checkpointer, using the simpler approach described below. The checkpointer-based design is documented here as a reference for what a production, multi-turn version of this system would look like — not as a pending task for this repo.
 
-## Context
+## What actually happens today
 
-This is a multi-user demo. Multiple Solutions Architects may run the demo simultaneously, each with their own browser session. Each session must produce isolated, independent graph executions — one user's risk evaluation must not bleed into another's state.
+This is a multi-user demo — several Solutions Architects can run it at the same time, each in their own browser session, and one person's run must never leak into another's.
 
-LangGraph supports persistence and state isolation via a checkpointer. The checkpointer stores graph state between node executions, enabling resume, replay, and memory across turns. MongoDB is already in use as the operational database, making it a natural choice for the checkpointer backend.
+Session isolation today comes from two things, neither of which involves LangGraph's checkpointer:
 
-## Decision
+1. **Each request builds its own in-memory state.** `run_graph_task` seeds a fresh state dict (with the request's `session_id` and empty collections) and invokes the graph once. Nothing is persisted between node executions — there's no resume and no replay.
+2. **`session_id` is stored as a field on every document written** (`external_conditions`, `supplier_risk_evaluations`) and used as a query filter downstream. Isolation happens at the data layer, via filtering — not via graph-level namespacing.
 
-Use **`MongoDBSaver`** from `langgraph-checkpoint-mongodb` as the LangGraph checkpointer for both `risk_evaluator` and `alternative_finder` graphs.
+Both `risk_evaluator/graph.py` and `alternative_finder/graph.py` call `builder.compile()` with no `checkpointer` argument. `MongoDBSaver` is not instantiated anywhere in the codebase.
 
-Set `thread_id = session_id` for every graph invocation. LangGraph uses `thread_id` as the primary isolation key for checkpointed state — all state written by a graph run is namespaced under this ID.
+This works correctly for the demo's needs: each session gets isolated state, and cleanup is simple. What it does **not** give you is state persistence across turns, or the ability to pause/resume a graph mid-execution — because the state only exists for the lifetime of a single request.
+
+## Why we didn't use LangGraph's checkpointer for this demo
+
+LangGraph supports built-in persistence and isolation via a checkpointer (e.g. `MongoDBSaver`, keyed by `thread_id`). We considered it, but it solves a problem this demo doesn't have: **multi-turn conversations that need to resume or replay**. Each demo run is a single, self-contained graph execution — there's no "come back later and continue where you left off" requirement, so the added complexity (a synchronous Mongo client that can block the event loop, checkpoint documents that accumulate over time) wasn't worth it here.
+
+In short: the request-scoped in-memory state + `session_id` filtering is simpler, sufficient for this use case, and has fewer moving parts to explain in a demo setting.
+
+## When a checkpointer would make sense (outside the scope of this demo)
+
+This section is a reference, not a roadmap item — it describes what would change if this project moved beyond a single-run demo into something with persistent, multi-turn state. Relevant if the project evolved toward:
+- **Multi-turn interactions** where a user needs to pause a graph run and resume it later (e.g. a long-running evaluation that spans multiple user actions).
+- **Replay/debugging** — inspecting or re-running a specific past graph execution step by step.
+- **True session persistence** across backend restarts, not just across nodes within a single request.
+
+If that ever applies, here's the shape of the change:
 
 ```python
 from langgraph.checkpoint.mongodb import MongoDBSaver
@@ -22,40 +38,8 @@ checkpointer = MongoDBSaver(db)
 graph = compiled_graph.with_config({"configurable": {"thread_id": session_id}})
 ```
 
-### Session Lifecycle
+`thread_id` becomes the isolation key LangGraph uses internally — every checkpointed state write gets namespaced under it — and session reset becomes a single `deleteMany` on the checkpoint collection where `thread_id = session_id`, alongside the existing cleanup of `external_conditions`.
 
-Each demo session is initiated by the frontend sending an `X-Session-ID` header (validated in `core/session.py`). This ID flows through:
-
-1. `ingestion_engine` — stored on every `external_conditions` document for Change Stream filtering.
-2. `risk_evaluator` — used as `thread_id` for checkpointer and as the Change Stream filter key.
-3. `alternative_finder` — used as `thread_id` for checkpointer.
-
-### Session Reset
-
-To reset a session (restart the demo), delete all documents in the checkpointer collection where `thread_id = session_id`, and delete matching documents from `external_conditions`. This is a single `deleteMany` per collection.
-
-## Current implementation status
-
-**No checkpointer is wired into either graph today — this decision is not yet implemented.**
-
-- Both `risk_evaluator/graph.py` and `alternative_finder/graph.py` call `builder.compile()` with **no** `checkpointer` argument. `MongoDBSaver` is not instantiated anywhere in the codebase, and no `thread_id` is set on either graph.
-- Each request runs the graph **in-memory only**: `run_graph_task` seeds a fresh state dict (with the `session_id` and empty collections) and invokes the graph once. Nothing is persisted between node executions, and there is no resume/replay capability.
-- **Session isolation today** comes from two things that do not require a checkpointer: each request builds its own independent state object, and `session_id` is stored on the documents written (`external_conditions`, `supplier_risk_evaluations`) and used as a query filter. It does **not** come from LangGraph checkpoint namespacing.
-- The `retrieve_memory` node referenced in an earlier version of this ADR's Consequences is **confirmed dead code** — it is not added to the compiled graph, so no per-session evaluation history is accessed through it. See `risk_evaluator/README.md`.
-
-Realizing this ADR would require instantiating `MongoDBSaver`, passing it to `compile(checkpointer=...)`, and setting `thread_id = session_id` per invocation — none of which exists yet.
-
-## Consequences
-
-**Positive**
-- Automatic state isolation per session — no custom partitioning logic needed.
-- LangGraph's built-in replay and resume capabilities work out of the box per session.
-- Cleanup is a single `deleteMany` query per collection.
-
-> Note: an earlier version of this ADR listed contextual memory retrieval via
-> `retrieve_memory` as a benefit. That node is confirmed dead code (not wired
-> into the graph) — see "Current implementation status" above.
-
-**Negative**
-- `MongoDBSaver` uses the synchronous PyMongo client internally (as of langgraph-checkpoint-mongodb 0.x). This means checkpointer writes block the event loop unless wrapped in `run_in_executor`. Monitor the `langgraph-checkpoint-mongodb` package for an async Motor-compatible version.
-- Long-running demo sessions accumulate checkpoint documents. Add a TTL index on the checkpoint collection for automatic expiry in demo environments.
+**Known tradeoffs to plan for if this gets built:**
+- `MongoDBSaver` uses the synchronous PyMongo client internally (as of `langgraph-checkpoint-mongodb` 0.x) — checkpointer writes would block the event loop unless wrapped in `run_in_executor`. Watch this package for an async, Motor-compatible version.
+- Long-running sessions accumulate checkpoint documents — a TTL index on the checkpoint collection would be needed for automatic expiry.
