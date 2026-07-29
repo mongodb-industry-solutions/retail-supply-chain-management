@@ -29,21 +29,6 @@ manager to review and approve.
 always leaves `approved_supplier_id: null` — no downstream/ERP action fires
 without an explicit human approval that the agents never perform.
 
-### How the risk score works
-
-The RPN formula is borrowed from FMEA (Failure Mode and Effects Analysis):
-
-```
-rpn_base    = severity × occurrence_base × detection
-rpn_dynamic = severity × (occurrence_base × condition_score) × detection × historical_weight
-```
-
-- `severity` and `detection` are fixed properties of the risk type, encoded in `risk_catalog`.
-- `condition_score` comes from the live signal (set by `ingestion_engine`).
-- `historical_weight` is derived by `risk_evaluator` from `agent_memory` precedent (amplifies or dampens).
-
-A supplier breaches ALERT or CRITICAL when `rpn_dynamic` crosses the threshold
-for that risk type.
 
 ---
 
@@ -64,27 +49,6 @@ Frontend
    └─ POST /api/alternative-finder/find → alternative_finder (SSE stream)
 ```
 
-All three routers are registered in `main.py` and are live — none is commented
-out or stubbed.
-
-### Real data flow (who writes what, who reads it back)
-
-There are exactly **three writes** in the whole backend, one per module, each an
-`insert` (never an update/upsert):
-
-```
-ingestion_engine    ──insert──▶  external_conditions
-                                      │  (filter: session_id + is_demo_trigger:true)
-                                      ▼
-risk_evaluator       ──reads──▶  external_conditions, suppliers, purchase_orders,
-                                 risk_catalog, agent_memory (read-only)
-risk_evaluator       ──insert──▶ supplier_risk_evaluations   (carries evaluation_id)
-                                      │  (client passes evaluation_id back as evaluation_id_ref)
-                                      ▼
-alternative_finder   ──reads──▶  supplier_risk_evaluations, risk_catalog, purchase_orders,
-                                 suppliers, supplier_documents, agent_memory (read-only)
-alternative_finder   ──insert──▶ supplier_alternatives
-```
 
 The couplings are entirely by data + identifier:
 
@@ -118,24 +82,6 @@ real SSE event types, and the confirmed dead code (`risk_evaluator`'s
 
 ---
 
-## Memory closure loop (designed, not built)
-
-The intended long-term design is a "closure loop": as real disruptions resolve,
-their outcomes are written back into `agent_memory` as episodes, which future
-evaluations then read as precedent. That architecture is described in
-[ADR-009](../docs/adr/009-backend-agent_memory_single_writer.md).
-
-**None of it runs today.** As a hypothetical future process it would look like:
-
-```
-(future)  human resolves an evaluation / an approved alternative reaches a terminal state
-              │
-              ▼  a single dedicated writer (scheduled job or Change Stream — not built)
-          writes a closure/outcome episode into agent_memory
-              │
-              ▼
-          risk_evaluator / alternative_finder read it later as precedent
-```
 
 What is actually true in the current code:
 
@@ -214,13 +160,7 @@ Eight MongoDB collections in two groups.
 | `supplier_risk_evaluations` | `risk_evaluator` | One doc per non-OK supplier per session: dynamic RPN, triggering signals, operational context, LLM summary. Carries `evaluation_id`. |
 | `supplier_alternatives` | `alternative_finder` | The ranked shortlist, `approved_supplier_id: null` until a human approves. |
 
-> **Setup required:** the Atlas indexes the modules rely on must exist before
-> the corresponding features work — notably `agent_memory_autoembed_index`
-> (memory vector search; without it `risk_evaluator`'s memory tools fail and
-> weights fall back to `1.0` silently) and, for `alternative_finder`, the
-> `supplier_documents` vector + full-text indexes, the native `$rerank` project
-> setting, and the `suppliers` 2dsphere index. See
-> [`../docs/database-files/`](../docs/database-files/) for setup.
+> **Setup required:** See [`../docs/database-files/`](../docs/database-files/) for setup.
 
 ---
 
@@ -259,22 +199,6 @@ The two agents do **not** share one event schema:
 There is no LLM token-level streaming, and no `phase` field. See each module
 README for the full contract.
 
-**Testing the streams with curl:**
-```bash
-# 1 — generate signals
-curl -s -X POST http://localhost:8000/api/simulation/start \
-  -H "X-Session-ID: my-session-001" | python3 -m json.tool
-
-# 2 — run the risk evaluator (SSE)
-curl -N -X POST http://localhost:8000/api/simulation/evaluate \
-  -H "X-Session-ID: my-session-001"
-
-# 3 — find alternatives for an evaluation (SSE) — evaluation_id_ref comes from step 2's output
-curl -N -X POST http://localhost:8000/api/alternative-finder/find \
-  -H "X-Session-ID: my-session-001" -H "Content-Type: application/json" \
-  -d '{"evaluation_id_ref": "EVAL-..."}'
-```
-The `-N` flag disables curl buffering so SSE events appear in real time.
 
 ---
 
@@ -307,7 +231,6 @@ API at `http://localhost:8000`. Health check: `GET /`.
 | `LLM_API_KEY` | API key for the LLM gateway |
 | `LLM_BASE_URL` | Base URL for the LLM endpoint (direct Anthropic or your gateway) |
 | `ANTHROPIC_MODEL` | Claude model name |
-| `VOYAGE_API_KEY` | Voyage AI API key (used by Atlas-side vector/rerank features) |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
 
 ---
@@ -347,8 +270,3 @@ SSE stream. Terminal event `shortlist_ready` carries the persisted
 - [007 — Native In-Pipeline Reranking](../docs/adr/007-backend-native_reranking.md)
 - [008 — Two Separate Precedent Signals](../docs/adr/008-backend-precedent_signals_no_fusion.md)
 - [009 — agent_memory Single-Writer Closure Loop (designed, not built)](../docs/adr/009-backend-agent_memory_single_writer.md)
-
-> Several ADRs document forward-looking designs that are **not yet implemented**
-> in code — the Change Stream activation (003), the LangGraph checkpointer
-> (004), and the `agent_memory` closure loop (009). Each of those ADRs now
-> carries a "Current implementation status" note.
