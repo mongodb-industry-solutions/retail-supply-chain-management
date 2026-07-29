@@ -6,7 +6,7 @@
 
 `alternative_finder` audits and justifies replacing a supplier under risk. Its output — cited evidence a manager can approve directly, triggering a real action — means evidence quality, not raw LLM capability, is what matters most. That's the design principle behind every layer.
 
-Every extra token in context degrades a model's ability to attend to what matters (Anthropic calls this *context rot* — [*Effective context engineering for AI agents*](https://www.anthropic.com/news/context-engineering), Sept 2025), and retrieval alone doesn't verify a citation is true. Certificates and contracts are static content, so this design retrieves upfront for speed and reserves agentic exploration for the one place it earns its cost: closing a specific evidence gap during audit.
+Every extra token in context degrades a model's ability to attend to what matters (Anthropic calls this *context rot* — [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), Sept 2025), and retrieval alone doesn't verify a citation is true. Certificates and contracts are static content, so this design retrieves upfront for speed and reserves agentic exploration for the one place it earns its cost: closing a specific evidence gap during audit.
 
 ## Decision
 
