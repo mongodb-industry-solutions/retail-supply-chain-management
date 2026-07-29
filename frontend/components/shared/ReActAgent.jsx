@@ -7,8 +7,42 @@ import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
+import Tooltip from "@leafygreen-ui/tooltip";
 import SectionHeader from "./SectionHeader";
 import AgentAvatar from "./AgentAvatar";
+
+// One symbol per step state, so the icon column has a single meaning.
+// Layer rows are rendered as sub-headings instead of competing for this column.
+const STEP_STATUS = {
+  running: { glyph: "Clock", color: palette.gray.base, label: "Running" },
+  completed: {
+    glyph: "CheckmarkWithCircle",
+    color: palette.green.dark1,
+    label: "Completed",
+  },
+  error: { glyph: "NotAllowed", color: palette.red.dark2, label: "Failed" },
+  pending: { glyph: "Ellipsis", color: palette.gray.light1, label: "Not started yet" },
+};
+
+function StepIcon({ status }) {
+  const cfg = STEP_STATUS[status] ?? STEP_STATUS.running;
+  return (
+    <Tooltip
+      trigger={
+        <span
+          role="img"
+          aria-label={cfg.label}
+          className="d-inline-flex justify-content-center"
+          style={{ width: 20, flexShrink: 0 }}
+        >
+          <Icon glyph={cfg.glyph} color={cfg.color} />
+        </span>
+      }
+    >
+      {cfg.label}
+    </Tooltip>
+  );
+}
 
 function buildDisplayItems(events) {
   const items = [];
@@ -18,9 +52,17 @@ function buildDisplayItems(events) {
     if(eventType === "layer_started"){
       items.push({ type: "layer", message: event.label, status: "running" });
     } else if(eventType === "layer_completed"){
-      items.push({ type: "layer", message: event.summary, status: "completed" });
-    }
-    if (eventType === "tool_start") {
+      // Complete the open layer row in place (clock -> check) rather than
+      // leaving it running forever, then close the layer out with its summary
+      // as the last row, so the summary always lands after the tool steps.
+      const idx = items.findLastIndex(
+        (i) => i.type === "layer" && i.status === "running"
+      );
+      if (idx !== -1) items[idx] = { ...items[idx], status: "completed" };
+      if (event.summary) {
+        items.push({ type: "summary", message: event.summary, status: "completed" });
+      }
+    } else if (eventType === "tool_start") {
       const message = event.message || event.tool;
       items.push({ type: "step", message: message, status: "running", args: event.args || null });
     } else if (eventType === "tool_end") {
@@ -109,8 +151,8 @@ export default function ReActAgent({
   return (
     <>
       <SectionHeader title={title} subtitle={subtitle} />
-      <Card style={{ marginBottom: spacing[400] }} onClick={() => console.log('REDUX: alternativeSuppliersAgentReasoning', phases )}>
-        <div className="d-flex gap-4 align-items-start">
+      <Card style={{ marginBottom: spacing[400], cursor: 'auto' }}>
+        <div className="d-flex gap-4 align-items-start" onClick={() => console.log('REDUX: alternativeSuppliersAgentReasoning', phases )}>
           <AgentAvatar agentCurrentThought={agentCurrentThought} idle={showDone} />
 
           <div style={{ flex: 1 }}>
@@ -142,50 +184,43 @@ export default function ReActAgent({
 
                       <div className="d-flex flex-column" style={{ gap: 6 }}>
                         {items.map((item, i) => {
-                          if (item.type === "step" || item.type === "layer") {
-                            const isRunning = item.type === "step" && item.status === "running";
-                            const isCompleted = item.type === "step" && item.status === "completed";
-                            const isError = item.type === "step" && item.status === "error";
-                            const isLayerStart = item.type === "layer" && item.status === "running";
-                            const isLayerCompleted = item.type === "layer" && item.status === "completed";
-                            return (
-                              <div key={i} className="d-flex gap-2">
-                                <span style={{ width: 20, textAlign: "center", flexShrink: 0 }}>
-                                  {
-                                    isCompleted ? (
-                                      <Icon glyph="CheckmarkWithCircle" color={palette.green.dark1} />
-                                    ) : isError ? (
-                                      <Icon glyph="NotAllowed" color={palette.red.dark2} />
-                                    ) : isRunning ?(
-                                      <Icon glyph="Clock" color={palette.gray.base} />
-                                    ) : isLayerStart ?(
-                                      <Icon glyph="Pending" color={palette.green.dark1} />
-                                    ) : isLayerCompleted ?(
-                                      <Icon glyph="Circle" color={palette.green.dark1} />
-                                    ) : (
-                                      "○"
-                                    )
-                                  }
-                                </span>
-                                <Body
-                                  style={{
-                                    fontSize: 14,
-                                    color: (isCompleted || isLayerStart || isLayerCompleted) ? palette.gray.dark3 : palette.gray.dark2,
-                                    fontWeight: isRunning ? 600 : 400,
-                                    margin: 0,
-                                  }}
-                                >
-                                  {
-                                    item.args && item.args !== null
-                                    ? `${item.message} for ${item.args.criterion} on ${item.args.supplier_id}`
-                                    : item.message
-                                  }
-                                </Body>
-                              </div>
-                            );
+                          // Flat list within the phase: layer rows, tool steps
+                          // and the closing summary all share one icon column
+                          // and one vocabulary (clock = running, green check =
+                          // done, red = failed). No indentation or markers, so
+                          // nothing implies a hierarchy that isn't there.
+                          if (
+                            item.type !== "layer" &&
+                            item.type !== "step" &&
+                            item.type !== "summary"
+                          ) {
+                            return null;
                           }
 
-                          return null;
+                          const isRunning = item.status === "running";
+                          return (
+                            <div key={i} className="d-flex gap-2">
+                              <StepIcon status={item.status} />
+                              <Body
+                                weight={item.type === "summary" ? "medium" : "regular"}
+                                style={{
+                                  fontSize: 14,
+                                  color:
+                                    item.status === "completed"
+                                      ? palette.gray.dark3
+                                      : palette.gray.dark2,
+                                  fontWeight: isRunning ? 600 : undefined,
+                                  margin: 0,
+                                }}
+                              >
+                                {
+                                  item.args && item.args !== null
+                                  ? `${item.message} for ${item.args.criterion} on ${item.args.supplier_id}`
+                                  : item.message
+                                }
+                              </Body>
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
@@ -228,15 +263,11 @@ export default function ReActAgent({
 
                         return (
                           <div key={stepIdx} className="d-flex align-items-center gap-2 mb-2">
-                            <span style={{ width: 20, textAlign: "center", fontSize: 15, flexShrink: 0 }}>
-                              {isCompleted ? (
-                                <Icon color="green" glyph="CheckmarkWithCircle" />
-                              ) : isCurrent ? (
-                                <Icon glyph="Clock" />
-                              ) : (
-                                "○"
-                              )}
-                            </span>
+                            <StepIcon
+                              status={
+                                isCompleted ? "completed" : isCurrent ? "running" : "pending"
+                              }
+                            />
                             <Body
                               style={{
                                 fontSize: 14,

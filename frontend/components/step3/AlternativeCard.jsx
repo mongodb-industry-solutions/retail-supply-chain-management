@@ -115,7 +115,7 @@ function EvidenceHeader({ passed, title, exts, glossary = null }) {
               role="img"
               aria-label={`${title} info`}
               className="d-inline-flex"
-              style={{ cursor: "help", color: palette.gray.base }}
+              style={{ color: palette.gray.base }}
             >
               <Icon glyph="InfoWithCircle" />
             </span>
@@ -370,7 +370,7 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
         style={{ borderTop: `1px solid ${palette.gray.light2}` }}
       >
         <Button variant="primary" onClick={onEscalate}>
-          Elect
+          Select
         </Button>
       </div>
     </Card>
