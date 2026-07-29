@@ -23,7 +23,7 @@ score per supplier (the RPN — Risk Priority Number), and when a supplier cross
 the critical threshold it can pre-populate a shortlist of alternatives for the
 manager to review and approve.
 
-![Architecture Overview](../docs/images/architecture_detailed.jpg)
+![Architecture Overview](../docs/images/architecture_overview.png)
 
 **Core principle: the system informs, it does not act.** `alternative_finder`
 always leaves `approved_supplier_id: null` — no downstream/ERP action fires
