@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@leafygreen-ui/button";
 import { spacing } from "@leafygreen-ui/tokens";
 import {
   advanceToStep,
   setSelectedSupplier,
-  setAffectedSuppliers,
-  appendAffectedSuppliersAgentReasoning,
 } from "../../redux/slices/GlobalSlice";
 import SectionHeader from "../shared/SectionHeader";
 import ReActAgent from "../shared/ReActAgent";
@@ -21,6 +19,7 @@ import BehindTheScenes from "./BehindTheScenes";
 import Icon from "@leafygreen-ui/icon";
 import { Code } from "@leafygreen-ui/code";
 import { Card } from "@leafygreen-ui/card";
+import { Body } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 
@@ -86,7 +85,6 @@ const GEO_QUERY = `
 
 export default function Step2() {
   const dispatch = useDispatch();
-  const sessionId = useSelector((s) => s.Global.sessionId);
   const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers);
   const affectedSuppliersAgentReasoning = useSelector((s) => s.Global.affectedSuppliersAgentReasoning);
   const agentCurrentThought = useSelector((s) => s.Global.affectedSuppliersAgentCurrentThought);
@@ -118,60 +116,9 @@ export default function Step2() {
       })
     : affectedSuppliers;
 
-  // Guards against React Strict Mode's intentional double-invoke of mount effects
-  // in development. Redux state alone can't guard here because it's only populated
-  // AFTER the fetch resolves — both Strict Mode passes run before that, so they'd
-  // both pass a state-only check. This ref flips synchronously, before the first
-  // await, so the second pass is blocked immediately.
-  const startedRef = useRef(false);
-
-  useEffect(() => {
-    if (affectedSuppliers.length > 0) return; // skip if data already loaded (e.g. real remount)
-    if (startedRef.current) return;           // skip if a run has already started (Strict Mode's 2nd pass)
-    startedRef.current = true;                // set BEFORE any await — must stay synchronous
-
-    async function runEvaluate() {
-      try {
-        const response = await fetch("/api/simulation/evaluate", {
-          method: "POST",
-          headers: { "X-Session-ID": sessionId },
-        });
-
-        if (!response.ok || !response.body) {
-          throw new Error(`Evaluate failed: ${response.status}`);
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          buffer = buffer.replace(/\r\n/g, "\n");
-          const frames = buffer.split("\n\n");
-          buffer = frames.pop();
-          for (const frame of frames) {
-            const line = frame.trim();
-            if (line.startsWith("data:")) {
-              const event = JSON.parse(line.slice(5).trim());
-              console.log("[evaluate]", event.type);
-              if (event.type === "agent_response") {
-                dispatch(setAffectedSuppliers(event.data.suppliers || []));
-              }
-              dispatch(appendAffectedSuppliersAgentReasoning(event));
-            }
-          }
-        }
-      } catch (err) {
-        console.error("[evaluate] stream error", err);
-      } finally {
-      }
-    }
-
-    runEvaluate();
-  }, []);
+  // The evaluate stream is owned by EvaluationRunner (mounted in ClientProvider),
+  // so it starts as soon as the external conditions land and survives step changes.
+  // This component only reads the results out of Redux.
 
   const handleFindAlternatives = (supplier) => {
     if(selectedSupplier !== null && selectedSupplier.supplier_id === supplier.supplier_id) {
@@ -212,7 +159,7 @@ export default function Step2() {
         <>
           <SectionHeader
             title="Affected Suppliers"
-            subtitle="Select a supplier to view detailed impact and explore alternative options"
+            subtitle="Affected suppliers ranked from most to least critical."
             rightElement={
               <Button
                 variant="default"
@@ -220,15 +167,29 @@ export default function Step2() {
                 onClick={() => setShowGeoQuery((v) => !v)}
                 leftGlyph={<Icon glyph="GlobeAmericas" />}
               >
-                {showGeoQuery ? "Hide" : "Show"} geospatial aggregation pipeline
+                How did the agent find suppliers within the impact zones?
               </Button>
             }
           />
           {showGeoQuery && (
-            <Card
-              className="container mb-2 p-2"
-              style={{ backgroundColor: "#dedede" }}
-            >
+            <Card className="container mb-2 p-2">
+              <div
+                className="d-flex gap-2"
+                style={{
+               
+                }}
+              >
+                <Body
+                  className='p-2'
+                  style={{ color: palette.gray.dark2, fontSize: '16px', lineHeight: 1.6 }}
+                >
+                  External conditions can have a physical epicentre (
+                  <strong>lat/lng coordinates</strong>) or affect a list of
+                  regions (e.g. <strong>MX, CN, HK</strong>). MongoDB handles
+                  both natively — here&apos;s the query the agent ran to match
+                  suppliers to this condition
+                </Body>
+              </div>
               <Code
                 language="python"
                 showLineNumbers={true}

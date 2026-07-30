@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Modal } from "react-bootstrap";
 import Button from "@leafygreen-ui/button";
 import { Badge } from "@leafygreen-ui/badge";
 import { Body, Overline } from "@leafygreen-ui/typography";
@@ -12,7 +10,6 @@ import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 
 import WhyMongoDB from "../shared/WhyMongoDB";
-import { setCertOpened } from "@/redux/slices/GlobalSlice";
 
 // The source files don't exist — we reconstruct a representative document
 // from the genuine cited `excerpt` and its metadata.
@@ -105,7 +102,11 @@ function EmailSkin({ citation }) {
       <div style={{ padding: spacing[400] }}>
         <Body
           weight="medium"
-          style={{ fontSize: 18, color: palette.black, marginBottom: spacing[300] }}
+          style={{
+            fontSize: 18,
+            color: palette.black,
+            marginBottom: spacing[300],
+          }}
         >
           {headers.Subject ?? "(no subject)"}
         </Body>
@@ -276,74 +277,53 @@ function PaperSkin({ citation }) {
   );
 }
 
-function SimulatedDocument({ citation }) {
+export function SimulatedDocument({ citation }) {
   if (citation?.doc_type === "email") return <EmailSkin citation={citation} />;
   return <PaperSkin citation={citation} />;
 }
 
-export default function CertModal() {
-  const dispatch = useDispatch();
-  const certOpened = useSelector((s) => s.Global.certOpened);
-  const [view, setView] = useState("model");
-
-  const onHide = () => dispatch(setCertOpened(null));
-  const citation = certOpened?.citation;
+// Inline replacement for the old "View document" modal: the multimodal
+// explainer plus a Document/Model toggle over the same citation.
+export default function CitationEvidence({ citation }) {
+  const [view, setView] = useState("document");
 
   return (
-    <Modal
-      show={!!certOpened}
-      onHide={onHide}
-      onEntered={() => setView("model")}
-      centered
-      size="lg"
-    >
-      <Modal.Header closeButton>
-        <div className="d-flex align-items-center gap-2">
-          <Icon glyph="File" />
-          <span style={{ fontWeight: 700 }}>
-            {certOpened?.criterion?.replaceAll("_", " ")}
-          </span>
-        </div>
-      </Modal.Header>
-      <Modal.Body>
-        <WhyMongoDB>
-          By converting unstructured data types into high-dimensional vectors,{" "}
-          <strong>multimodal search</strong> allows users to find information
-          based on semantic meaning and intent — not just keyword matches.
-        </WhyMongoDB>
+    <>
+      <WhyMongoDB title="🌐 Voyage AI's multimodal model handles multilingual content natively">
+        No translation required. Certificates in Spanish, contracts in French, and emails in Mandarin all surface through the same semantic search.
+      </WhyMongoDB>
 
-        <div className="d-flex gap-2 mt-3 mb-3">
-          <Button
-            size="small"
-            variant={view === "model" ? "primary" : "default"}
-            leftGlyph={<Icon glyph="CurlyBraces" />}
-            onClick={() => setView("model")}
-          >
-            Model
-          </Button>
-          <Button
-            size="small"
-            variant={view === "document" ? "primary" : "default"}
-            leftGlyph={<Icon glyph="File" />}
-            onClick={() => setView("document")}
-          >
-            Document
-          </Button>
-        </div>
+      <div className="d-flex gap-2 mt-3 mb-3">
+        <Button
+          size="small"
+          variant={view === "document" ? "primary" : "default"}
+          leftGlyph={<Icon glyph="File" />}
+          onClick={() => setView("document")}
+        >
+          Document
+        </Button>
+        <Button
+          size="small"
+          variant={view === "model" ? "primary" : "default"}
+          leftGlyph={<Icon glyph="CurlyBraces" />}
+          onClick={() => setView("model")}
+        >
+          Model
+        </Button>
+      </div>
 
-        {view === "document" ? (
-          <SimulatedDocument citation={citation} />
-        ) : (
-          <Code
-            language="json"
-            showLineNumbers
-            darkMode
-            copyButtonAppearance="persist"
-          >
-            {JSON.stringify(citation ?? {}, null, 2)}
-          </Code>
-        )}
-      </Modal.Body>
-    </Modal>
+      {view === "document" ? (
+        <SimulatedDocument citation={citation} />
+      ) : (
+        <Code
+          language="json"
+          showLineNumbers
+          darkMode
+          copyButtonAppearance="persist"
+        >
+          {JSON.stringify(citation ?? {}, null, 2)}
+        </Code>
+      )}
+    </>
   );
 }

@@ -6,6 +6,7 @@ import { Body } from "@leafygreen-ui/typography";
 import Button from "@leafygreen-ui/button";
 import store from "../redux/store";
 import { setSessionId, setExternalConditions } from "../redux/slices/GlobalSlice";
+import EvaluationRunner from "../components/shared/EvaluationRunner";
 
 function SessionInitializer({ children }) {
   const dispatch = useDispatch();
@@ -74,7 +75,10 @@ function SessionInitializer({ children }) {
 export default function ClientProvider({ children }) {
   return (
     <Provider store={store}>
-      <SessionInitializer>{children}</SessionInitializer>
+      <SessionInitializer>
+        <EvaluationRunner />
+        {children}
+      </SessionInitializer>
     </Provider>
   );
 }

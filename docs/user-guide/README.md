@@ -8,7 +8,7 @@ This guide walks you through the Intelligent Supplier Hub demo step by step. It 
 
 The **Intelligent Supplier Hub** is an AI-powered supplier management portal built for a large grocery superstore retailer. The primary user is a **Supply Chain Manager** — responsible for maintaining supplier continuity and product availability across the retailer's distribution network.
  
-The demo walks through a realistic disruption scenario: external conditions arrive simultaneously (a geopolitical instability, a logistical challenge and a climate disruption), an AI agent identifies which suppliers are at risk, and the manager finds and approves a qualified alternative — all from a single interface.
+The demo walks through a realistic disruption scenario: external conditions arrive simultaneously (a geopolitical instability, a logistical challenge and a Climate), an AI agent identifies which suppliers are at risk, and the manager finds and approves a qualified alternative — all from a single interface.
  
 When you open the demo you will see a single-page application with three main areas:
  
@@ -69,9 +69,9 @@ This section simulates the arrival of real-time external risk signals into the s
 
 | Type |
 |---|
-| 🚢 Logistical Challenges |
-| 🛡️ Geopolitical Tensions | 
-| ⛈️ Climate Disruption | 
+| 🚢 Logistics |
+| 🛡️ Geopolitics | 
+| ⛈️ Climate | 
 
 Each card shows the condition title, a short description, and the affected region.
 
@@ -153,7 +153,7 @@ Each supplier card shows:
 - The supplier name, location, and category
 - A severity tag (CRITICAL or HIGH) in the top right corner of the card
 - **Reason:** a description of why this supplier is affected by the current conditions
-- **Affected by:** the specific external condition(s) impacting this supplier, shown as colour-coded badges. Each badge displays the actual condition title (e.g. "Red Sea Corridor Disruption Detected") with the condition type icon. Hovering over a badge shows the condition category name (e.g. "Logistical Challenges").
+- **Affected by:** the specific external condition(s) impacting this supplier, shown as colour-coded badges. Each badge displays the actual condition title (e.g. "Red Sea Corridor Disruption Detected") with the condition type icon. Hovering over a badge shows the condition category name (e.g. "Logistics").
 - Next to each condition badge, the **dynamic RPN** (Risk Priority Number) shows the baseline score and the updated elevated score — for example `RPN: 45 → 168`. This shows how much the agent has adjusted the risk score in the context of the current disruption.
 
 > **Note:** If a supplier is affected by more than one external condition (for example both a logistical and a geopolitical disruption), you will see multiple condition badges with individual RPN values, one per condition.

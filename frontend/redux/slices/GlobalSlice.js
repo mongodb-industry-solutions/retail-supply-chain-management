@@ -22,7 +22,6 @@ const GlobalSlice = createSlice({
     alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
     alternativeSuppliersAgentCurrentThought: "",
     alternativeSuppliersAgentDone: false, // agent is done once we receive a "shortlist_ready" event.event
-    certOpened: null, // criteria whose cert modal is open, null when closed
   },
   reducers: {
     setSessionId(state, action) {
@@ -126,9 +125,6 @@ const GlobalSlice = createSlice({
     setAlternativeSuppliers(state, action) {
       state.alternativeSuppliers = action.payload;
     },
-    setCertOpened(state, action) {
-      state.certOpened = action.payload;
-    },
   },
 });
 
@@ -144,7 +140,6 @@ export const {
   appendAffectedSuppliersAgentReasoning,
   appendAlternativeSuppliersAgentReasoning,
   setAlternativeSuppliers,
-  setCertOpened,
 } = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;
