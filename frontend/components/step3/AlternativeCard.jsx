@@ -8,13 +8,12 @@ import { Body, Overline } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-import { useDispatch } from "react-redux";
 import SupplierTitle from "../shared/SupplierTitle";
-import { setCertOpened } from "@/redux/slices/GlobalSlice";
-import { Code, Panel } from "@leafygreen-ui/code";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 import Tooltip from "@leafygreen-ui/tooltip";
 import ReadMore from "../shared/ReadMore";
+import CitationEvidence from "./CitationEvidence";
+import WhyMongoDB from "../shared/WhyMongoDB";
 
 function RRFBar({ textScore, vectorScore }) {
   const total = textScore + vectorScore;
@@ -81,18 +80,18 @@ function RRFBar({ textScore, vectorScore }) {
 }
 
 const EXT_COLOR = {
-  PDF: { variant: "red" },
+  PDF: { variant: "red", icon: "📄" },
+  EML: {variant: "blue", icon: "📧" },
   TXT: { variant: "blue" },
   IMG: { variant: "yellow" },
   PNG: { variant: "yellow" },
-  JSON: { variant: "darkgray" },
 };
 
 function ExtBadge({ ext }) {
   const cfg = EXT_COLOR[ext] ?? { variant: "lightgray" };
   return (
     <Badge className="d-flex me-2" variant={cfg.variant}>
-      {ext}
+      {cfg?.icon} {ext}
     </Badge>
   );
 }
@@ -152,7 +151,6 @@ const STATS = (s) => [
 ];
 
 export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
-  const dispatch = useDispatch();
   return (
     <Card className="AlternativeCard" style={{ marginBottom: spacing[400] }}>
       {/* ── Header ── */}
@@ -166,35 +164,17 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
             📍 {supplier.location} · {supplier.category}
           </Body>
         </div>
-
-        {/* <div className="d-flex flex-column align-items-end gap-2" style={{ flexShrink: 0 }}>
-          <div
-            className="d-flex align-items-center gap-1"
-            style={{ background: palette.gray.light3, borderRadius: 20, padding: "4px 12px" }}
-          >
-            <span>⭐</span>
-            <code style={{ fontSize: 13, fontWeight: 700 }}>{supplier.rrfScore.toFixed(4)}</code>
-          </div>
-          <RRFBar textScore={supplier.textScore} vectorScore={supplier.vectorScore} />
-        </div> */}
       </div>
-            {/* ── Why multimodal ── */}
-      <div style={{ marginBottom: spacing[300] }}>
-        <Overline
-          style={{
-            color: palette.gray.dark1,
-            display: "block",
-            marginBottom: spacing[100],
-          }}
-        >
-          Instead of manually cross-referencing PDFs, spreadsheets and emails,
-          multimodal search allows users to query unstructured data directly.
-        </Overline>
-      </div>
+      {/* ── Why multimodal ── */}
+      <WhyMongoDB title="🍃 Multimodal search">
+        Instead of manually cross-referencing PDFs, spreadsheets and emails,{" "}
+        <strong>multimodal search</strong> allows users to find information
+        based on semantic meaning and intent — not just keyword matches.
+      </WhyMongoDB>
 
       {/* ── Stats ── */}
       <div
-        className="row g-0 mb-3 text-center"
+        className="row g-0 mb-3 mt-3 text-center"
         style={{
           background: palette.gray.light3,
           borderRadius: 10,
@@ -244,19 +224,7 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
       </div>
 
       {/* ── Rationale (narrative prose) + structured glossary ── */}
-      {supplier.rationale && (
-         <ReadMore text={supplier.rationale} />
-        // <div style={{ marginBottom: spacing[300] }}>
-        //   <Body
-        //     style={{
-        //       fontSize: 14,
-        //       color: palette.gray.dark2,
-        //     }}
-        //   >
-        //     {supplier.rationale}
-        //   </Body>
-        // </div>
-      )}
+      {supplier.rationale && <ReadMore text={supplier.rationale} />}
 
       {/* ── Evidence checks ── */}
       <Accordion className="mb-3">
@@ -341,21 +309,7 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
                     >
                       <Body>{criteria?.note}</Body>
                     </div>
-                    <Code
-                      language="none"
-                      panel={<Panel title="Chunk evidence" />}
-                    >
-                      {criteria?.citation?.excerpt}
-                    </Code>
-                    <Button
-                      className="mt-2"
-                      size="small"
-                      variant="primaryOutline"
-                      leftGlyph={<Icon glyph="CurlyBraces" />}
-                      onClick={() => dispatch(setCertOpened(criteria))}
-                    >
-                      View document model
-                    </Button>
+                    <CitationEvidence citation={criteria?.citation} />
                   </>
                 )}
               </Accordion.Body>
