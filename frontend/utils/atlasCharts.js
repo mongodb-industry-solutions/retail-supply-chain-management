@@ -3,7 +3,7 @@ export function createDashboardUrl(baseUrl, dashboardId) {
     id: dashboardId,
     theme: "light",
     autoRefresh: "true",
-    maxDataAge: "3600",
+    maxDataAge: "60",
     showTitleAndDesc: "false",
     scalingWidth: "scale",
     scalingHeight: "scale",

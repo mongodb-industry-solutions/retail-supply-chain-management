@@ -170,17 +170,21 @@ export default function ReActAgent({
                           : {}
                       }
                     >
-                      <Overline
-                        style={{
-                          display: "block",
-                          marginBottom: spacing[200],
-                          paddingBottom: spacing[100],
-                          borderBottom: `1px solid ${palette.gray.light2}`,
-                          color: palette.gray.dark1,
-                        }}
-                      >
-                        {phaseIdx+1}. {phase.name}
-                      </Overline>
+                      {/* A phase with no name is an unlabelled single phase —
+                          render its rows without a heading or divider. */}
+                      {phase.name ? (
+                        <Overline
+                          style={{
+                            display: "block",
+                            marginBottom: spacing[200],
+                            paddingBottom: spacing[100],
+                            borderBottom: `1px solid ${palette.gray.light2}`,
+                            color: palette.gray.dark1,
+                          }}
+                        >
+                          {phaseIdx+1}. {phase.name}
+                        </Overline>
+                      ) : null}
 
                       <div className="d-flex flex-column" style={{ gap: 6 }}>
                         {items.map((item, i) => {
@@ -244,17 +248,19 @@ export default function ReActAgent({
                           : {}
                       }
                     >
-                      <Overline
-                        style={{
-                          display: "block",
-                          marginBottom: spacing[200],
-                          paddingBottom: spacing[100],
-                          borderBottom: `1px solid ${palette.gray.light2}`,
-                          color: palette.gray.dark1,
-                        }}
-                      >
-                        {phase.name}
-                      </Overline>
+                      {phase.name ? (
+                        <Overline
+                          style={{
+                            display: "block",
+                            marginBottom: spacing[200],
+                            paddingBottom: spacing[100],
+                            borderBottom: `1px solid ${palette.gray.light2}`,
+                            color: palette.gray.dark1,
+                          }}
+                        >
+                          {phase.name}
+                        </Overline>
+                      ) : null}
 
                       {phase.steps.map((step, stepIdx) => {
                         const flatIdx = offset + stepIdx;
