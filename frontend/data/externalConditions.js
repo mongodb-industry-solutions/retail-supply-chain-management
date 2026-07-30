@@ -6,7 +6,7 @@ export const RISK_TYPE_MAP = {
 
 export const conditionConfig = {
   logistical: {
-    label: "Logistical Challenges",
+    label: "Logistics",
     borderColor: "#d97706",
     bgColor: "#fef3c7",
     color: "#92400e",
@@ -14,7 +14,7 @@ export const conditionConfig = {
     variant: "yellow",
   },
   geopolitical: {
-    label: "Geopolitical Tensions",
+    label: "Geopolitics",
     borderColor: "#e11d48",
     bgColor: "#ffe4e6",
     color: "#9f1239",
@@ -22,7 +22,7 @@ export const conditionConfig = {
     variant: "red",
   },
   climate: {
-    label: "Climate Disruption",
+    label: "Climate",
     borderColor: "#0284c7",
     bgColor: "#e0f2fe",
     color: "#075985",

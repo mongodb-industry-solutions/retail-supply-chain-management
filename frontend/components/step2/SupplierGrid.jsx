@@ -5,13 +5,20 @@ import { Body } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import SupplierCard from "./SupplierCard";
 
-export default function SupplierGrid({ onFindAlternatives }) {
+// `suppliers` lets a caller pass an already-filtered list; without it the full
+// set from Redux is rendered.
+export default function SupplierGrid({ onFindAlternatives, suppliers }) {
   const affectedSuppliers = useSelector((s) => s.Global.affectedSuppliers) || [];
+  const visibleSuppliers = suppliers ?? affectedSuppliers;
 
-  if (!affectedSuppliers.length) {
+  if (!visibleSuppliers.length) {
     return (
       <div style={{ textAlign: "center", padding: 32, color: palette.gray.base }}>
-        <Body style={{ color: palette.gray.base }}>No affected suppliers identified.</Body>
+        <Body style={{ color: palette.gray.base }}>
+          {affectedSuppliers.length
+            ? "No suppliers match the selected condition types."
+            : "No affected suppliers identified."}
+        </Body>
       </div>
     );
   }
@@ -19,7 +26,7 @@ export default function SupplierGrid({ onFindAlternatives }) {
   return (
     <div>
       <div className="d-flex flex-column gap-3">
-        {affectedSuppliers.map((supplier) => (
+        {visibleSuppliers.map((supplier) => (
           <SupplierCard
             key={supplier.supplier_id}
             supplier={supplier}

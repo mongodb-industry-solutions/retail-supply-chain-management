@@ -21,6 +21,50 @@ import BehindTheScenes from "./BehindTheScenes";
 import Icon from "@leafygreen-ui/icon";
 import { Code } from "@leafygreen-ui/code";
 import { Card } from "@leafygreen-ui/card";
+import { palette } from "@leafygreen-ui/palette";
+import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
+
+// The condition types a supplier was actually impacted by, normalised from the
+// raw risk_type_triggered keys ("logistics_disruption") to conditionConfig keys
+// ("logistical") via RISK_TYPE_MAP.
+function supplierConditionTypes(supplier) {
+  return new Set(
+    (supplier.risk_scores ?? [])
+      .map((risk) => RISK_TYPE_MAP[risk.triggered_by?.risk_type_triggered])
+      .filter(Boolean),
+  );
+}
+
+function FilterPill({ label, count, active, activeColors, onClick }) {
+  const colors = active
+    ? activeColors
+    : { bgColor: palette.white, borderColor: palette.gray.light1, color: palette.gray.dark1 };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 12px",
+        borderRadius: 20,
+        fontSize: 13,
+        fontWeight: active ? 600 : 400,
+        cursor: "pointer",
+        background: colors.bgColor,
+        border: `1px solid ${colors.borderColor}`,
+        color: colors.color,
+        transition: "background 0.15s ease, border-color 0.15s ease",
+      }}
+    >
+      {label}
+      <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.7 }}>{count}</span>
+    </button>
+  );
+}
 
 const GEO_QUERY = `
   # geospatial path: conditions with a physical epicentre (e.g. earthquakes, port closures)
@@ -50,6 +94,29 @@ export default function Step2() {
   const agentDone = useSelector((s) => s.Global.affectedSuppliersAgentDone);
   const [logsOpen, setLogsOpen] = useState(false);
   const [showGeoQuery, setShowGeoQuery] = useState(false);
+  // Condition-type filter for the affected suppliers list. Empty = show all.
+  const [activeTypes, setActiveTypes] = useState([]);
+
+  const toggleType = (type) =>
+    setActiveTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+
+  // One pill per condition type, always all three, each with a live count.
+  const typeCounts = Object.fromEntries(
+    Object.keys(conditionConfig).map((type) => [
+      type,
+      affectedSuppliers.filter((s) => supplierConditionTypes(s).has(type)).length,
+    ]),
+  );
+
+  // OR semantics: a supplier shows if it carries any of the selected types.
+  const filteredSuppliers = activeTypes.length
+    ? affectedSuppliers.filter((s) => {
+        const types = supplierConditionTypes(s);
+        return activeTypes.some((t) => types.has(t));
+      })
+    : affectedSuppliers;
 
   // Guards against React Strict Mode's intentional double-invoke of mount effects
   // in development. Redux state alone can't guard here because it's only populated
@@ -124,7 +191,7 @@ export default function Step2() {
         subtitle="The ReAct (Reason + Act) agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
         phases={[
           {
-            name: "Affected suppliers",
+            name: null,
             steps: affectedSuppliersAgentReasoning || [],
           },
         ]}
@@ -202,9 +269,41 @@ export default function Step2() {
               </WhyMongoDB>
             </Card>
           )}
+          
+          {/* Filter the affected suppliers list by external condition type */}
+          <div
+            className="d-flex align-items-center flex-wrap gap-2"
+            style={{ marginBottom: spacing[300] }}
+          >
+            <FilterPill
+              label="All"
+              count={affectedSuppliers.length}
+              active={activeTypes.length === 0}
+              activeColors={{
+                bgColor: palette.green.light3,
+                borderColor: palette.green.base,
+                color: palette.green.dark2,
+              }}
+              onClick={() => setActiveTypes([])}
+            />
+            {Object.entries(conditionConfig).map(([type, cfg]) => (
+              <FilterPill
+                key={type}
+                label={`${cfg.icon} ${cfg.label}`}
+                count={typeCounts[type]}
+                active={activeTypes.includes(type)}
+                activeColors={cfg}
+                onClick={() => toggleType(type)}
+              />
+            ))}
+          </div>
+
           <div className="row g-4" style={{ marginBottom: spacing[400] }}>
             <div className="col-7">
-              <SupplierGrid onFindAlternatives={handleFindAlternatives} />
+              <SupplierGrid
+                suppliers={filteredSuppliers}
+                onFindAlternatives={handleFindAlternatives}
+              />
             </div>
             <div className="col-5">
               <WorldMap />

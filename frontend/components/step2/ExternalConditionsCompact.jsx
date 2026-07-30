@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Body } from "@leafygreen-ui/typography";
+import { Body, Link } from "@leafygreen-ui/typography";
 import { Badge } from "@leafygreen-ui/badge";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
@@ -12,6 +12,12 @@ import { Card } from "@leafygreen-ui/card";
 import SectionHeader from "../shared/SectionHeader";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import IconButton from "@leafygreen-ui/icon-button";
+import { Code } from "@leafygreen-ui/code";
+
+const TTL_INDEX_SNIPPET = `db.external_conditions.createIndex(
+   { "valid_until": 1 },
+   { expireAfterSeconds: 3600 }
+)`;
 
 export default function ExternalConditionsCompact() {
   const loadedConditions = useSelector(
@@ -30,8 +36,18 @@ export default function ExternalConditionsCompact() {
         docModel={modalCondition}
         whyMDB={
           <>
-            <strong>Automated Data Hygiene via TTL Indexes — </strong>
-            Atlas uses Time-To-Live (TTL) indexes on the{" "}
+            <strong>Automated Data Hygiene with TTL Indexes — </strong>
+            Using MongoDB&apos;s built-in{" "}
+            <strong>
+              <Link
+                href="https://www.mongodb.com/docs/manual/core/index-ttl/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                TTL (Time-To-Live) indexes
+              </Link>
+            </strong>
+            , disruption records automatically expire after{" "}
             <code
               style={{
                 fontFamily: "monospace",
@@ -40,10 +56,25 @@ export default function ExternalConditionsCompact() {
               }}
             >
               valid_until
-            </code>{" "}
-            field to automatically delete expired signals, ensuring the system
-            returns to baseline without manual intervention when a disruption
-            passes.
+            </code>
+            . The database continuously cleans itself, eliminating manual cleanup
+            processes.
+            <div style={{ marginTop: spacing[300] }}>
+              To create a TTL index, use{" "}
+              <code
+                style={{
+                  fontFamily: "monospace",
+                  padding: "1px 5px",
+                  borderRadius: 3,
+                }}
+              >
+                createIndex()
+              </code>
+              . For example:
+            </div>
+            <div style={{ marginTop: spacing[200] }}>
+              <Code language="javascript">{TTL_INDEX_SNIPPET}</Code>
+            </div>
           </>
         }
       />

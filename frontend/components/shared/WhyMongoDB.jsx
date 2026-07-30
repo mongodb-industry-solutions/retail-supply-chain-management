@@ -28,7 +28,9 @@ export default function WhyMongoDB({ children, title = "🍃 Why MongoDB?", onLe
           </Button>
         )}
       </div>
-      <Body style={{ color: palette.gray.dark2, margin: 0 }}>{children}</Body>
+      <Body as="div" style={{ color: palette.gray.dark2, margin: 0 }}>
+        {children}
+      </Body>
     </div>
   );
 }

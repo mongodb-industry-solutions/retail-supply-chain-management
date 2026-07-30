@@ -29,7 +29,11 @@ const GlobalSlice = createSlice({
       state.sessionId = action.payload;
     },
     setExternalConditions(state, action) {
-      state.externalConditions = action.payload;
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const validUntil = tomorrow.toISOString();
+      const updatedConditions = action.payload.map((signal) => ({ ...signal, valid_until: validUntil }));
+      state.externalConditions = updatedConditions;
     },
     setCurrentStep(state, action) {
       state.currentStep = action.payload;
