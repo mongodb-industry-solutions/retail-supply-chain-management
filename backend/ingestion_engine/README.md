@@ -2,78 +2,133 @@
 
 ![ingestion_engine architecture](../../docs/images/ingestion_engine_diagram.png)
 
-> **Diagram placeholder.** The image above is not in the repository yet. Module
-> diagrams live in the project's `docs/images/` folder (there is no root-level
-> `images/` folder — *to verify* whether one is planned). Existing files there
-> are `architecture.png`, `architecture_overview.png`,
-> `architecture_detailed.jpg` and `workflow_diagram.png`, so **no per-module
-> naming convention exists yet**; this README proposes
-> `<module_name>_diagram.png` — i.e. `ingestion_engine_diagram.png`.
+## What we're demonstrating
+
+This is where the system turns the outside world into something it can reason
+about. The signals come from real-world data sources, each covering a
+different risk category:
+
+* **NOAA** (National Oceanic and Atmospheric Administration) — U.S.
+  government weather and climate data: droughts, storms, temperature
+  anomalies.
+* **GDELT** (Global Database of Events, Language and Tone) — a global
+  monitor of news coverage across 65 languages, used here to detect
+  geopolitical events, trade disputes, and regulatory shifts as they're
+  reported.
+* **MarineTraffic** — real-time vessel tracking and port activity data (via
+  AIS signals), used to detect shipping delays, port congestion, and
+  logistics disruptions.
+
+**① Raw signal in.** A scheduled poller would connect to each source's API,
+pulling in whatever format each one returns. These sources don't arrive as
+clean data — they arrive as headlines, coordinates, port status reports.
+
+**② Normalization, powered by MongoDB.** The Ingestion Engine takes that raw
+signal and runs it through the same discipline a risk management team
+already uses: classify it against known risk categories, locate exactly who
+it affects, and score how strongly it's active right now — turning a
+real-world event into a number the rest of the system can act on. MongoDB
+Atlas makes each step possible without bolting together separate tools:
+
+* **Geo Search** — normalizes the signal's location into a queryable point
+  and radius, so a downstream evaluation step can later answer "who is
+  physically in the path of this event."
+* **Full-Text Search** — classifies the raw signal against the risk catalog
+  by matching exact terms, regulatory acronyms, and category keywords (e.g.
+  "OFAC," "CBAM," "port congestion") straight from the headline.
+* **Flexibility** — not every signal looks the same. A port congestion event
+  carries coordinates and an impact radius; a tariff or sanctions signal has
+  no physical location at all. MongoDB's document model adapts to each one
+  without forcing a rigid, one-size-fits-all schema. This is what lets the
+  Ingestion Engine read the static risk profile from `risk_catalog` and
+  write the newly scored signal to `external_conditions` in whatever shape
+  it needs — every signal, however messy or varied, gets translated into
+  the same ready-to-use language the rest of the system speaks.
+
+**③ Ready to visualize.** Once normalized, the signal is immediately
+queryable — MongoDB Charts can read directly off the same live collection,
+no separate ETL step or data pipeline needed to turn a fresh signal into a
+dashboard update.
+
+**④ Triggering the next agent.** In a fully live system, the write itself
+would be the trigger: a Change Stream on `external_conditions` could notify
+`risk_evaluator` the instant a new signal lands — no polling, no scheduler,
+no message queue in between.
+
+**Why MongoDB:** one platform covers geolocation, search, real-time
+reactivity, and flexible schema together — the alternative would be
+stitching together separate specialized tools just to get a single signal
+ready to use, let alone reacted to and visualized.
+
+*In this demo, the Ingestion Engine doesn't call these external APIs live —
+it generates deterministic, pre-calibrated signals using the same MongoDB
+document model shown above, so every demo session produces a consistent,
+reliable risk scenario to build the story around. Exactly how it does that,
+grounded in the real code, is what the rest of this document explains.*
 
 ---
 
-## 1. What this module demonstrates
+## 1. What this module actually does
 
-`ingestion_engine` seeds each demo session with a realistic supply-chain risk
-scenario. It is the first step of the demo flow: it plants the signals that
-`risk_evaluator` will later read and score, and that `alternative_finder` will
-ultimately react to.
+![ingestion_engine architecture](../../docs/images/Screenshot_demo_external_conditions.png)
+
+`ingestion_engine` seeds each demo session with up to **3 signals** — one per
+risk type (`geopolitical_tariff`, `logistics_disruption`,
+`climate_disruption`) — by selecting a `(supplier, risk)` pair for each type
+and inserting a corresponding document into `external_conditions`. It is the
+first step of the demo flow: it plants the signals that `risk_evaluator`
+will later read and score, and that `alternative_finder` will ultimately
+react to.
 
 **It is not an agent.** There is no LangGraph graph, no LLM call, and no
 reasoning loop anywhere in this module — the whole module is four files
 (`router.py`, `service.py`, `target_selector.py`, `signal_generator.py`) of
 plain async Python and MongoDB queries. The only non-determinism is
-`random.shuffle` / `random.choice` when choosing which supplier, which risk and
-which base signal to use.
+`random.shuffle` / `random.choice` when choosing which supplier, which risk,
+and which base signal to use.
 
-**Why it exists:** a demo needs a risk scenario that is realistic *and*
-reproducible. Every session must land on at least one supplier whose dynamic RPN
-crosses its `alert_threshold_rpn`, otherwise the downstream agents have nothing
-interesting to show. Rather than hand-crafting a fixture, this module derives the
-signal magnitude from live catalog data at run time, so the scenario stays
-consistent with whatever is currently in the database.
+**Why one per risk type, and why generated instead of scripted:** a demo
+needs a scenario that is realistic *and* reproducible. Every session must
+land on at least one supplier whose dynamic RPN crosses its
+`alert_threshold_rpn`, otherwise the downstream agents have nothing
+interesting to show. Rather than hand-crafting a fixture, this module
+derives the signal magnitude from live catalog data at run time, so the
+scenario stays consistent with whatever is currently in the database.
 
-**What it is not trying to be:** a neutral, live simulation of the real world. It
-does not model actual events, probabilities, or an unbiased distribution of
-outcomes. It works *backwards* from the alert threshold to guarantee an alert.
-See §2.
+**What it is not trying to be:** a neutral, live simulation of the real
+world. It does not model actual events, probabilities, or an unbiased
+distribution of outcomes. It works *backwards* from the alert threshold to
+guarantee an alert — see §2.
 
----
+### 1.1 The seed strategy — where the raw material comes from
 
-## 2. What this engine really is, and why — grounded in code
+Each of the 3 signals generated per session is a **copy of a randomly chosen
+`is_base: true` template** already sitting in `external_conditions` (206 seed
+documents today), for the specific `risk_catalog_ref` selected. Nothing is
+generated from scratch — the module picks an existing template and
+recalibrates only what needs to be session-specific (see the field table in
+§3). If no base template exists for a selected `risk_catalog_ref`,
+generation fails loudly (`SignalGenerationError`) rather than inventing one.
 
-`run_ingestion(session_id)` (`service.py`) runs two steps and returns
-`{"session_id": ..., "signals": [...]}`. If step 1 selects nothing, it returns
-an empty `signals` list and writes nothing.
-
-### 2.1 Target selection — `target_selector.py`
+### 1.2 Target selection — `target_selector.py`
 
 `select_targets(db)` produces **up to one `(supplier, risk)` pair per risk
-type**, for the three types hard-coded in `_RISK_TYPES`:
-`geopolitical_tariff`, `logistics_disruption`, `climate_disruption`. So the
-maximum is three pairs per session.
+type**. The logic:
 
-The logic:
-
-1. Read `suppliers` with the pre-filter `{"has_active_orders": True}` — suppliers
-   without active orders are **never selectable**. This is the only pre-filter on
-   the supplier side.
+1. Read `suppliers` with the pre-filter `{"has_active_orders": True}` —
+   suppliers without active orders are **never selectable**.
 2. `random.shuffle` the resulting list.
-3. Walk the shuffled suppliers. For each one, query `risk_catalog` for entries
-   where `applies_to_regions` contains the supplier's `region` **and** whose
-   `risk_type` is one of the types not yet covered. A supplier whose region
-   matches no remaining catalog entry is skipped.
+3. Walk the shuffled suppliers. For each one, query `risk_catalog` for
+   entries where `applies_to_regions` contains the supplier's `region` **and**
+   whose `risk_type` is one of the types not yet covered.
 4. `random.choice` one of the matching risks, record the pair, mark that
-   `risk_type` as covered, and stop early once all three types are covered.
+   `risk_type` as covered, and stop once all three types are covered.
 
-Consequences that follow directly from the code: a supplier can appear at most
-once (the loop advances per supplier), each risk type appears at most once, and
-region coverage in `risk_catalog.applies_to_regions` is what ultimately decides
-which suppliers are reachable.
+A supplier can appear at most once per session, each risk type appears at
+most once, and region coverage in `risk_catalog.applies_to_regions` is what
+ultimately decides which suppliers are reachable.
 
-### 2.2 The `condition_score` formula — `signal_generator.py`
-
-For each target, the score is computed exactly as:
+### 1.3 The `condition_score` formula — `signal_generator.py`
 
 ```python
 condition_score = (
@@ -84,144 +139,127 @@ condition_score = (
 
 | Variable | Where it comes from | What it is |
 |---|---|---|
-| `alert_threshold_rpn` | the selected `risk_catalog` document | RPN value at or above which `risk_evaluator` raises an alert for this risk |
-| `severity` | same `risk_catalog` document | FMEA severity factor of the risk |
-| `occurrence_base` | same `risk_catalog` document | FMEA baseline occurrence factor, before any signal scaling |
-| `detection` | same `risk_catalog` document | FMEA detectability factor |
-| `worst_case_weight` | computed from `agent_memory` — see §2.3 | worst-case historical multiplier the evaluator might apply later |
-| `SAFETY_MARGIN` | module constant `1.15` in `signal_generator.py` | fixed 15 % headroom above the threshold |
+| `alert_threshold_rpn` | selected `risk_catalog` document | RPN value at or above which `risk_evaluator` raises an alert |
+| `severity` | same document | FMEA severity factor |
+| `occurrence_base` | same document | FMEA baseline occurrence factor |
+| `detection` | same document | FMEA detectability factor |
+| `worst_case_weight` | computed from `agent_memory` — see §1.4 | worst-case historical multiplier |
+| `SAFETY_MARGIN` | module constant, `1.15` | fixed 15% headroom above threshold |
 
-This is the FMEA formula solved for the signal magnitude. `risk_evaluator`
-computes `rpn_dynamic = severity × (occurrence_base × condition_score) ×
-detection` (`risk_evaluator/nodes.py`), so dividing the threshold by the other
-three factors yields precisely the `condition_score` that lands *on* the
-threshold, and `× 1.15` puts it 15 % above.
+This is the FMEA formula solved backwards for the signal magnitude:
+`risk_evaluator` computes `rpn_dynamic = severity × (occurrence_base ×
+condition_score) × detection`, so dividing the threshold by the other three
+factors yields precisely the `condition_score` that lands *on* the
+threshold — `× 1.15` puts it 15% above.
 
-### 2.3 `historical_weight` — `_worst_case_historical_weight`
+**This is intentional reverse-engineering, not a model of real-world
+severity.** It's a deliberate design decision for demo reliability, not
+production logic — read before reusing this formula elsewhere. Two honest
+caveats:
 
-```python
-episodes = await db["agent_memory"].find({"risk_type": risk_type}).to_list(length=None)
-```
+- The 15% margin is **not arithmetically guaranteed** to survive
+  `risk_evaluator`'s `distance_decay`, which can multiply `rpn_dynamic` by as
+  little as `0.70` for physical signals far from the epicentre. For those,
+  the alert is likely, not certain.
+- The live graph derives its own `historical_weight` via an LLM ReAct loop
+  (`reason_and_retrieve`), which can return any float. The deterministic
+  `1.20`/`0.90` rule this module mirrors (§1.4) lives in a separate function,
+  `retrieve_memory`, which is **not wired into the current graph** — so this
+  module's worst-case weight defends against a rule that is currently
+  dormant downstream.
 
-- A plain **read-only `find`** (not a vector search), filtered by `risk_type`
-  only — i.e. **cross-supplier**. `ingestion_engine` never writes to
-  `agent_memory`.
-- Per episode, the weight is derived from
-  `episode.actual_impact.occurred`: `1.20` if `True`, `0.90` if `False`.
-  Episodes with no `occurred` key are excluded entirely.
-- The **minimum** across matching episodes is taken (worst case for the
-  guarantee), then clamped: `min(1.0, min(weights))`.
-- If no episode matches, or none carries `occurred`, it returns
-  `HISTORICAL_WEIGHT_DEFAULT = 1.0`.
+### 1.4 `historical_weight` — `_worst_case_historical_weight`
 
-The clamp is deliberate and is documented in the source: the worst-case weight
-may only **widen** the safety margin (an attenuating episode, `0.90`), never
-**narrow** it. An amplifying episode (`1.20`) would otherwise shrink
-`condition_score` and make the alert guarantee depend on the evaluator
-re-applying that same amplification at runtime — so amplifiers clamp back to
-neutral `1.0`.
+A plain, **read-only** `find` on `agent_memory`, filtered by `risk_type`
+only (cross-supplier — `ingestion_engine` never writes to `agent_memory`).
+Per matching episode, a weight is derived from
+`episode.actual_impact.occurred`: `1.20` if `True`, `0.90` if `False`. The
+**minimum** across matches is taken, then clamped with `min(1.0, …)` — an
+amplifying episode can only get clamped back to neutral, never used to
+shrink the demo's safety margin. No match → neutral default `1.0`.
 
-### 2.4 This is intentional reverse-engineering — read this before reusing it
+---
 
-The formula above is **not** a model of how severe a real disruption is. It is
-the alert threshold run backwards: the module is told what outcome the demo needs
-(at least one supplier above `alert_threshold_rpn`) and computes the signal
-magnitude that produces it, with margin. That is a deliberate design decision for
-demo reliability, not production logic. In a real system, `condition_score` would
-come from an external feed and the resulting RPN would be whatever it is —
-possibly below every threshold.
+## 2. Why the document model matters here
 
-Two honest caveats visible in the code:
-
-- The `1.15` margin is **not** guaranteed to survive the evaluator's
-  `distance_decay`, which multiplies `rpn_dynamic` by as little as `0.70` for
-  physical signals far from the epicentre (`risk_evaluator/nodes.py`). For those
-  signals the alert is likely, not arithmetically certain.
-- In the graph that actually runs, `historical_weight` is derived by an **LLM
-  ReAct loop** in `reason_and_retrieve`, which can return any float (defaulting
-  to `1.0`). The deterministic `1.20`/`0.90` `occurred` rule that
-  `_worst_case_historical_weight` mirrors lives in `retrieve_memory`, which its
-  own docstring marks as *"NOT wired into the current graph"*. So the worst-case
-  weight defends against a rule that is currently dormant downstream; it does not
-  bound what the LLM may return.
+Not every signal this module writes looks the same. A port congestion
+template carries `epicentre` and `impact_radius_km`; a tariff or sanctions
+template has no physical location at all — `has_physical_location: false`
+and both fields simply absent. There's no Pydantic model enforcing a fixed
+shape on `external_conditions`: every field not explicitly overridden is
+inherited verbatim from whichever base template was copied. That's what lets
+one collection hold genuinely different signal shapes side by side, and
+what lets this module stay indifferent to *which* shape it's copying — it
+only needs to know which fields it must override, not the full shape of
+every possible signal.
 
 ---
 
 ## 3. Anatomy of an `external_conditions` document
 
-Each generated signal is a **copy of a randomly chosen `is_base: true` document**
-(`_id` stripped) for the target's `risk_catalog_ref`, with a fixed set of fields
-overridden. There is no Pydantic model for the written document, so every field
-not listed as overridden is inherited verbatim from the base seed. If no base
-signal exists for a `risk_catalog_ref`, `SignalGenerationError` is raised.
-
-All 16 fields, as observed in `docs/database-files/external_conditions.json`
-(206 seed documents) and in the writer code:
+All 16 fields, as observed in the seed data and the writer code:
 
 | Field | Origin | Applies to | What it is |
 |---|---|---|---|
-| `condition_id` | **overridden** | all | Identifier of this signal; generated as `COND-<SESSION8>-<TYPE3>-<UUID6>` |
+| `condition_id` | **overridden** | all | Generated as `COND-<SESSION8>-<TYPE3>-<UUID6>` |
 | `risk_catalog_ref` | inherited | all | `risk_id` of the `risk_catalog` entry this signal instantiates |
-| `risk_type_triggered` | inherited | all | Risk type carried by the signal (the evaluator scores against the *catalog's* `risk_type`, which can in principle differ) |
-| `source` | inherited | all | Name of the notional feed the signal came from (e.g. `MarineTraffic`, `GDELT`) |
-| `raw_headline` | inherited | all | Human-readable one-line description, surfaced in the UI and in LLM prompts |
-| `affected_regions` | inherited | all | Region codes the signal covers; used to match suppliers when the signal has no coordinates |
-| `condition_score` | **overridden** | all | Calibrated signal magnitude from §2.2; scales `occurrence_base` in the evaluator's RPN |
-| `has_physical_location` | inherited | all | Flag telling the evaluator whether to use geospatial matching + distance decay or region matching |
+| `risk_type_triggered` | inherited | all | Risk type carried by the signal |
+| `source` | inherited | all | Name of the notional feed (e.g. `MarineTraffic`, `GDELT`) |
+| `raw_headline` | inherited | all | Human-readable one-line description, shown in UI and LLM prompts |
+| `affected_regions` | inherited | all | Region codes; used to match suppliers when there's no coordinate |
+| `condition_score` | **overridden** | all | Calibrated magnitude from §1.3 |
+| `has_physical_location` | inherited | all | Tells the evaluator whether to use geospatial matching + distance decay, or region matching |
 | `epicentre` | inherited | **physical only** (139/206 seeds) | GeoJSON `Point` of the event centre |
-| `impact_radius_km` | inherited | **physical only** (139/206 seeds) | Radius of the impact zone, used for both the geospatial query and the distance decay |
-| `detected_at` | **overridden** | all | Set to `datetime.now(timezone.utc)` at generation time |
-| `valid_until` | **overridden** | all | Set to `None` — no expiry is modelled |
-| `is_base` | **overridden** | all | Set to `False`; distinguishes the generated signal from the seed it was copied from |
-| `is_demo_trigger` | **overridden** | all | Set to `True`; marks the document as a generated demo signal |
-| `session_id` | **overridden** | all | The request's session id |
-| `_id` | dropped, then Mongo-assigned | all | Base `_id` is removed before insert; stripped again from the API response |
+| `impact_radius_km` | inherited | **physical only** (139/206 seeds) | Radius used for both the geospatial query and distance decay |
+| `detected_at` | **overridden** | all | Set to current UTC time at generation |
+| `valid_until` | **overridden** | all | Set to `None` — no expiry modelled |
+| `is_base` | **overridden** | all | `False` — distinguishes generated signals from seed templates |
+| `is_demo_trigger` | **overridden** | all | `True` — marks this as a generated demo signal |
+| `session_id` | **overridden** | all | This request's session id |
+| `_id` | dropped, then Mongo-assigned | all | Base `_id` removed before insert |
 
-### Demo control fields, not business meaning
+**`is_base`, `is_demo_trigger` and `session_id` are demo control metadata —
+not business meaning.** They say nothing about the risk itself; they exist
+so the system can tell seed templates from generated signals and scope
+generated signals to one session.
 
-`is_base`, `is_demo_trigger` and `session_id` are **demo control metadata**. They
-say nothing about the risk itself — they exist so the system can tell seed data
-from generated data and scope generated data to one session. `is_base: true`
-documents are the template library; `is_demo_trigger: true` + `session_id` is
-exactly the filter `risk_evaluator.detect_conditions` uses
-(`{"session_id": ..., "is_demo_trigger": True}`), which makes the shared
-collection — not a function call — the hand-off between the two modules.
+---
 
-### Collections touched
+## 4. Who reads this
+
+`{"session_id": ..., "is_demo_trigger": True}` is exactly the filter
+`risk_evaluator.detect_conditions` uses to pick up what this module wrote —
+the shared collection, not a function call, is the hand-off between the two
+modules.
+
+### Collections touched by this module
 
 | Op | Collection | Filter / query |
 |---|---|---|
 | READ | `suppliers` | `{"has_active_orders": true}` |
 | READ | `risk_catalog` | `{"applies_to_regions": {"$in": [region]}, "risk_type": {"$in": <remaining types>}}` |
-| READ | `agent_memory` | `{"risk_type": <type>}` — plain `find`, **read-only** |
+| READ | `agent_memory` | `{"risk_type": <type>}` — plain `find`, read-only |
 | READ | `external_conditions` | `{"is_base": true, "risk_catalog_ref": <risk_id>}` |
 | **WRITE** | `external_conditions` | `insert_many(<up to 3 docs>)` |
 
-Only equality and `$in` queries — no vector search, geospatial operators or
+Only equality and `$in` queries — no vector search, geospatial operators, or
 aggregation pipelines in this module.
 
 ---
 
-## 4. Endpoints
-
-This module exposes exactly one endpoint (`router.py`, mounted in `main.py`):
+## 5. Endpoint
 
 **`POST /api/simulation/start`**
 
-- **Headers:** `X-Session-ID` is required (`core/session.py`). Missing, empty or
-  whitespace-only → **HTTP 400**, detail
-  `"X-Session-ID header is required and cannot be empty."`
-- **Request body:** none. The session id is the only input.
-- **Response:** plain JSON (not SSE) —
-  `{"session_id": "<id>", "signals": [<inserted docs, _id stripped>]}`
-- **Guarantees:** 0–3 signals, at most one per risk type, each written to
-  `external_conditions` with `is_demo_trigger: true` and this `session_id`, and
-  each carrying a `condition_score` sized to put its target supplier above
-  `alert_threshold_rpn` with a 15 % margin (subject to the `distance_decay`
-  caveat in §2.4). Either all documents for the run are inserted or none are —
-  the single `insert_many` happens after every score is computed.
-- **Errors:** a target whose `risk_catalog_ref` has no `is_base` signal raises
-  `SignalGenerationError` (surfaces as HTTP 500) before anything is written.
+- **Headers:** `X-Session-ID` required. Missing/empty/whitespace-only → HTTP
+  400.
+- **Request body:** none — session id is the only input.
+- **Response:** plain JSON — `{"session_id": "<id>", "signals": [<inserted
+  docs, _id stripped>]}`.
+- **Guarantees:** 0–3 signals, at most one per risk type, all-or-nothing
+  insert (a single `insert_many` runs only after every score is computed).
+- **Errors:** a target with no matching `is_base` signal raises
+  `SignalGenerationError` (HTTP 500) before anything is written.
 
 ```bash
 curl -X POST http://localhost:8000/api/simulation/start \
@@ -230,48 +268,16 @@ curl -X POST http://localhost:8000/api/simulation/start \
 
 ---
 
-## 5. Real-time integration — designed for, not built
+## 6. About the Change Stream mentioned above (④)
 
-In theory, wiring this to a live signal source needs no polling and no explicit
-call: `external_conditions` is the collection this module writes to, so a
-**MongoDB Change Stream** watching it for inserts could trigger downstream
-evaluation the moment a new signal lands, instead of on demand.
+Step ④ in the introduction describes the theoretical real-time hand-off.
+**That mechanism does not live in this module.** The relevant stub is
+`backend/risk_evaluator/stream_listener.py` — a `watch_external_conditions`
+function whose body is `pass`, explicitly marked `NOT USED IN THE DEMO`, and
+confirmed genuinely unreferenced anywhere in the repo. It's kept as a design
+reference for how `risk_evaluator` would react to a live write, documented
+further in `docs/adr/003-backend-sse-change-stream.md`.
 
-**This was deliberately not built that way.** The demo needs control over
-timing: the presenter clicks, the scenario is generated, and the UI advances
-through visible steps in a predictable order. A dedicated endpoint gives that
-control; reacting to a live feed would make the moment of evaluation
-unpredictable and hard to narrate. So generation is on demand
-(`POST /api/simulation/start`), and downstream evaluation is likewise triggered
-by an explicit frontend call.
-
-**Verified in code:** the stub exists, but **not in this module** —
-`backend/risk_evaluator/stream_listener.py`. Its top comment reads
-`NOT USED IN THE DEMO`, it declares a single
-`async def watch_external_conditions(session_id: str)` whose body is `pass`, and
-its docstring describes opening a Change Stream on `external_conditions` for
-inserts where `is_demo_trigger=True` and `session_id` matches, then triggering the
-`risk_evaluator` graph and streaming results over SSE. A repo-wide search
-(excluding `.venv`, `node_modules`, `.next`) finds **no import or call of
-`stream_listener` or `watch_external_conditions` anywhere** — the only hits are
-this file itself, prose references in `backend/README.md`,
-`risk_evaluator/graph.py` and ADRs 001/003/005/009. It is genuinely dead code
-kept as a design reference; the ADRs state the same. Design rationale is in
-`docs/adr/003-backend-sse-change-stream.md`.
-
----
-
-## Notes on confidence
-
-Everything above is read from `backend/ingestion_engine/*.py`,
-`backend/core/session.py`, `backend/risk_evaluator/nodes.py`,
-`backend/risk_evaluator/stream_listener.py` and the seed files in
-`docs/database-files/`. Items marked *to verify*:
-
-- Whether a **root-level** `images/` folder is intended instead of
-  `docs/images/`, and whether `<module>_diagram.png` is the naming convention the
-  team wants (nothing in the repo establishes one).
-- Field semantics in the table of §3 for **inherited** fields are inferred from
-  seed values and from how `risk_evaluator` consumes them; there is no schema
-  definition or validator for `external_conditions` in the codebase to confirm
-  intent.
+This module's only real-time contract is the one described in §5: generation
+happens synchronously, on an explicit `POST`, and downstream evaluation is
+likewise triggered by an explicit frontend call — not by a live feed.
