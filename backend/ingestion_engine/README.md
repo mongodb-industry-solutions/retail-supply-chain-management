@@ -1,7 +1,5 @@
 # `ingestion_engine` — deterministic scenario generator
 
-![ingestion_engine architecture](../../docs/images/ingestion_engine_diagram.png)
-
 ## What we're demonstrating
 
 This is where the system turns the outside world into something it can reason
@@ -66,11 +64,9 @@ document model shown above, so every demo session produces a consistent,
 reliable risk scenario to build the story around. Exactly how it does that,
 grounded in the real code, is what the rest of this document explains.*
 
----
-
-## 1. What this module actually does
-
 ![ingestion_engine architecture](../../docs/images/Screenshot_demo_external_conditions.png)
+
+## 1. How this module works
 
 `ingestion_engine` seeds each demo session with up to **3 signals** — one per
 risk type (`geopolitical_tariff`, `logistics_disruption`,
@@ -106,9 +102,9 @@ Each of the 3 signals generated per session is a **copy of a randomly chosen
 `is_base: true` template** already sitting in `external_conditions` (206 seed
 documents today), for the specific `risk_catalog_ref` selected. Nothing is
 generated from scratch — the module picks an existing template and
-recalibrates only what needs to be session-specific (see the field table in
-§3). If no base template exists for a selected `risk_catalog_ref`,
-generation fails loudly (`SignalGenerationError`) rather than inventing one.
+recalibrates only what needs to be session-specific (see §3). If no base
+template exists for a selected `risk_catalog_ref`, generation fails loudly
+(`SignalGenerationError`) rather than inventing one.
 
 ### 1.2 Target selection — `target_selector.py`
 
@@ -197,31 +193,98 @@ every possible signal.
 
 ## 3. Anatomy of an `external_conditions` document
 
-All 16 fields, as observed in the seed data and the writer code:
+Here's a real `is_base: true` template from the seed data — this is exactly
+what one of the 206 base signals looks like before `ingestion_engine` ever
+touches it:
 
-| Field | Origin | Applies to | What it is |
-|---|---|---|---|
-| `condition_id` | **overridden** | all | Generated as `COND-<SESSION8>-<TYPE3>-<UUID6>` |
-| `risk_catalog_ref` | inherited | all | `risk_id` of the `risk_catalog` entry this signal instantiates |
-| `risk_type_triggered` | inherited | all | Risk type carried by the signal |
-| `source` | inherited | all | Name of the notional feed (e.g. `MarineTraffic`, `GDELT`) |
-| `raw_headline` | inherited | all | Human-readable one-line description, shown in UI and LLM prompts |
-| `affected_regions` | inherited | all | Region codes; used to match suppliers when there's no coordinate |
-| `condition_score` | **overridden** | all | Calibrated magnitude from §1.3 |
-| `has_physical_location` | inherited | all | Tells the evaluator whether to use geospatial matching + distance decay, or region matching |
-| `epicentre` | inherited | **physical only** (139/206 seeds) | GeoJSON `Point` of the event centre |
-| `impact_radius_km` | inherited | **physical only** (139/206 seeds) | Radius used for both the geospatial query and distance decay |
-| `detected_at` | **overridden** | all | Set to current UTC time at generation |
-| `valid_until` | **overridden** | all | Set to `None` — no expiry modelled |
-| `is_base` | **overridden** | all | `False` — distinguishes generated signals from seed templates |
-| `is_demo_trigger` | **overridden** | all | `True` — marks this as a generated demo signal |
-| `session_id` | **overridden** | all | This request's session id |
-| `_id` | dropped, then Mongo-assigned | all | Base `_id` removed before insert |
+```json
+{
+  "_id": {
+    "$oid": "6a3a8dcfaa8e334aa469a3d9"
+  },
+  "condition_id": "COND-BASE-CLM-010",
+  "risk_catalog_ref": "RISK-CLM-001",
+  "risk_type_triggered": "climate_disruption",
+  "source": "NOAA",
+  "raw_headline": "Chiapas-Oaxaca border — heavy rainfall advisory, river levels above seasonal average",
+  "affected_regions": [
+    "MX"
+  ],
+  "condition_score": 0.18,
+  "has_physical_location": true,
+  "epicentre": {
+    "type": "Point",
+    "coordinates": [
+      -93.1,
+      16.8
+    ]
+  },
+  "impact_radius_km": 90,
+  "detected_at": {
+    "$date": "2026-06-14T06:00:00.000Z"
+  },
+  "valid_until": null,
+  "is_base": true,
+  "is_demo_trigger": false,
+  "session_id": null
+}
+```
+
+Walking through it: `condition_id` and `risk_catalog_ref` identify this
+signal and which `risk_catalog` entry it instantiates (`RISK-CLM-001`, a
+climate risk). `risk_type_triggered` and `source` say what kind of risk this
+is and which notional feed it claims to come from — here, NOAA. `raw_headline`
+and `affected_regions` are the human-readable description and the region
+codes used to match suppliers when there's no coordinate. `condition_score`
+is the signal's calibrated intensity — in this seed, `0.18`, though
+`ingestion_engine` overrides this value at generation time (§1.3), so the
+seed's number is irrelevant once a session runs.
+
+`has_physical_location: true` means this signal carries real coordinates:
+`epicentre` (a GeoJSON `Point`) and `impact_radius_km` (`90` here) together
+define the area `risk_evaluator` checks suppliers against. A non-physical
+signal — a tariff or sanctions risk, say — would have
+`has_physical_location: false` and simply omit both fields; `affected_regions`
+is what carries the matching logic instead.
+
+`detected_at` is when the signal was recorded; `is_base: true`,
+`is_demo_trigger: false` and `session_id: null` mark this specifically as a
+**template**, not a generated demo signal. When `ingestion_engine` selects
+this template for a session, it strips `_id`, keeps every other field
+exactly as shown, and overrides only: `condition_id` (new generated ID),
+`condition_score` (recalibrated per §1.3), `detected_at` (current time),
+`is_base` (→ `false`), `is_demo_trigger` (→ `true`), and `session_id` (this
+request's session).
 
 **`is_base`, `is_demo_trigger` and `session_id` are demo control metadata —
 not business meaning.** They say nothing about the risk itself; they exist
 so the system can tell seed templates from generated signals and scope
 generated signals to one session.
+
+### `valid_until` — what it's for, and how it would work with a TTL index
+
+`valid_until` is meant to answer "when does this signal stop being relevant?"
+— in this seed, and in every document this module generates, it's always
+`null`: no expiry is modeled today. If it were populated with a real
+expiration timestamp, the natural way to enforce it in MongoDB is a **TTL
+(Time-To-Live) index**, which automatically deletes a document once its
+date field's value has passed — no cron job, no manual cleanup, handled
+entirely in the background by the database itself.
+
+To configure it (once `valid_until` actually holds a date instead of `null`):
+
+```javascript
+db.external_conditions.createIndex(
+  { "valid_until": 1 },
+  { expireAfterSeconds: 0 }
+)
+```
+
+With `expireAfterSeconds: 0`, MongoDB deletes the document at the exact
+moment `valid_until`'s value has passed, rather than N seconds after some
+other timestamp — which fits this field's meaning (an absolute expiry date)
+better than a fixed duration would. Official reference:
+**https://www.mongodb.com/docs/manual/core/index-ttl/**
 
 ---
 
