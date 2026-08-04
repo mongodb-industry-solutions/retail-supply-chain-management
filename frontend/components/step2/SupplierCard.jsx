@@ -17,6 +17,7 @@ import { IconButton } from "@leafygreen-ui/icon-button";
 import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
 import DocModelModal from "../modals/DocModelModal";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
+import { getGlossaryDefinition } from "@/lib/const/glossary";
 
 function ConditionBadgeWithRPN({ risk, triggeredBy, glossary }) {
   const cfg =
@@ -52,7 +53,7 @@ function ConditionBadgeWithRPN({ risk, triggeredBy, glossary }) {
             "aria-label": "aria-label",
           }}
         >
-          {glossary?.find((term) => term.term === "RPN")?.definition}
+          {getGlossaryDefinition(glossary, "RPN")}
         </InfoSprinkle>
         {risk && (
           <Body style={{ fontSize: 13, margin: 0 }}>
@@ -87,10 +88,7 @@ function ConditionBadgeWithRPN({ risk, triggeredBy, glossary }) {
             "aria-label": "aria-label",
           }}
         >
-          {
-            glossary?.find((term) => term.term === "historical_weight")
-              ?.definition
-          }
+          {getGlossaryDefinition(glossary, "historical_weight")}
         </InfoSprinkle>
         {risk?.triggered_by?.historical_weight}
       </div>
