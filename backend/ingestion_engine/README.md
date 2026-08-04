@@ -98,15 +98,14 @@ scenario stays consistent with whatever is currently in the database.
 **What it is not trying to be:** a neutral, live simulation of the real
 world. It does not model actual events, probabilities, or an unbiased
 distribution of outcomes. It works *backwards* from the alert threshold to
-guarantee an alert — see §2.
+guarantee an alert.
 
 ### 1.1 The seed strategy — where the raw material comes from
 
 Each of the 3 signals generated per session is a **copy of a randomly chosen
-`is_base: true` template** already sitting in `external_conditions` (206 seed
-documents today), for the specific `risk_catalog_ref` selected. Nothing is
+`is_base: true` template** already sitting in `external_conditions`, for the specific `risk_catalog_ref` selected. Nothing is
 generated from scratch — the module picks an existing template and
-recalibrates only what needs to be session-specific (see §3). If no base
+recalibrates only what needs to be session-specific. If no base
 template exists for a selected `risk_catalog_ref`, generation fails loudly
 (`SignalGenerationError`) rather than inventing one.
 
