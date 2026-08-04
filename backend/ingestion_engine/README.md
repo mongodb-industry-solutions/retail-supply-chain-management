@@ -179,26 +179,9 @@ shrink the demo's safety margin. No match → neutral default `1.0`.
 
 ---
 
-## 2. Why the document model matters here
+## 2. Anatomy of an `external_conditions` document
 
-Not every signal this module writes looks the same. A port congestion
-template carries `epicentre` and `impact_radius_km`; a tariff or sanctions
-template has no physical location at all — `has_physical_location: false`
-and both fields simply absent. There's no Pydantic model enforcing a fixed
-shape on `external_conditions`: every field not explicitly overridden is
-inherited verbatim from whichever base template was copied. That's what lets
-one collection hold genuinely different signal shapes side by side, and
-what lets this module stay indifferent to *which* shape it's copying — it
-only needs to know which fields it must override, not the full shape of
-every possible signal.
-
----
-
-## 3. Anatomy of an `external_conditions` document
-
-Here's a real `is_base: true` template from the seed data — this is exactly
-what one of the 206 base signals looks like before `ingestion_engine` ever
-touches it:
+Here's a real `is_base: true` template from the seed data:
 
 ```json
 {
@@ -291,14 +274,7 @@ better than a fixed duration would. Official reference:
 
 ---
 
-## 4. Who reads this
-
-`{"session_id": ..., "is_demo_trigger": True}` is exactly the filter
-`risk_evaluator.detect_conditions` uses to pick up what this module wrote —
-the shared collection, not a function call, is the hand-off between the two
-modules.
-
-### Collections touched by this module
+## 3. Collections touched by this module
 
 | Op | Collection | Filter / query |
 |---|---|---|
@@ -308,12 +284,10 @@ modules.
 | READ | `external_conditions` | `{"is_base": true, "risk_catalog_ref": <risk_id>}` |
 | **WRITE** | `external_conditions` | `insert_many(<up to 3 docs>)` |
 
-Only equality and `$in` queries — no vector search, geospatial operators, or
-aggregation pipelines in this module.
 
 ---
 
-## 5. Endpoint
+## 4. Endpoint
 
 **`POST /api/simulation/start`**
 
@@ -331,19 +305,3 @@ aggregation pipelines in this module.
 curl -X POST http://localhost:8000/api/simulation/start \
   -H "X-Session-ID: demo-session-123"
 ```
-
----
-
-## 6. About the Change Stream mentioned above (④)
-
-Step ④ in the introduction describes the theoretical real-time hand-off.
-**That mechanism does not live in this module.** The relevant stub is
-`backend/risk_evaluator/stream_listener.py` — a `watch_external_conditions`
-function whose body is `pass`, explicitly marked `NOT USED IN THE DEMO`, and
-confirmed genuinely unreferenced anywhere in the repo. It's kept as a design
-reference for how `risk_evaluator` would react to a live write, documented
-further in `docs/adr/003-backend-sse-change-stream.md`.
-
-This module's only real-time contract is the one described in §5: generation
-happens synchronously, on an explicit `POST`, and downstream evaluation is
-likewise triggered by an explicit frontend call — not by a live feed.
