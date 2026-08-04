@@ -14,6 +14,7 @@ import Tooltip from "@leafygreen-ui/tooltip";
 import ReadMore from "../shared/ReadMore";
 import CitationEvidence from "./CitationEvidence";
 import WhyMongoDB from "../shared/WhyMongoDB";
+import { getGlossaryDefinition } from "@/lib/const/glossary";
 
 function RRFBar({ textScore, vectorScore }) {
   const total = textScore + vectorScore;
@@ -96,7 +97,7 @@ function ExtBadge({ ext }) {
   );
 }
 
-function EvidenceHeader({ passed, title, exts, glossary = null }) {
+function EvidenceHeader({ passed, title, exts, definition = null }) {
   return (
     <div className="d-flex align-items-center gap-2" style={{ minWidth: 0 }}>
       <Icon
@@ -107,7 +108,7 @@ function EvidenceHeader({ passed, title, exts, glossary = null }) {
         }}
       />
       <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{title}</span>
-      {glossary && (
+      {definition && (
         <Tooltip
           trigger={
             <span
@@ -120,7 +121,7 @@ function EvidenceHeader({ passed, title, exts, glossary = null }) {
             </span>
           }
         >
-          {glossary?.definition}
+          {definition}
         </Tooltip>
       )}
       <div className="d-flex me-2">
@@ -201,11 +202,10 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
                     "aria-label": "aria-label",
                   }}
                 >
-                  {
-                    supplier.glossary.find(
-                      (term) => term.term === stat.glossaryName,
-                    )?.definition
-                  }
+                  {getGlossaryDefinition(
+                    supplier.glossary,
+                    stat.glossaryName,
+                  )}
                 </InfoSprinkle>
               )}
             </div>
@@ -238,11 +238,10 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
                 <EvidenceHeader
                   passed={criteria.status === "compliant"}
                   title={criteria.criterion.replaceAll("_", " ")}
-                  glossary={
-                    supplier.glossary.find(
-                      (term) => term.term === criteria.criterion,
-                    ) || null
-                  }
+                  definition={getGlossaryDefinition(
+                    supplier.glossary,
+                    criteria.criterion,
+                  )}
                   exts={
                     criteria?.citation?.source_file
                       ? [
