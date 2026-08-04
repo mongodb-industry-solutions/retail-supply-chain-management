@@ -66,9 +66,11 @@ document model shown above, so every demo session produces a consistent,
 reliable risk scenario to build the story around. Exactly how it does that,
 grounded in the real code, is what the rest of this document explains.*
 
-![ingestion_engine architecture](../../docs/images/Screenshot_demo_external_conditions.png)
 
 ## 1. How this module works
+
+![ingestion_engine architecture](../../docs/images/Screenshot_demo_external_conditions.png)
+
 
 `ingestion_engine` seeds each demo session with up to **3 signals** — one per
 risk type (`geopolitical_tariff`, `logistics_disruption`,
