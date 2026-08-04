@@ -2,6 +2,8 @@
 
 ## What we're demonstrating
 
+![ingestion_engine architecture](../../docs/images/ingestion_engine_diagram.png)
+
 This is where the system turns the outside world into something it can reason
 about. The signals come from real-world data sources, each covering a
 different risk category:
