@@ -4,7 +4,7 @@
 
 Once a disruption signal exists — a tariff, a storm, a port delay — the next question is the one that actually matters to a procurement manager: who's exposed right now, how badly, and does anything that's happened before change that judgment? Answering it fast, over a whole supplier base, is exactly the kind of thing that stalls on a patchwork of legacy tables and a bolted-on vector database.
 
-## Behind the scenes: `risk_evaluator`
+![risk_evaluator architecture](../../docs/images/risk_evaluator_diagram.png)
 
 **① `detect_conditions`**
 - **What it does:** risk_evaluator react to external_conditions the instant a new signal is written — no polling
@@ -36,8 +36,8 @@ Once a disruption signal exists — a tariff, a storm, a port delay — the next
 - **Data stored:** one `supplier_risk_evaluations` document per at-risk supplier — full score breakdown, operational context, generated narrative, glossary, and memory provenance.
 
 ---
+**Why MongoDB matters in the agentic world:** This is exactly the kind of workload MongoDB was built for — an agent reasoning in a loop, hitting geospatial and vector search dozens of times a session, against real-world data that never stops changing shape. One consolidated platform means the agent never round-trips between separate systems to assemble context; a flexible, document-native model lets a supplier or a signal look different case by case — a storm with coordinates, a tariff without any — with no schema migration to handle it. And because MongoDB narrows down exactly what's relevant before the AI ever sees it, the agent only spends effort — and tokens — on the one decision that actually requires judgment. As agents get more capable,  [controlling token spend comes down to controlling context](https://www.mongodb.com/company/blog/technical/why-multi-agent-systems-need-memory-engineering) — and that's the data layer's job to solve, not the prompt's.
 
-**Why this matters in the agentic world.** Two of the five steps spend tokens — `reason_and_retrieve`, where Claude weighs precedent, and `generate_summary`, where Claude writes the narrative and tags glossary terms (matched against a fixed, non-Mongo dictionary, not a database capability). The other three are exact math and lookups, resolved deterministically by MongoDB. And even where an LLM is used, it works over what Atlas has already narrowed down: two precisely scoped Vector Searches instead of the whole of `agent_memory`, and a batched aggregation pipeline instead of one query per supplier. As agents get more capable, [token spend becomes a real budget line](https://www.mongodb.com/company/blog/technical/why-multi-agent-systems-need-memory-engineering) — controlling it comes down to controlling context, from one platform instead of several stitched together.
 
 ---
 
@@ -93,20 +93,7 @@ Not used here: `$rankFusion`, `$search`, native `$rerank`, and `$geoNear` — th
 
 ---
 
-## 3. Collections touched by this module
-
-| Op | Collection | Filter / query |
-|---|---|---|
-| READ | `external_conditions` | `find` — session-scoped active signals |
-| READ | `suppliers` | `find` — `$geoWithin`/`$centerSphere`, or `region: $in` fallback |
-| READ | `purchase_orders` | `find` (in `match_suppliers`, per supplier) **and** an aggregation pipeline (in `reason_and_retrieve`, batched) |
-| READ | `risk_catalog` | `find_one` — once in `calculate_rpn`, again in `reason_and_retrieve` to re-derive status after weighting |
-| READ | `agent_memory` | two `$vectorSearch` calls — one filtered by `supplier_id`, one by `risk_type` with no supplier filter — read-only, confirmed zero writes anywhere in this backend |
-| **WRITE** | `supplier_risk_evaluations` | `insert_one` — the module's only write |
-
----
-
-## 4. Endpoint
+## 3. Endpoint
 
 **`POST /api/simulation/evaluate`**
 
