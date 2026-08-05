@@ -16,7 +16,18 @@ Once a disruption signal exists — a tariff, a storm, a port delay — the next
 
 **Why MongoDB:** one cluster carries the geospatial filter, the operational cross-reference, and the semantic precedent search this evaluation needs. The alternative is three systems and an application layer stitching them together every time a supplier gets scored.
 
+---
 
+## MongoDB capabilities used by this module
+
+1. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `match_suppliers`, so a physical disruption only affects suppliers actually inside its radius.
+2. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` inside `reason_and_retrieve`, both for a supplier's own history (`search_supplier_memory`) and for cross-supplier precedent by risk type (`search_combined_episodes`).
+3. [Atlas Auto-Embedding](https://www.mongodb.com/docs/vector-search/crud-embeddings/automated-embedding/) — `agent_memory`'s `auto_embed_text` field is embedded and kept in sync by Atlas itself; the module never computes or maintains an embedding.
+4. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used for the geospatial matching stage and for pulling operational context from `purchase_orders` in the same pass.
+5. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — on `suppliers.location`, required for `$geoWithin`/`$centerSphere` to run.
+6. [Compound index](https://www.mongodb.com/docs/manual/core/index-compound/) — `supplier_id` + `risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
+
+Not used here: `$rankFusion`, `$search`, native `$rerank`, and `$geoNear` — those are `alternative_finder`'s capabilities; see that module's README.
 
 ---
 
@@ -30,7 +41,6 @@ detect_conditions → match_suppliers → calculate_rpn → reason_and_retrieve 
 
 Three of these five never touch an LLM — `detect_conditions`, `match_suppliers`, and `calculate_rpn` are exact: a lookup, a geometric test, a formula. Tokens are spent only where the answer genuinely isn't computable in advance: `reason_and_retrieve`, a real ReAct loop, and `generate_summary`, which writes the narrative (two LLM calls per supplier, not one).
 
-
 ### 1.1 `reason_and_retrieve` — the one node that reasons, and the only one that touches memory
 
 Every real lookup this module makes against `agent_memory` happens here — this is the single path historical precedent actually takes at runtime. The loop itself is Thought → Action → Observation. It runs as **one loop shared across every supplier exposed in the session, not one per supplier**: the full context for the whole group is assembled into a single prompt, and the model returns one weight map covering all of them at once. That's deliberate — it lets the model reason comparatively ("this supplier saw exactly this condition before; this other one is different because...") instead of reaching a possibly inconsistent conclusion for each supplier in isolation.
@@ -42,7 +52,6 @@ Three tools are available inside the loop:
 | `search_supplier_memory` | `(supplier_ids: list[str], ...)` | A supplier's own relevant episodes |
 | `get_order_detail` | `(supplier_ids: list[str], ...)` | Order context for a batch of suppliers |
 | `search_combined_episodes` | `(supplier_id: str, risk_type, ...)` | Cross-supplier `$vectorSearch` on `agent_memory`, filtered by `risk_type` only |
-
 
 ### 1.2 How a precedent changes the score
 
@@ -58,15 +67,13 @@ The RPN itself is a simple product:
 
 When the loop finds a real, relevant episode, the weight it derives is applied directly to that supplier's RPN — the score is recalculated, re-checked against `alert_threshold_rpn`, and the resulting status (which can step all the way from ALERT to CRITICAL) is what gets persisted, alongside the weight itself, inside that supplier's `triggered_by` entry. See §2 for a concrete before/after example. When the loop finds nothing relevant, the honest result is a neutral weight of `1.0` — the design never invents a precedent to fill the gap.
 
-
 ### 1.3 Agent Activation
 
--  `stream_listener.py` stub sketches what a MongoDB Change Stream listener on `external_conditions` would look like, but nothing invokes it. The demo is a guided, step-by-step workflow — a manager (or presenter) explicitly clicks "Evaluate risk" at a specific point in the flow; a Change Stream reacting the instant a signal lands would fire the evaluation before that step is reached, taking control away from the walkthrough instead of supporting it. So what's actually built is request-triggered: the graph runs once per `POST /api/simulation/evaluate` call and narrates its own execution live over SSE, with no separate process watching the database. A live Change Stream is the natural fit for a production system reacting to signals with no person in the loop; it isn't what this demo's guided flow needs. (Confirm the exact reasoning against ADR-003 if you want it stated in the team's own words.)
+- `stream_listener.py` stub sketches what a MongoDB Change Stream listener on `external_conditions` would look like, but nothing invokes it. The demo is a guided, step-by-step workflow — a manager (or presenter) explicitly clicks "Evaluate risk" at a specific point in the flow; a Change Stream reacting the instant a signal lands would fire the evaluation before that step is reached, taking control away from the walkthrough instead of supporting it. So what's actually built is request-triggered: the graph runs once per `POST /api/simulation/evaluate` call and narrates its own execution live over SSE, with no separate process watching the database. A live Change Stream is the natural fit for a production system reacting to signals with no person in the loop; it isn't what this demo's guided flow needs. (Confirm the exact reasoning against ADR-003 if you want it stated in the team's own words.)
 
 ---
 
 ## 2. Anatomy of a `supplier_risk_evaluations` document
-
 
 ```json
 {
