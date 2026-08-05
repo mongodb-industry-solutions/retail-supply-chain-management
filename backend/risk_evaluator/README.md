@@ -1,75 +1,56 @@
-# `risk_evaluator` — dynamic RPN scoring, weighed by historical precedent
+# `risk_evaluator`
 
 ## What we're demonstrating
 
 Once a disruption signal exists — a tariff, a storm, a port delay — the next question is the one that actually matters to a procurement manager: who's exposed right now, how badly, and does anything that's happened before change that judgment? Answering it fast, over a whole supplier base, is exactly the kind of thing that stalls on a patchwork of legacy tables and a bolted-on vector database.
 
-**① Signal in.** `detect_conditions` reads whatever disruption signals are currently active for this session from `external_conditions` — in production this would be whatever a live monitoring feed had most recently written there.
+## Behind the scenes: `risk_evaluator`
 
-**② Exposure mapped.** `match_suppliers` finds who's actually affected. **Geo Search** (`$geoWithin`/`$centerSphere`) turns "who sits inside this disruption's radius" into a single aggregation stage instead of an application loop computing distance supplier by supplier; a signal with no physical footprint — a tariff, a sanction — matches by region instead. In the same pass, an **aggregation pipeline** pulls the business stakes straight from `purchase_orders` — which orders are open, what they're worth, how close the delivery window is — so exposure and urgency arrive together, not from two separate round trips.
+**① `detect_conditions`**
+- **What it does:** risk_evaluator react to external_conditions the instant a new signal is written — no polling
+- **MongoDB's role:** a single Atlas query — `db["external_conditions"].find({"session_id": ..., "is_demo_trigger": True})`. No LLM, no aggregation, no scoring — just an equality filter. The `is_demo_trigger` flag is what separates the signals generated for this session from the static base-seed documents (`is_base: true`) sitting in the same collection — both live side by side, one query surface. This is also the exact collection a MongoDB Change Stream would watch in a reactive system: the module ships `stream_listener.py`, defining `watch_external_conditions(session_id)` — documented as the production activation model, but its body is `pass` and it's never imported anywhere in the graph or router. In this demo the same flow is triggered by an explicit `POST /api/simulation/evaluate`; in production, the insert into `external_conditions` would wake the agent with no HTTP call at all.
+- **Collections:** reads `external_conditions`.
 
-**③ Severity scored.** `calculate_rpn` applies the FMEA formula to produce an **RPN — Risk Priority Number** — the product of three factors: **severity** (how bad the impact would be if it happens), **occurrence** (how likely it is), and **detection** (how easily it'd be noticed before it actually hits). It's the same scoring method used across manufacturing and supply-chain quality management, with a distance-based decay added here for physical risks. The resulting number is compared against a per-risk-type threshold in `risk_catalog` to produce a status: OK, WATCH, ALERT, or CRITICAL. Pure arithmetic; nothing left for MongoDB to do at this step because nothing here is ambiguous.
+**② `match_suppliers`**
+- **What it does:** determines which suppliers are exposed to each active signal, and attaches their current order exposure.
+- **Objective:** turn a generic event ("a 7.1 earthquake") into a specific business problem ("these four suppliers, these orders, this much money").
+- **MongoDB's role:** two query shapes over the same `suppliers` collection, chosen per signal. If the signal carries `has_physical_location: true`, the node runs `{"location": {"$geoWithin": {"$centerSphere": [[lng, lat], radius_radians]}}}`, where `impact_radius_km` is divided by Earth's mean radius (6378.1) because `$centerSphere` takes radians. If the signal has no physical epicentre — a tariff, a regulatory change — it falls back to `{"region": {"$in": signal["affected_regions"]}}`. This is the document model earning its keep: the geospatial path reads `suppliers.location` (a GeoJSON Point), the region path reads `suppliers.region`, and both shapes live in one collection with no separate schema, no join table, and no migration — a supplier without usable coordinates is simply matched by region instead. Operational context is then enriched from `purchase_orders` with a plain `find({"supplier_id": ..., "status": "active"})` — one query per unique supplier, since suppliers matched by several signals are deduplicated by `supplier_id`, with extra signals appended to their `_matched_signals` list.
+- **Collections:** reads `suppliers`, `purchase_orders`.
 
-**④ Precedent weighed.** `reason_and_retrieve` is where the system asks the one question a formula can't answer on its own: has something like this happened before, and should that change the score? **Vector Search** (`$vectorSearch` on `agent_memory`, filtered by risk type, with no supplier filter) is what makes the answer possible at all — a lookup keyed by supplier could only ever say "has this happened to this one supplier," never "has this happened to anyone comparable." A supplier with zero history of its own can still be weighted by what happened to someone else under a similar condition.
+**③ `calculate_rpn`**
+- **What it does:** computes a dynamic RPN score for every supplier–signal pair using the FMEA formula.
+- **Objective:** give every exposure a comparable, auditable number instead of a vague verdict.
+- **MongoDB's role:** one Atlas query per pair — `risk_catalog.find_one({"risk_id": signal["risk_catalog_ref"]})` — to pull `severity`, `occurrence_base`, `detection`, `rpn_base`, and `alert_threshold_rpn`. Everything else is pure arithmetic on data already in graph state: `severity × (occurrence_base × condition_score) × detection`, plus — for physical signals only — an in-process haversine distance decay floored at 0.70 so suppliers at the edge of the impact radius are never fully discounted. No LLM is involved and no supplier or order is re-read; the node reuses what step ② already brought into state. 
+- **Collections:** reads `risk_catalog`.
 
-**⑤ Decision written.** `generate_summary` turns the final, precedent-adjusted numbers into the plain-language write-up a manager reads, and the result lands in `supplier_risk_evaluations` — the trigger for whether `alternative_finder` gets called at all.
+**④ `reason_and_retrieve`**
+- **What it does:** runs an inner ReAct loop where Claude weighs historical precedent, derives a `historical_weight` per supplier, and rescales the scores.
+- **Objective:** answer the question a number alone can't: has this happened before, and did it actually hurt?
+- **MongoDB's role:** Claude gets three Atlas tools, capped at 4 iterations. Two are Atlas Vector Search over `agent_memory`, both on the auto-embedded `auto_embed_text` field — the embedding is generated by Atlas Auto-Embedding (Voyage AI); there's no embedding call anywhere in the module, no vector ever computed client-side. The two searches differ in their pre-filter, and that's the real design point: `search_supplier_memory` filters `{"supplier_id": {"$in": [...]}}`, batching every exposed supplier into one query; `search_combined_episodes` filters `{"risk_type": {"$in": [...]}}` with **no supplier filter at all**, so it retrieves precedent from any supplier that lived through the same kind of risk — exactly what you want when the supplier at hand has no history of its own. The third tool is an aggregation pipeline on `purchase_orders` (`$match` on `supplier_id`/`status` → `$group` for totals → `$limit`) — the batched order lookup, not a plain `find`. `risk_catalog.find_one` is queried again here too, to re-derive `rpn_status` once the weight is applied.
+- **Collections:** reads `agent_memory` (Vector Search), `purchase_orders` (aggregation), `risk_catalog` (query).
 
-**Why MongoDB:** one cluster carries the geospatial filter, the operational cross-reference, and the semantic precedent search this evaluation needs. The alternative is three systems and an application layer stitching them together every time a supplier gets scored.
+**⑤ `generate_summary`**
+- **What it does:** calls Claude to write a plain-English summary per supplier, tags the glossary terms it used, and persists one document per supplier.
+- **Objective:** hand a procurement manager something they can read in seconds, with the numbers still underneath.
+- **MongoDB's role:** the only write in the entire pipeline — one `insert_one` into `supplier_risk_evaluations` per supplier with at least one WATCH/ALERT/CRITICAL score (OK-only suppliers are never written). The document itself is the argument for the document model: a single document holds, side by side, flat structured fields (`evaluation_id`, `supplier_risk_level`, `requires_action`, `session_id`); a nested operational-context subdocument; a variable-length array `risk_scores`, one entry per triggering condition — a supplier hit by three signals gets three entries, one signal gets one, with no schema change and no null padding; inside each entry, a further subdocument where `historical_weight` sits alongside `condition_score` and the nullable `distance_decay` (present only for physical signals); free-form LLM prose in `natural_language_summary`; a `glossary` array from a second, separate LLM call, whose definitions come verbatim from a fixed internal dictionary (`core.glossary.GLOSSARY`) as canonical keys — the model tags which terms it used, it never writes the definitions itself, and this dictionary lives in application code, not in MongoDB; and `memory_episodes_used`, an array of the memory IDs that actually informed the score. Structured audit trail and human narrative in one round trip, one document, no joins.
+- **Data stored:** one `supplier_risk_evaluations` document per at-risk supplier — full score breakdown, operational context, generated narrative, glossary, and memory provenance.
+
+---
+
+**Why this matters in the agentic world.** Two of the five steps spend tokens — `reason_and_retrieve`, where Claude weighs precedent, and `generate_summary`, where Claude writes the narrative and tags glossary terms (matched against a fixed, non-Mongo dictionary, not a database capability). The other three are exact math and lookups, resolved deterministically by MongoDB. And even where an LLM is used, it works over what Atlas has already narrowed down: two precisely scoped Vector Searches instead of the whole of `agent_memory`, and a batched aggregation pipeline instead of one query per supplier. As agents get more capable, [token spend becomes a real budget line](https://www.mongodb.com/company/blog/technical/why-multi-agent-systems-need-memory-engineering) — controlling it comes down to controlling context, from one platform instead of several stitched together.
 
 ---
 
 ## MongoDB capabilities used by this module
 
-1. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `match_suppliers`, so a physical disruption only affects suppliers actually inside its radius.
-2. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` inside `reason_and_retrieve`, both for a supplier's own history (`search_supplier_memory`) and for cross-supplier precedent by risk type (`search_combined_episodes`).
+1. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `match_suppliers`, a plain `find`, so a physical disruption only affects suppliers actually inside its radius.
+2. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — two separate calls inside `reason_and_retrieve`: one filtered by `supplier_id` (a supplier's own history), one by `risk_type` with no supplier filter (cross-supplier precedent).
 3. [Atlas Auto-Embedding](https://www.mongodb.com/docs/vector-search/crud-embeddings/automated-embedding/) — `agent_memory`'s `auto_embed_text` field is embedded and kept in sync by Atlas itself; the module never computes or maintains an embedding.
-4. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used for the geospatial matching stage and for pulling operational context from `purchase_orders` in the same pass.
+4. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — the batched `purchase_orders` lookup inside `reason_and_retrieve` (`get_order_detail`: `$match` → `$group` → `$limit`). The geospatial matching in `match_suppliers` is a plain `find` with `$geoWithin`, not an aggregation.
 5. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — on `suppliers.location`, required for `$geoWithin`/`$centerSphere` to run.
 6. [Compound index](https://www.mongodb.com/docs/manual/core/index-compound/) — `supplier_id` + `risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
 
 Not used here: `$rankFusion`, `$search`, native `$rerank`, and `$geoNear` — those are `alternative_finder`'s capabilities; see that module's README.
-
----
-
-## 1. How this module works
-
-Real `StateGraph`, five nodes, strictly linear, no branching:
-
-```
-detect_conditions → match_suppliers → calculate_rpn → reason_and_retrieve → generate_summary
-```
-
-Three of these five never touch an LLM — `detect_conditions`, `match_suppliers`, and `calculate_rpn` are exact: a lookup, a geometric test, a formula. Tokens are spent only where the answer genuinely isn't computable in advance: `reason_and_retrieve`, a real ReAct loop, and `generate_summary`, which writes the narrative (two LLM calls per supplier, not one).
-
-### 1.1 `reason_and_retrieve` — the one node that reasons, and the only one that touches memory
-
-Every real lookup this module makes against `agent_memory` happens here — this is the single path historical precedent actually takes at runtime. The loop itself is Thought → Action → Observation. It runs as **one loop shared across every supplier exposed in the session, not one per supplier**: the full context for the whole group is assembled into a single prompt, and the model returns one weight map covering all of them at once. That's deliberate — it lets the model reason comparatively ("this supplier saw exactly this condition before; this other one is different because...") instead of reaching a possibly inconsistent conclusion for each supplier in isolation.
-
-Three tools are available inside the loop:
-
-| Tool | Signature | Purpose |
-|---|---|---|
-| `search_supplier_memory` | `(supplier_ids: list[str], ...)` | A supplier's own relevant episodes |
-| `get_order_detail` | `(supplier_ids: list[str], ...)` | Order context for a batch of suppliers |
-| `search_combined_episodes` | `(supplier_id: str, risk_type, ...)` | Cross-supplier `$vectorSearch` on `agent_memory`, filtered by `risk_type` only |
-
-### 1.2 How a precedent changes the score
-
-The RPN itself is a simple product:
-
-| Factor | Meaning |
-|---|---|
-| `severity` | How bad the impact would be if this risk actually materializes |
-| `occurrence` | How likely this risk is to happen at all |
-| `detection` | How easily it'd be spotted before it actually hits the business |
-
-`rpn_dynamic = severity × occurrence × detection` (with a distance-decay multiplier applied first, for physical risks). This raw number is compared against `alert_threshold_rpn` — a fixed value per risk type in `risk_catalog` — to decide the status: **OK** (well below threshold), **WATCH**, **ALERT**, or **CRITICAL** (at or above it, or pushed there by precedent).
-
-When the loop finds a real, relevant episode, the weight it derives is applied directly to that supplier's RPN — the score is recalculated, re-checked against `alert_threshold_rpn`, and the resulting status (which can step all the way from ALERT to CRITICAL) is what gets persisted, alongside the weight itself, inside that supplier's `triggered_by` entry. See §2 for a concrete before/after example. When the loop finds nothing relevant, the honest result is a neutral weight of `1.0` — the design never invents a precedent to fill the gap.
-
-### 1.3 Agent Activation
-
-- `stream_listener.py` stub sketches what a MongoDB Change Stream listener on `external_conditions` would look like, but nothing invokes it. The demo is a guided, step-by-step workflow — a manager (or presenter) explicitly clicks "Evaluate risk" at a specific point in the flow; a Change Stream reacting the instant a signal lands would fire the evaluation before that step is reached, taking control away from the walkthrough instead of supporting it. So what's actually built is request-triggered: the graph runs once per `POST /api/simulation/evaluate` call and narrates its own execution live over SSE, with no separate process watching the database. A live Change Stream is the natural fit for a production system reacting to signals with no person in the loop; it isn't what this demo's guided flow needs. (Confirm the exact reasoning against ADR-003 if you want it stated in the team's own words.)
 
 ---
 
@@ -109,7 +90,6 @@ When the loop finds a real, relevant episode, the weight it derives is applied d
 }
 ```
 
-`risk_scores[]` carries one entry per active risk type; `triggered_by.historical_weight` is where precedent actually lands — the base RPN and the recalculated `rpn_dynamic` sit side by side so the shift is visible, not just the final number. `memory_episodes_used` is populated here even though it doesn't travel over SSE (§1.2). `glossary` is a fixed internal dictionary, not model-written — the same shape `alternative_finder` uses for its own candidate rationales.
 
 ---
 
@@ -117,10 +97,11 @@ When the loop finds a real, relevant episode, the weight it derives is applied d
 
 | Op | Collection | Filter / query |
 |---|---|---|
-| READ | `external_conditions` | session-scoped active signals |
-| READ | `purchase_orders` | operational context per exposed supplier |
-| READ | `suppliers` | `$geoWithin`/`$centerSphere`, or region match |
-| READ | `agent_memory` | `$vectorSearch` by `risk_type`, plain `find` — read-only, confirmed zero writes anywhere in this backend |
+| READ | `external_conditions` | `find` — session-scoped active signals |
+| READ | `suppliers` | `find` — `$geoWithin`/`$centerSphere`, or `region: $in` fallback |
+| READ | `purchase_orders` | `find` (in `match_suppliers`, per supplier) **and** an aggregation pipeline (in `reason_and_retrieve`, batched) |
+| READ | `risk_catalog` | `find_one` — once in `calculate_rpn`, again in `reason_and_retrieve` to re-derive status after weighting |
+| READ | `agent_memory` | two `$vectorSearch` calls — one filtered by `supplier_id`, one by `risk_type` with no supplier filter — read-only, confirmed zero writes anywhere in this backend |
 | **WRITE** | `supplier_risk_evaluations` | `insert_one` — the module's only write |
 
 ---
