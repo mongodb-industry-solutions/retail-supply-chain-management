@@ -24,8 +24,18 @@ emits ``alternative_finder_started`` before invoking the graph and ``stream_end`
 sentinel as the *contract* terminator. A ``None`` is still placed on the queue *after*
 ``stream_end`` purely to break the router's read loop.
 
-Stage 4.0 is plumbing only: real graph, real state transitions, real event shapes,
-placeholder data. No Mongo, LLM, or vector/geo/rank calls yet.
+All six nodes run against real infrastructure. Mongo reads and writes are live
+(``supplier_risk_evaluations``, ``supplier_documents``, ``agent_memory``, ``suppliers``,
+``supplier_alternatives``), including the Atlas pipelines each layer owns: ``$rankFusion``
++ native ``$rerank`` in ``funnel_node`` (ADR-007), ``$vectorSearch`` over ``agent_memory``
+in ``reflect_critique_node`` (ADR-008), and ``$geoNear`` in ``rank_assembly_node``. Four
+LLM calls sit on the path — one in ``plan_node``, two per candidate in
+``reflect_critique_node`` (generate, then audit), and one per candidate in
+``summarize_node``; ``funnel_node``, ``rank_assembly_node``, and ``persist_node`` make no
+LLM call at all.
+
+Referencias: ADR-007 (docs/adr/007-backend-native_reranking.md), ADR-008
+(docs/adr/008-backend-precedent_signals_no_fusion.md).
 """
 
 import asyncio

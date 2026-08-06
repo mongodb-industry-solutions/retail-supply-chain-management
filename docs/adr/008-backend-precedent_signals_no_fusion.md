@@ -53,9 +53,9 @@ both, or neither.
   visibly less certainty than one with a real `exact_track_record` hit,
   rather than both being smoothed into a similar-looking score. This is
   intentional honesty, not a shortcoming to fix.
-- Because `agent_memory` currently holds only 5 hand-curated episodes
-  (deliberately never fabricated per-session — see the existing
-  `agent_memory` architecture ADR/design notes), `exact_track_record` will
+- Because `agent_memory` currently holds only 25 hand-curated episodes
+  (deliberately never fabricated per-session — see
+  [ADR-009](./009-backend-agent_memory_single_writer.md)), `exact_track_record` will
   show `found: false` for most candidates in most demo runs today. This is
   a data-volume limitation to address in a future data-enrichment pass,
   not a reason to abandon the two-signal design.
@@ -67,8 +67,4 @@ both, or neither.
   thing happened before" and "something similar happened to someone else"
   exists, and forcing one invites exactly the kind of fabricated-looking
   precision (`Reliability: 94%`) this rebuild moved away from.
-- **Only exact track record, drop semantic precedent entirely.** Rejected:
-  with only 5 episodes in `agent_memory`, exact matches will be rare for
-  the foreseeable future; semantic precedent is the only precedent signal
-  most candidates will ever surface, and it has real value as long as its
-  directional, non-candidate-specific nature is kept visible.
+

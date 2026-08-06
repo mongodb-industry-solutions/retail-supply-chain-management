@@ -1111,7 +1111,8 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
         # final text is plain only. The model NEVER writes definitions — it only selects
         # canonical keys; definition text comes verbatim from GLOSSARY via get_definitions.
         # On any failure the ORIGINAL draft is used with NO footer (never crash the stream).
-        from core.json_utils import _extract_json  # shared JSON parser (ADR 005)
+        # Shared JSON parser (ADR 005 — docs/adr/005-backend-operational-data-layer.md).
+        from core.json_utils import _extract_json
 
         _draft_summary = str(natural_language_summary)
         _glossary_terms = SHARED_TERMS + RISK_EVALUATOR_TERMS

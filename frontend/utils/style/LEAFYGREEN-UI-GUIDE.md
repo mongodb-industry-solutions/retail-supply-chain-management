@@ -744,7 +744,7 @@ import { palette } from "@leafygreen-ui/palette";
 - **Purple**: Tertiary colors, decorative elements
   - From `palette.purple.light2` (lightest) to `palette.purple.dark2` (darkest)
 
-See the [PALETTE-GUIDE.md](./components/PALETTE-GUIDE.md) for detailed usage guidelines.
+See the [PALETTE-GUIDE.md](./PALETTE-GUIDE.md) for detailed usage guidelines.
 
 ## Spacing
 

@@ -36,4 +36,4 @@ For details on how to use the palette, see [PALETTE-GUIDE.md](./PALETTE-GUIDE.md
 
 ## Coding style
 
-More specific good practices and coding preferences are described in [JAVASCRIP-GUIDE.md](./JAVASCRIP-GUIDE.md).
+More specific good practices and coding preferences are described in [JAVASCRIPT-GUIDE.md](./JAVASCRIPT-GUIDE.md).

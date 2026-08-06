@@ -11,7 +11,8 @@ whole pipeline asynchronously.
 This graph is compiled *without* a checkpointer, which means it is stateless between
 runs: every call to ``ainvoke`` starts with a fresh, empty state and nothing is persisted
 to disk or a database by LangGraph itself.  In production the graph would be triggered
-automatically by a MongoDB Change Stream (see ``stream_listener.py`` and ADR 003) rather
+automatically by a MongoDB Change Stream (see ``stream_listener.py`` and ADR 003 —
+docs/adr/003-backend-sse-change-stream.md) rather
 than an HTTP call, and a checkpointer might be added to support pause-and-resume for
 long-running evaluations.
 

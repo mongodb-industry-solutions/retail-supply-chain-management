@@ -175,7 +175,9 @@ Per matching episode, a weight is derived from
 `episode.actual_impact.occurred`: `1.20` if `True`, `0.90` if `False`. The
 **minimum** across matches is taken, then clamped with `min(1.0, …)` — an
 amplifying episode can only get clamped back to neutral, never used to
-shrink the demo's safety margin. No match → neutral default `1.0`.
+shrink the demo's safety margin. No match → neutral default `1.0`. The
+read-only status of `agent_memory` across the whole backend is recorded in
+[ADR-009](../../docs/adr/009-backend-agent_memory_single_writer.md).
 
 ---
 

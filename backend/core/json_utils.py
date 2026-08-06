@@ -1,7 +1,8 @@
 """Shared JSON parsing helpers used across backend slices.
 
 Lives in ``core`` so slices (ingestion_engine, risk_evaluator, alternative_finder)
-can reuse it without importing from one another (ADR 005).
+can reuse it without importing from one another
+(ADR 005 — docs/adr/005-backend-operational-data-layer.md).
 """
 
 import json

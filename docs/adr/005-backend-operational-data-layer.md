@@ -1,9 +1,5 @@
-# ADR 005 — Operational Data Layer (ODL)
+# ADR 005 — Operational Data Layer (ODL): Also the Agents' Context Layer
 
-**Status:** Accepted  
-**Date:** 2026-06-18
-
----
 
 ## Context
 
@@ -37,7 +33,9 @@ alternative_finder ←  reads   supplier_risk_evaluations, suppliers, purchase_o
 
 No service calls another service's API. No message broker. The data itself is the communication channel.
 
-> **Current implementation status — `agent_memory` is read-only today.** The ODL ownership design assigns `agent_memory` a single writer (the closure loop of ADR-009), but **no code in the repo writes to `agent_memory`** — all three modules only read it, and no scheduled job or trigger produces closure episodes. Today `agent_memory` is populated exclusively by hand-curated seed data. The single-writer closure loop is designed-but-unbuilt; see ADR-009.
+This ownership rule does double duty. Beyond removing service-to-service coupling, it is what makes the ODL usable directly as the context source the agents read from — not a separate retrieval store built on top of it. Because each collection has exactly one writer, there is never a second, possibly-stale copy of that data sitting in a vector store or cache for an agent to query instead: the same `supplier_documents` collection `alternative_finder` reads for structured fields (`valid_until`, `doc_type`) is the one Atlas also indexes for `$vectorSearch` and `$rankFusion` ([ADR-007](./007-backend-native_reranking.md)). A read for an operational check and a read for retrieval context are the same document, under the same access controls, never two representations that could drift apart. This is the same no-fragmentation argument the `alternative_finder` design doc makes about Atlas sustaining all four of its layers without a separate vector database or external reranking service — applied here one level down, to why the ODL itself is a sound foundation for that to be true.
+
+> **Current implementation status — `agent_memory` is read-only today.** The ODL ownership design assigns `agent_memory` a single writer (the closure loop of [ADR-009](./009-backend-agent_memory_single_writer.md)), but **no code in the repo writes to `agent_memory`** — all three modules only read it, and no scheduled job or trigger produces closure episodes. Today `agent_memory` is populated exclusively by hand-curated seed data. The single-writer closure loop is designed-but-unbuilt; see [ADR-009](./009-backend-agent_memory_single_writer.md).
 
 ---
 
@@ -80,7 +78,7 @@ The ODL is not a replacement for the ERP. It is a decoupling layer that lets inn
 ## Why this works here
 
 **1. Change Streams replace a message bus.**  
-In production, the risk_evaluator doesn't need to be called — it watches `external_conditions` for new inserts via Change Stream. The ingestion_engine writes a document; the Change Stream fires; the risk_evaluator reacts. This is the publish/subscribe pattern without a separate broker. In the demo, the frontend triggers the evaluator explicitly (simpler for demo control), but the production pattern is documented in `stream_listener.py` and ADR 003.
+In production, the risk_evaluator doesn't need to be called — it watches `external_conditions` for new inserts via Change Stream. The ingestion_engine writes a document; the Change Stream fires; the risk_evaluator reacts. This is the publish/subscribe pattern without a separate broker. In the demo, the frontend triggers the evaluator explicitly (simpler for demo control), but the production pattern is documented in `stream_listener.py` and [ADR-003](./003-backend-sse-change-stream.md).
 
 **2. TTL indexes handle cleanup automatically.**  
 Session-scoped documents expire after 2 hours without any service needing to manage cleanup logic. The store manages its own state lifecycle.
@@ -129,7 +127,7 @@ Atlas Charts reads from the same ODL in real time. There is no separate reportin
 - New capabilities can be built above the ODL without touching the ERP
 - Change Streams provide reactive activation without a message broker
 - TTL indexes handle session cleanup without application logic
-- Single source of truth for all operational data
+- Single source of truth for all operational data, including retrieval context — no separate vector store to keep in sync
 
 **Negative / mitigations:**
 - Schema changes require coordination across services → mitigated by Pydantic models in `core/`
@@ -140,6 +138,8 @@ Atlas Charts reads from the same ODL in real time. There is no separate reportin
 
 ## Related ADRs
 
-- ADR 001 — Vertical Slice Architecture
-- ADR 002 — Async Motor driver
-- ADR 003 — SSE + Change Streams (production vs demo activation model)
+- [ADR-001](./001-backend-architecture-overview.md) — Vertical Slice Architecture
+- [ADR-002](./002-backend-async-motor.md) — Async Motor driver
+- [ADR-003](./003-backend-sse-change-stream.md) — SSE + Change Streams (production vs demo activation model)
+- [ADR-007](./007-backend-native_reranking.md) — Native in-pipeline reranking (the retrieval capability this single-copy property sustains)
+- [ADR-010](./010-backend-direct-driver-not-mcp.md) — Why agents access this same ODL directly, not through a generic tool layer
