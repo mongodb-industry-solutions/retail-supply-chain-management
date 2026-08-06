@@ -1,12 +1,19 @@
-from typing import AsyncGenerator
+from core.db import get_database
+from ingestion_engine.signal_generator import generate_and_insert_signals
+from ingestion_engine.target_selector import select_targets
 
 
-async def run_simulation(session_id: str) -> AsyncGenerator[str, None]:
+async def run_ingestion(session_id: str) -> dict:
     """
     Orchestrates the ingestion simulation for a given session.
 
-    Generates 3 external_condition documents (one per risk_type), inserts them
-    into the external_conditions MongoDB collection with is_demo_trigger=True and
-    the given session_id, then yields SSE-formatted progress events to the frontend.
+    Selects up to 3 (supplier, risk) pairs from live DB data, generates and inserts
+    one demo trigger document per pair into external_conditions, and returns the
+    inserted documents as a plain dict.
     """
-    yield "data: {\"event\": \"simulation_started\"}\n\n"
+    db = await get_database()
+    targets = await select_targets(db)
+    if not targets:
+        return {"session_id": session_id, "signals": []}
+    signals = await generate_and_insert_signals(db, session_id, targets)
+    return {"session_id": session_id, "signals": signals}

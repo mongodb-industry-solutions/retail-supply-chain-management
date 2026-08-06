@@ -1,0 +1,1507 @@
+[{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f55"
+  },
+  "supplier_id": "SUP-SHANGHAI-087",
+  "supplier_name": "Shanghai Fresh Logistics Co.",
+  "region": "CN",
+  "country": "China",
+  "product_categories": [
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      121.4737,
+      31.2304
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.7,
+  "avg_lead_time_days": 26,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-03-01",
+      "status": "active",
+      "scope": "food safety management"
+    }
+  ],
+  "tariff_exposure_rating": "high",
+  "erp_last_synced_at": "2026-07-22T00:23:01.798Z",
+  "auto_embed_text": "Ambient grocery supplier · Shanghai, China · ISO 22000 scope food safety management · tariff exposure high · CN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_name": "Empaque del Pacifico S.A. de C.V.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -103.3496,
+      20.6597
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.45,
+  "avg_lead_time_days": 18,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-12-31",
+      "status": "active",
+      "scope": "packaging materials including food-grade and industrial"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14064-1",
+  "sustainability_audited_at": "2025-03-01",
+  "erp_last_synced_at": "2026-07-22T04:35:31.156Z",
+  "auto_embed_text": "Packaging materials supplier · Guadalajara, Mexico · ISO 9001 scope packaging materials including food-grade and industrial · sustainability verified ISO 14064-1 · MX region · tariff neutral"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5f"
+  },
+  "supplier_id": "SUP-MONTERREY-MX",
+  "supplier_name": "Envases Norteños S.A.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -100.3161,
+      25.6866
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.38,
+  "avg_lead_time_days": 15,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-05-31",
+      "status": "active",
+      "scope": "rigid and flexible packaging"
+    }
+  ],
+  "erp_last_synced_at": "2026-07-20T17:55:09.717Z",
+  "auto_embed_text": "Packaging materials supplier · Monterrey, Mexico · ISO 9001 scope rigid and flexible packaging · MX region · tariff neutral"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f61"
+  },
+  "supplier_id": "SUP-SINALOA-MX",
+  "supplier_name": "Agroindustrias del Noroeste S.A.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -107.394,
+      24.806
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.72,
+  "avg_lead_time_days": 4,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-11-30",
+      "status": "active",
+      "scope": "fresh produce — tomatoes, peppers, cucumbers"
+    }
+  ],
+  "cold_chain_certified": true,
+  "erp_last_synced_at": "2026-07-21T06:19:29.333Z",
+  "auto_embed_text": "Fresh produce supplier · Sinaloa, Mexico · GlobalG.A.P. scope fresh produce tomatoes peppers cucumbers · cold chain certified · MX region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f63"
+  },
+  "supplier_id": "SUP-BOGOTA-CO",
+  "supplier_name": "Flores y Alimentos de Colombia Ltda.",
+  "region": "CO",
+  "country": "Colombia",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -74.0721,
+      4.711
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.3,
+  "avg_lead_time_days": 7,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2027-02-28",
+      "status": "active",
+      "scope": "fresh produce — berries, herbs"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "Rainforest Alliance",
+  "sustainability_audited_at": "2025-09-01",
+  "erp_last_synced_at": "2026-07-22T07:30:41.071Z",
+  "auto_embed_text": "Fresh produce supplier · Bogota, Colombia · GlobalG.A.P. scope fresh produce berries herbs · cold chain certified · sustainability verified Rainforest Alliance · CO region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f64"
+  },
+  "supplier_id": "SUP-MEDELLIN-CO",
+  "supplier_name": "Tropical Harvest S.A.S.",
+  "region": "CO",
+  "country": "Colombia",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -75.5636,
+      6.2518
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.28,
+  "avg_lead_time_days": 8,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-07-31",
+      "status": "active",
+      "scope": "tropical fruit — banana, pineapple, passion fruit"
+    }
+  ],
+  "cold_chain_certified": true,
+  "erp_last_synced_at": "2026-07-22T06:31:14.488Z",
+  "auto_embed_text": "Fresh produce supplier · Medellin, Colombia · GlobalG.A.P. scope tropical fruit banana pineapple passion fruit · cold chain certified · CO region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f67"
+  },
+  "supplier_id": "SUP-CURITIBA-BR",
+  "supplier_name": "Papelera Sul Brasileira S.A.",
+  "region": "BR",
+  "country": "Brazil",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -49.2654,
+      -25.4296
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.33,
+  "avg_lead_time_days": 25,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-10-31",
+      "status": "active",
+      "scope": "paper and cardboard packaging — food-grade"
+    },
+    {
+      "type": "FSC",
+      "valid_until": "2028-03-31",
+      "status": "active",
+      "scope": "certified sustainable forestry sourcing"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "FSC Certified",
+  "sustainability_audited_at": "2025-11-01",
+  "erp_last_synced_at": "2026-07-21T06:46:48.603Z",
+  "auto_embed_text": "Packaging materials supplier · Curitiba, Brazil · ISO 9001 scope paper and cardboard packaging food-grade · FSC scope certified sustainable forestry sourcing · sustainability verified FSC Certified · BR region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6e"
+  },
+  "supplier_id": "SUP-WARSAW-PL",
+  "supplier_name": "Polskie Opakowania Sp. z o.o.",
+  "region": "PL",
+  "country": "Poland",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      21.0122,
+      52.2297
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.35,
+  "avg_lead_time_days": 18,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-03-31",
+      "status": "active",
+      "scope": "packaging materials — rigid and flexible"
+    }
+  ],
+  "erp_last_synced_at": "2026-07-21T12:49:36.978Z",
+  "auto_embed_text": "Packaging materials supplier · Warsaw, Poland · ISO 9001 scope packaging materials rigid and flexible · PL region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f74"
+  },
+  "supplier_id": "SUP-SEATTLE-US",
+  "supplier_name": "Cascade Organics Co.",
+  "region": "US",
+  "country": "United States",
+  "product_categories": [
+    "fresh_produce",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -122.3321,
+      47.6062
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.48,
+  "avg_lead_time_days": 4,
+  "certifications": [
+    {
+      "type": "USDA Organic",
+      "valid_until": "2027-02-28",
+      "status": "active",
+      "scope": "organic produce and processed grocery"
+    },
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2027-01-31",
+      "status": "active",
+      "scope": "berries, apples, pears"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "SCS Global Services",
+  "sustainability_audited_at": "2025-04-10",
+  "erp_last_synced_at": "2026-07-20T17:09:19.177Z",
+  "auto_embed_text": "Fresh produce and ambient grocery supplier · Seattle, United States · USDA Organic scope organic produce and processed grocery · GlobalG.A.P. scope berries apples pears · cold chain certified · sustainability verified SCS Global Services · US region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f75"
+  },
+  "supplier_id": "SUP-TORONTO-CA",
+  "supplier_name": "Great Lakes Dairy Partners Inc.",
+  "region": "CA",
+  "country": "Canada",
+  "product_categories": [
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -79.3832,
+      43.6532
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.65,
+  "avg_lead_time_days": 5,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2028-03-31",
+      "status": "active",
+      "scope": "dairy — milk, yogurt, cheese"
+    },
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2027-08-31",
+      "status": "active",
+      "scope": "dairy and refrigerated foods"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-12-01",
+  "erp_last_synced_at": "2026-07-21T00:33:11.150Z",
+  "auto_embed_text": "Dairy supplier · Toronto, Canada · ISO 22000 scope dairy milk yogurt cheese · BRC Grade A scope dairy and refrigerated foods · cold chain certified · sustainability verified ISO 14001 · CA region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f7a"
+  },
+  "supplier_id": "SUP-NAIROBI-KE",
+  "supplier_name": "East Africa Fresh Exports Ltd.",
+  "region": "KE",
+  "country": "Kenya",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      36.8219,
+      -1.2921
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.22,
+  "avg_lead_time_days": 14,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-09-30",
+      "status": "active",
+      "scope": "fresh produce — green beans, peas, avocado"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "Rainforest Alliance",
+  "sustainability_audited_at": "2025-10-05",
+  "erp_last_synced_at": "2026-07-20T21:04:13.182Z",
+  "auto_embed_text": "Fresh produce supplier · Nairobi, Kenya · GlobalG.A.P. scope fresh produce green beans peas avocado · cold chain certified · sustainability verified Rainforest Alliance · KE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5d"
+  },
+  "supplier_id": "SUP-IN-077",
+  "supplier_name": "Mumbai Spice & Foods Pvt. Ltd.",
+  "region": "IN",
+  "country": "India",
+  "product_categories": [
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      72.8777,
+      19.076
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.38,
+  "avg_lead_time_days": 32,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-07-31",
+      "status": "active",
+      "scope": "spices, condiments and dry grocery"
+    },
+    {
+      "type": "FSSAI",
+      "valid_until": "2027-09-30",
+      "status": "active",
+      "scope": "food manufacturing and export"
+    }
+  ],
+  "erp_last_synced_at": "2026-07-22T11:10:35.990Z",
+  "auto_embed_text": "Ambient grocery supplier · Mumbai, India · ISO 22000 scope spices condiments and dry grocery · FSSAI scope food manufacturing and export · IN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f66"
+  },
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "supplier_name": "BrasilPack Indústria e Comércio Ltda.",
+  "region": "BR",
+  "country": "Brazil",
+  "product_categories": [
+    "packaging_materials",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -46.6333,
+      -23.5505
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.55,
+  "avg_lead_time_days": 22,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-07-31",
+      "status": "active",
+      "scope": "packaging materials and consumer goods"
+    }
+  ],
+  "erp_last_synced_at": "2026-07-21T19:36:54.056Z",
+  "auto_embed_text": "Packaging materials and ambient grocery supplier · Sao Paulo, Brazil · ISO 9001 scope packaging materials and consumer goods · BR region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f68"
+  },
+  "supplier_id": "SUP-CORK-IE",
+  "supplier_name": "Kerry Foods (Cork) Ltd.",
+  "region": "IE",
+  "country": "Ireland",
+  "product_categories": [
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -8.4756,
+      51.8985
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.6,
+  "avg_lead_time_days": 12,
+  "certifications": [
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2026-09-30",
+      "status": "active",
+      "scope": "dairy products — cheese, butter, cream"
+    },
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-04-30",
+      "status": "active",
+      "scope": "food safety management — dairy"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": false,
+  "erp_last_synced_at": "2026-07-21T12:16:07.341Z",
+  "auto_embed_text": "Dairy supplier · Cork, Ireland · BRC Grade A scope dairy products cheese butter cream · ISO 22000 scope food safety management dairy · cold chain certified · IE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6c"
+  },
+  "supplier_id": "SUP-BERLIN-DE",
+  "supplier_name": "Deutsche Frischware GmbH",
+  "region": "DE",
+  "country": "Germany",
+  "product_categories": [
+    "ambient_grocery",
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      13.405,
+      52.52
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.5,
+  "avg_lead_time_days": 16,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-09-30",
+      "status": "active",
+      "scope": "food production — ambient and dairy"
+    },
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2027-06-30",
+      "status": "active",
+      "scope": "ambient grocery"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-08-20",
+  "erp_last_synced_at": "2026-07-21T01:42:17.716Z",
+  "auto_embed_text": "Ambient grocery and dairy supplier · Berlin, Germany · ISO 22000 scope food production ambient and dairy · BRC Grade A scope ambient grocery · cold chain certified · sustainability verified ISO 14001 · DE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f70"
+  },
+  "supplier_id": "SUP-MILAN-IT",
+  "supplier_name": "Imballaggi del Nord S.p.A.",
+  "region": "IT",
+  "country": "Italy",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      9.19,
+      45.4654
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.38,
+  "avg_lead_time_days": 17,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-11-30",
+      "status": "active",
+      "scope": "luxury and premium retail packaging"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-06-10",
+  "erp_last_synced_at": "2026-07-20T19:48:19.195Z",
+  "auto_embed_text": "Packaging materials supplier · Milan, Italy · ISO 9001 scope luxury and premium retail packaging · sustainability verified ISO 14001 · IT region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f73"
+  },
+  "supplier_id": "SUP-CHICAGO-US",
+  "supplier_name": "Midwest Dairy Alliance LLC",
+  "region": "US",
+  "country": "United States",
+  "product_categories": [
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -87.6298,
+      41.8781
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.58,
+  "avg_lead_time_days": 4,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-08-31",
+      "status": "active",
+      "scope": "dairy processing — fluid milk, butter, cheese"
+    },
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2027-05-31",
+      "status": "active",
+      "scope": "dairy and refrigerated products"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": false,
+  "erp_last_synced_at": "2026-07-21T18:17:38.379Z",
+  "auto_embed_text": "Dairy supplier · Chicago, United States · ISO 22000 scope dairy processing fluid milk butter cheese · BRC Grade A scope dairy and refrigerated products · cold chain certified · US region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f76"
+  },
+  "supplier_id": "SUP-MONTREAL-CA",
+  "supplier_name": "Emballages Québec Ltée.",
+  "region": "CA",
+  "country": "Canada",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -73.5673,
+      45.5017
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.3,
+  "avg_lead_time_days": 8,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-10-31",
+      "status": "active",
+      "scope": "sustainable paper and cardboard packaging"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "FSC Certified",
+  "sustainability_audited_at": "2025-07-10",
+  "erp_last_synced_at": "2026-07-20T18:04:07.520Z",
+  "auto_embed_text": "Packaging materials supplier · Montreal, Canada · ISO 9001 scope sustainable paper and cardboard packaging · sustainability verified FSC Certified · CA region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f79"
+  },
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "supplier_name": "Cape Harvest Agricultural Exports Pty.",
+  "region": "ZA",
+  "country": "South Africa",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      18.4241,
+      -33.9249
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.32,
+  "avg_lead_time_days": 22,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2027-04-30",
+      "status": "active",
+      "scope": "fresh produce — apples, pears, citrus, grapes"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "Rainforest Alliance",
+  "sustainability_audited_at": "2025-03-20",
+  "erp_last_synced_at": "2026-07-21T05:38:16.682Z",
+  "auto_embed_text": "Fresh produce supplier · Cape Town, South Africa · GlobalG.A.P. scope fresh produce apples pears citrus grapes · cold chain certified · sustainability verified Rainforest Alliance · ZA region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f54"
+  },
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "supplier_name": "Guangzhou Flex Packaging Ltd.",
+  "region": "CN",
+  "country": "China",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      113.2644,
+      23.1291
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.55,
+  "avg_lead_time_days": 24,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2026-09-15",
+      "status": "active",
+      "scope": "flexible packaging"
+    }
+  ],
+  "tariff_exposure_rating": "high",
+  "erp_last_synced_at": "2026-07-20T22:56:35.529Z",
+  "auto_embed_text": "Packaging materials supplier · Guangzhou, China · ISO 9001 scope flexible packaging · tariff exposure high · CN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f56"
+  },
+  "supplier_id": "SUP-DONGGUAN-099",
+  "supplier_name": "Dongguan Eco Print & Pack Co.",
+  "region": "CN",
+  "country": "China",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      113.7518,
+      23.0489
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.48,
+  "avg_lead_time_days": 22,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2026-12-31",
+      "status": "active",
+      "scope": "printed packaging and labels"
+    }
+  ],
+  "tariff_exposure_rating": "high",
+  "erp_last_synced_at": "2026-07-21T01:46:34.302Z",
+  "auto_embed_text": "Packaging materials supplier · Dongguan, China · ISO 9001 scope printed packaging and labels · tariff exposure high · CN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5c"
+  },
+  "supplier_id": "SUP-TH-055",
+  "supplier_name": "Bangkok Agro Exports Ltd.",
+  "region": "TH",
+  "country": "Thailand",
+  "product_categories": [
+    "fresh_produce",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      100.5018,
+      13.7563
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.42,
+  "avg_lead_time_days": 20,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-10-31",
+      "status": "active",
+      "scope": "tropical fresh produce — mango, pineapple, lychee"
+    },
+    {
+      "type": "ISO 22000",
+      "valid_until": "2027-05-31",
+      "status": "active",
+      "scope": "food safety — fresh and processed"
+    }
+  ],
+  "cold_chain_certified": true,
+  "erp_last_synced_at": "2026-07-21T05:19:31.615Z",
+  "auto_embed_text": "Fresh produce and ambient grocery supplier · Bangkok, Thailand · GlobalG.A.P. scope tropical fresh produce mango pineapple lychee · ISO 22000 scope food safety fresh and processed · cold chain certified · TH region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_name": "Valle Verde Productores S.C.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -96.7266,
+      17.0732
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.8,
+  "avg_lead_time_days": 5,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-10-15",
+      "status": "active",
+      "scope": "fresh produce — avocado, mango, citrus"
+    },
+    {
+      "type": "USDA Organic",
+      "valid_until": "2026-12-31",
+      "status": "active",
+      "scope": "certified organic produce"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "Rainforest Alliance",
+  "sustainability_audited_at": "2025-06-01",
+  "erp_last_synced_at": "2026-07-21T22:58:37.055Z",
+  "auto_embed_text": "Fresh produce supplier · Oaxaca, Mexico · GlobalG.A.P. scope fresh produce avocado mango citrus · USDA Organic scope certified organic produce · cold chain certified · sustainability verified Rainforest Alliance · MX region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f62"
+  },
+  "supplier_id": "SUP-CDMX-MX",
+  "supplier_name": "Soluciones de Empaque Central S.A.",
+  "region": "MX",
+  "country": "Mexico",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -99.1332,
+      19.4326
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.5,
+  "avg_lead_time_days": 16,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2028-01-31",
+      "status": "active",
+      "scope": "consumer retail packaging"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-09-15",
+  "erp_last_synced_at": "2026-07-22T05:22:12.232Z",
+  "auto_embed_text": "Packaging materials supplier · Mexico City, Mexico · ISO 9001 scope consumer retail packaging · sustainability verified ISO 14001 · MX region · tariff neutral"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f65"
+  },
+  "supplier_id": "SUP-LIMA-PE",
+  "supplier_name": "Agroexportaciones del Sur S.A.C.",
+  "region": "PE",
+  "country": "Peru",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -77.0428,
+      -12.0464
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.25,
+  "avg_lead_time_days": 9,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-08-31",
+      "status": "active",
+      "scope": "fresh produce — asparagus, blueberries, grapes"
+    }
+  ],
+  "cold_chain_certified": true,
+  "erp_last_synced_at": "2026-07-20T16:46:01.210Z",
+  "auto_embed_text": "Fresh produce supplier · Lima, Peru · GlobalG.A.P. scope fresh produce asparagus blueberries grapes · cold chain certified · PE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f69"
+  },
+  "supplier_id": "SUP-DUBLIN-IE",
+  "supplier_name": "Leinster Fresh Dairy Co-op",
+  "region": "IE",
+  "country": "Ireland",
+  "product_categories": [
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -6.2603,
+      53.3498
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.44,
+  "avg_lead_time_days": 13,
+  "certifications": [
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2027-08-31",
+      "status": "active",
+      "scope": "dairy — fresh milk, yogurt, cream"
+    },
+    {
+      "type": "ISO 22000",
+      "valid_until": "2028-01-31",
+      "status": "active",
+      "scope": "food safety — dairy and chilled"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-10-20",
+  "erp_last_synced_at": "2026-07-20T18:06:21.879Z",
+  "auto_embed_text": "Dairy supplier · Dublin, Ireland · BRC Grade A scope dairy fresh milk yogurt cream · ISO 22000 scope food safety dairy and chilled · cold chain certified · sustainability verified ISO 14001 · IE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6a"
+  },
+  "supplier_id": "SUP-AMSTERDAM-NL",
+  "supplier_name": "Noord-Holland Packaging B.V.",
+  "region": "NL",
+  "country": "Netherlands",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      4.9041,
+      52.3676
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.4,
+  "avg_lead_time_days": 14,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2028-01-31",
+      "status": "active",
+      "scope": "sustainable packaging materials"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-10-15",
+  "erp_last_synced_at": "2026-07-21T11:25:55.822Z",
+  "auto_embed_text": "Packaging materials supplier · Amsterdam, Netherlands · ISO 9001 scope sustainable packaging materials · sustainability verified ISO 14001 · NL region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f71"
+  },
+  "supplier_id": "SUP-LOSANGELES-US",
+  "supplier_name": "Pacific Coast Packaging Inc.",
+  "region": "US",
+  "country": "United States",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.75,
+  "avg_lead_time_days": 7,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-11-30",
+      "status": "active",
+      "scope": "retail packaging — food and non-food"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "FSC Certified",
+  "sustainability_audited_at": "2025-11-01",
+  "erp_last_synced_at": "2026-07-21T17:04:42.156Z",
+  "auto_embed_text": "Packaging materials supplier · Los Angeles, United States · ISO 9001 scope retail packaging food and non-food · sustainability verified FSC Certified · US region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f72"
+  },
+  "supplier_id": "SUP-FRESNO-US",
+  "supplier_name": "Central Valley Fresh Foods LLC",
+  "region": "US",
+  "country": "United States",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -119.7871,
+      36.7378
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.85,
+  "avg_lead_time_days": 3,
+  "certifications": [
+    {
+      "type": "USDA Organic",
+      "valid_until": "2026-12-31",
+      "status": "active",
+      "scope": "certified organic produce — stone fruit, grapes, nuts"
+    },
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-09-30",
+      "status": "active",
+      "scope": "fresh produce"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "SCS Global Services",
+  "sustainability_audited_at": "2026-01-15",
+  "erp_last_synced_at": "2026-07-21T20:52:10.937Z",
+  "auto_embed_text": "Fresh produce supplier · Fresno, United States · USDA Organic scope certified organic produce stone fruit grapes nuts · GlobalG.A.P. scope fresh produce · cold chain certified · sustainability verified SCS Global Services · US region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_name": "Shenzhen Advanced Materials Co.",
+  "region": "CN",
+  "country": "China",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      114.0579,
+      22.5431
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.65,
+  "avg_lead_time_days": 21,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-06-30",
+      "status": "active",
+      "scope": "packaging materials"
+    },
+    {
+      "type": "IATF 16949",
+      "valid_until": "2027-06-30",
+      "status": "active",
+      "scope": "automotive and industrial packaging"
+    }
+  ],
+  "tariff_exposure_rating": "high",
+  "erp_last_synced_at": "2026-07-21T01:03:54.363Z",
+  "auto_embed_text": "Packaging materials supplier · Shenzhen, China · ISO 9001 scope packaging materials · IATF 16949 scope automotive and industrial packaging · tariff exposure high · CN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f57"
+  },
+  "supplier_id": "SUP-VN-088",
+  "supplier_name": "Hanoi Industrial Supplies JSC",
+  "region": "VN",
+  "country": "Vietnam",
+  "product_categories": [
+    "packaging_materials",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      105.8342,
+      21.0278
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.4,
+  "avg_lead_time_days": 28,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2025-11-30",
+      "status": "expired",
+      "scope": "automotive components only"
+    }
+  ],
+  "tariff_exposure_rating": "medium",
+  "erp_last_synced_at": "2026-07-21T01:11:19.125Z",
+  "auto_embed_text": "Packaging materials and ambient grocery supplier · Hanoi, Vietnam · ISO 9001 expired scope automotive components only · tariff exposure medium · VN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f58"
+  },
+  "supplier_id": "SUP-VN-204",
+  "supplier_name": "Ho Chi Minh Packaging Corp.",
+  "region": "VN",
+  "country": "Vietnam",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      106.6297,
+      10.8231
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.6,
+  "avg_lead_time_days": 30,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-08-15",
+      "status": "active",
+      "scope": "packaging materials including food-grade"
+    }
+  ],
+  "tariff_exposure_rating": "medium",
+  "erp_last_synced_at": "2026-07-21T15:42:35.540Z",
+  "auto_embed_text": "Packaging materials supplier · Ho Chi Minh City, Vietnam · ISO 9001 scope packaging materials including food-grade · tariff exposure medium · VN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f59"
+  },
+  "supplier_id": "SUP-VN-317",
+  "supplier_name": "Binh Duong Paper & Packaging Co.",
+  "region": "VN",
+  "country": "Vietnam",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      106.6836,
+      11.0068
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.35,
+  "avg_lead_time_days": 27,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-11-30",
+      "status": "active",
+      "scope": "corrugated and folding carton packaging"
+    }
+  ],
+  "tariff_exposure_rating": "medium",
+  "erp_last_synced_at": "2026-07-21T21:12:16.901Z",
+  "auto_embed_text": "Packaging materials supplier · Binh Duong, Vietnam · ISO 9001 scope corrugated and folding carton packaging · tariff exposure medium · VN region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5a"
+  },
+  "supplier_id": "SUP-TW-204",
+  "supplier_name": "Taipei Precision Packaging Inc.",
+  "region": "TW",
+  "country": "Taiwan",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      121.5654,
+      25.033
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.35,
+  "avg_lead_time_days": 23,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-01-31",
+      "status": "active",
+      "scope": "precision packaging and electronics"
+    }
+  ],
+  "tariff_exposure_rating": "high",
+  "erp_last_synced_at": "2026-07-21T18:09:30.572Z",
+  "auto_embed_text": "Packaging materials supplier · Taipei, Taiwan · ISO 9001 scope precision packaging and electronics · tariff exposure high · TW region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f5b"
+  },
+  "supplier_id": "SUP-JP-033",
+  "supplier_name": "Osaka Quality Foods Ltd.",
+  "region": "JP",
+  "country": "Japan",
+  "product_categories": [
+    "ambient_grocery",
+    "dairy"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      135.5023,
+      34.6937
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.5,
+  "avg_lead_time_days": 18,
+  "certifications": [
+    {
+      "type": "ISO 22000",
+      "valid_until": "2028-02-28",
+      "status": "active",
+      "scope": "food production and distribution"
+    },
+    {
+      "type": "BRC Grade A",
+      "valid_until": "2027-11-30",
+      "status": "active",
+      "scope": "ambient grocery and dairy"
+    }
+  ],
+  "erp_last_synced_at": "2026-07-21T11:24:06.679Z",
+  "auto_embed_text": "Ambient grocery and dairy supplier · Osaka, Japan · ISO 22000 scope food production and distribution · BRC Grade A scope ambient grocery and dairy · JP region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6b"
+  },
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "supplier_name": "Delta Logistics & Packaging B.V.",
+  "region": "NL",
+  "country": "Netherlands",
+  "product_categories": [
+    "packaging_materials",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      4.4777,
+      51.9225
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.37,
+  "avg_lead_time_days": 13,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-06-30",
+      "status": "active",
+      "scope": "packaging and distribution — food and non-food"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2026-01-10",
+  "erp_last_synced_at": "2026-07-21T11:38:15.967Z",
+  "auto_embed_text": "Packaging materials and ambient grocery supplier · Rotterdam, Netherlands · ISO 9001 scope packaging and distribution food and non-food · sustainability verified ISO 14001 · NL region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6d"
+  },
+  "supplier_id": "SUP-HAMBURG-DE",
+  "supplier_name": "Nordpack Verpackungen GmbH",
+  "region": "DE",
+  "country": "Germany",
+  "product_categories": [
+    "packaging_materials"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      9.9937,
+      53.5753
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.42,
+  "avg_lead_time_days": 15,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-12-31",
+      "status": "active",
+      "scope": "industrial and retail packaging"
+    }
+  ],
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-07-05",
+  "erp_last_synced_at": "2026-07-22T02:11:27.340Z",
+  "auto_embed_text": "Packaging materials supplier · Hamburg, Germany · ISO 9001 scope industrial and retail packaging · sustainability verified ISO 14001 · DE region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f6f"
+  },
+  "supplier_id": "SUP-BARCELONA-ES",
+  "supplier_name": "Envases Mediterráneos S.L.",
+  "region": "ES",
+  "country": "Spain",
+  "product_categories": [
+    "packaging_materials",
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      2.1734,
+      41.3851
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.32,
+  "avg_lead_time_days": 17,
+  "certifications": [
+    {
+      "type": "ISO 9001",
+      "valid_until": "2027-09-30",
+      "status": "active",
+      "scope": "food-grade packaging and fresh produce distribution"
+    },
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-12-31",
+      "status": "active",
+      "scope": "citrus fruit and stone fruit"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "ISO 14001",
+  "sustainability_audited_at": "2025-05-20",
+  "erp_last_synced_at": "2026-07-21T06:25:17.487Z",
+  "auto_embed_text": "Packaging materials and fresh produce supplier · Barcelona, Spain · ISO 9001 scope food-grade packaging and fresh produce distribution · GlobalG.A.P. scope citrus fruit and stone fruit · cold chain certified · sustainability verified ISO 14001 · ES region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f77"
+  },
+  "supplier_id": "SUP-VANCOUVER-CA",
+  "supplier_name": "Pacific Rim Fresh Produce Ltd.",
+  "region": "CA",
+  "country": "Canada",
+  "product_categories": [
+    "fresh_produce"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -123.1216,
+      49.2827
+    ]
+  },
+  "has_active_orders": false,
+  "committed_capacity_pct": 0.45,
+  "avg_lead_time_days": 3,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2027-03-31",
+      "status": "active",
+      "scope": "fresh produce — berries, mushrooms, leafy greens"
+    },
+    {
+      "type": "USDA Organic",
+      "valid_until": "2027-01-31",
+      "status": "active",
+      "scope": "certified organic — blueberries and cranberries"
+    }
+  ],
+  "cold_chain_certified": true,
+  "sustainability_verified": true,
+  "sustainability_standard": "SCS Global Services",
+  "sustainability_audited_at": "2025-08-15",
+  "erp_last_synced_at": "2026-07-20T22:42:00.504Z",
+  "auto_embed_text": "Fresh produce supplier · Vancouver, Canada · GlobalG.A.P. scope fresh produce berries mushrooms leafy greens · USDA Organic scope certified organic blueberries and cranberries · cold chain certified · sustainability verified SCS Global Services · CA region"
+},
+{
+  "_id": {
+    "$oid": "6a2c19deaa8e334aa4699f78"
+  },
+  "supplier_id": "SUP-CAIRO-EG",
+  "supplier_name": "Nile Valley Foods Export Co.",
+  "region": "EG",
+  "country": "Egypt",
+  "product_categories": [
+    "fresh_produce",
+    "ambient_grocery"
+  ],
+  "status": "active",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      31.2357,
+      30.0444
+    ]
+  },
+  "has_active_orders": true,
+  "committed_capacity_pct": 0.28,
+  "avg_lead_time_days": 18,
+  "certifications": [
+    {
+      "type": "GlobalG.A.P.",
+      "valid_until": "2026-11-30",
+      "status": "active",
+      "scope": "fresh produce — citrus, grapes, potatoes"
+    }
+  ],
+  "cold_chain_certified": true,
+  "erp_last_synced_at": "2026-07-20T23:50:50.293Z",
+  "auto_embed_text": "Fresh produce and ambient grocery supplier · Cairo, Egypt · GlobalG.A.P. scope fresh produce citrus grapes potatoes · cold chain certified · EG region"
+}]

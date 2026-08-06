@@ -37,12 +37,18 @@ export default function StepperWrapper() {
           const clickable = step <= maxStep && step !== currentStep;
           return (
             <Step key={step}>
-              <span
-                style={{ cursor: clickable ? "pointer" : "default" }}
-                onClick={() => clickable && dispatch(setCurrentStep(step))}
-              >
-                {label}
-              </span>
+              {clickable && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    cursor: "pointer",
+                    zIndex: 2,
+                  }}
+                  onClick={() => dispatch(setCurrentStep(step))}
+                />
+              )}
+              {label}
             </Step>
           );
         })}

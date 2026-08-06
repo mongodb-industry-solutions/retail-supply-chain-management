@@ -1,0 +1,2774 @@
+[{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a290"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-CERT-01-01",
+  "doc_id": "SDOC-SHZ441-CERT-01",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "iso_cert_SHZ441_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "certificate",
+  "chunk_text": "This is to certify that Shenzhen Advanced Materials Co., 88 Longhua Industrial Park, Shenzhen, Guangdong 518109, China, has established and maintains a Quality Management System conforming to ISO 9001:2015. Scope: packaging materials. Certificate number: CN-QMS-2024-18874. Issued by Bureau Veritas Certification. Valid from 2024-07-01 to 2027-06-30.",
+  "auto_embed_text": "This is to certify that Shenzhen Advanced Materials Co., 88 Longhua Industrial Park, Shenzhen, Guangdong 518109, China, has established and maintains a Quality Management System conforming to ISO 9001:2015. Scope: packaging materials. Certificate number: CN-QMS-2024-18874. Issued by Bureau Veritas Certification. Valid from 2024-07-01 to 2027-06-30.",
+  "valid_until": "2027-06-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a294"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-AUD-03-01",
+  "doc_id": "SDOC-SHZ441-AUD-03",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "audit_SHZ441_Feb2026.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 3 — Tariff Contingency Inventory. The supplier maintains a 30-day finished goods buffer for FreshMart SKUs and holds raw material inventory equivalent to 45 days of production. In the event of a US-CN tariff increase exceeding 15 percentage points, the supplier confirmed it would trigger a formal price review under Article 12 of the MSA within 72 hours of the tariff announcement. Buffer stock verified during facility walkthrough on 2026-02-11.",
+  "auto_embed_text": "Finding 3 — Tariff Contingency Inventory. The supplier maintains a 30-day finished goods buffer for FreshMart SKUs and holds raw material inventory equivalent to 45 days of production. In the event of a US-CN tariff increase exceeding 15 percentage points, the supplier confirmed it would trigger a formal price review under Article 12 of the MSA within 72 hours of the tariff announcement. Buffer stock verified during facility walkthrough on 2026-02-11.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a296"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-EMAIL-04-02",
+  "doc_id": "SDOC-SHZ441-EMAIL-04",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "email_SHZ441_capacity_May2026.eml",
+  "page_ref": 1,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "email",
+  "chunk_text": "We note that the current port situation at Yantian remains challenging with transit delays of 10–14 days observed last week. We recommend that orders intended for US delivery before August 15 be submitted no later than June 20 to allow buffer. We are coordinating with our freight forwarder to prioritise FreshMart consignments on available sailings.",
+  "auto_embed_text": "We note that the current port situation at Yantian remains challenging with transit delays of 10–14 days observed last week. We recommend that orders intended for US delivery before August 15 be submitted no later than June 20 to allow buffer. We are coordinating with our freight forwarder to prioritise FreshMart consignments on available sailings.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29c"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-SUST-04-01",
+  "doc_id": "SDOC-VALLE-SUST-04",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "sustainability_audit_ValleVerde_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit conducted June 2025 under Rainforest Alliance standard. Findings: water use intensity reduced 14% year-on-year through drip irrigation expansion (now 88% of avocado acreage). Biodiversity buffer zones maintained on 12% of farm area. Smallholder partner programme covers 6 cooperatives supplying 31% of total volume — all partners trained on Rainforest Alliance standard. Overall score: 84/100. Certification renewed to 2026-06-01.",
+  "auto_embed_text": "Sustainability audit conducted June 2025 under Rainforest Alliance standard. Findings: water use intensity reduced 14% year-on-year through drip irrigation expansion (now 88% of avocado acreage). Biodiversity buffer zones maintained on 12% of farm area. Smallholder partner programme covers 6 cooperatives supplying 31% of total volume — all partners trained on Rainforest Alliance standard. Overall score: 84/100. Certification renewed to 2026-06-01.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a2"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-SUST-04-01",
+  "doc_id": "SDOC-GDL-SUST-04",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "sustainability_audit_GDL_2025.pdf",
+  "page_ref": 7,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Carbon emissions: 18.4 tCO2e per year (Scope 1+2). Water recycling rate 74%. Corrugated fibreboard uses minimum 75% post-consumer recycled content, exceeding FreshMart's 60% requirement. Mill certificates from Cartones Ponderosa and PAPSA confirm recycled fibre content per lot. Chain-of-custody documentation maintained at SKU level. Verified by SGS México under ISO 14064-1. Audit date: March 2025.",
+  "auto_embed_text": "Carbon emissions: 18.4 tCO2e per year (Scope 1+2). Water recycling rate 74%. Corrugated fibreboard uses minimum 75% post-consumer recycled content, exceeding FreshMart's 60% requirement. Mill certificates from Cartones Ponderosa and PAPSA confirm recycled fibre content per lot. Chain-of-custody documentation maintained at SKU level. Verified by SGS México under ISO 14064-1. Audit date: March 2025.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ae"
+  },
+  "chunk_id": "CHUNK-SDOC-DGN099-AUD-03-01",
+  "doc_id": "SDOC-DGN099-AUD-03",
+  "supplier_id": "SUP-DONGGUAN-099",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f56"
+  },
+  "filename": "audit_DGN099_2026.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 2 — Proximity to Yantian Port. The Dongguan facility is located approximately 60km from Yantian terminal. Current port congestion is adding 8–12 days to typical transit schedules. The supplier is coordinating with its freight forwarder to prioritise FreshMart consignments on available sailings and has pre-booked space on three vessels departing in June. No corrective action required — situation under active management.",
+  "auto_embed_text": "Section 2 — Proximity to Yantian Port. The Dongguan facility is located approximately 60km from Yantian terminal. Current port congestion is adding 8–12 days to typical transit schedules. The supplier is coordinating with its freight forwarder to prioritise FreshMart consignments on available sailings and has pre-booked space on three vessels departing in June. No corrective action required — situation under active management.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b0"
+  },
+  "chunk_id": "CHUNK-SDOC-VN088-CERT-01-01",
+  "doc_id": "SDOC-VN088-CERT-01",
+  "supplier_id": "SUP-VN-088",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f57"
+  },
+  "filename": "iso_cert_VN088_2022.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Hanoi Industrial Supplies JSC, Thang Long Industrial Park, Dong Anh District, Hanoi, Vietnam. Scope: automotive components only. Certificate number: VN-QMS-2022-00541. Valid: 2022-06-01 to 2025-11-30. Issued by Bureau Veritas Vietnam. NOTE: This certificate has expired. Renewal application submitted October 2025 — renewal certificate not yet issued.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Hanoi Industrial Supplies JSC, Thang Long Industrial Park, Dong Anh District, Hanoi, Vietnam. Scope: automotive components only. Certificate number: VN-QMS-2022-00541. Valid: 2022-06-01 to 2025-11-30. Issued by Bureau Veritas Vietnam. NOTE: This certificate has expired. Renewal application submitted October 2025 — renewal certificate not yet issued.",
+  "valid_until": "2025-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b5"
+  },
+  "chunk_id": "CHUNK-SDOC-VN204-CTR-02-01",
+  "doc_id": "SDOC-VN204-CTR-02",
+  "supplier_id": "SUP-VN-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f58"
+  },
+  "filename": "contrato_marco_VN204_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — Trade Policy Risk. The Supplier shall monitor US trade policy developments affecting Vietnamese manufactured goods and notify FreshMart within three (3) business days of any USTR announcement covering HS chapters applicable to goods under this Agreement. Both parties acknowledge that packaging materials under HS Chapter 39 are currently under USTR Section 301 review for Vietnamese-origin goods.",
+  "auto_embed_text": "Article 9 — Trade Policy Risk. The Supplier shall monitor US trade policy developments affecting Vietnamese manufactured goods and notify FreshMart within three (3) business days of any USTR announcement covering HS chapters applicable to goods under this Agreement. Both parties acknowledge that packaging materials under HS Chapter 39 are currently under USTR Section 301 review for Vietnamese-origin goods.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b6"
+  },
+  "chunk_id": "CHUNK-SDOC-VN204-AUD-03-01",
+  "doc_id": "SDOC-VN204-AUD-03",
+  "supplier_id": "SUP-VN-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f58"
+  },
+  "filename": "audit_VN204_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 4 — Tariff Compliance Readiness. Ho Chi Minh Packaging Corp maintains a trade compliance programme including HS classification review and country-of-origin documentation. Legal team actively monitoring USTR Section 301 investigation covering Vietnamese packaging goods. Supplier has a draft contingency plan covering 15% cost absorption before invoking the pricing review clause. No corrective actions raised.",
+  "auto_embed_text": "Section 4 — Tariff Compliance Readiness. Ho Chi Minh Packaging Corp maintains a trade compliance programme including HS classification review and country-of-origin documentation. Legal team actively monitoring USTR Section 301 investigation covering Vietnamese packaging goods. Supplier has a draft contingency plan covering 15% cost absorption before invoking the pricing review clause. No corrective actions raised.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b9"
+  },
+  "chunk_id": "CHUNK-SDOC-VN317-CTR-02-01",
+  "doc_id": "SDOC-VN317-CTR-02",
+  "supplier_id": "SUP-VN-317",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f59"
+  },
+  "filename": "contrato_marco_VN317_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Tariff Contingency. In the event of a US tariff increase on Vietnamese paper and packaging products under HS Chapter 48 or 39, the Supplier shall provide FreshMart with a written impact assessment within five (5) business days, including estimated landed cost change per SKU and proposed mitigation options such as alternative routing, product reclassification, or phased price adjustment.",
+  "auto_embed_text": "Article 8 — Tariff Contingency. In the event of a US tariff increase on Vietnamese paper and packaging products under HS Chapter 48 or 39, the Supplier shall provide FreshMart with a written impact assessment within five (5) business days, including estimated landed cost change per SKU and proposed mitigation options such as alternative routing, product reclassification, or phased price adjustment.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ba"
+  },
+  "chunk_id": "CHUNK-SDOC-VN317-AUD-03-01",
+  "doc_id": "SDOC-VN317-AUD-03",
+  "supplier_id": "SUP-VN-317",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f59"
+  },
+  "filename": "audit_VN317_2026.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 3 — Trade Compliance. Binh Duong Paper & Packaging maintains a trade compliance programme including HS classification review and country-of-origin documentation. Audit team noted the supplier does not yet have a formal contingency plan covering a US tariff increase on Vietnamese paper and packaging. Corrective action requested: develop and submit a tariff contingency plan within 60 days.",
+  "auto_embed_text": "Section 3 — Trade Compliance. Binh Duong Paper & Packaging maintains a trade compliance programme including HS classification review and country-of-origin documentation. Audit team noted the supplier does not yet have a formal contingency plan covering a US tariff increase on Vietnamese paper and packaging. Corrective action requested: develop and submit a tariff contingency plan within 60 days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2bb"
+  },
+  "chunk_id": "CHUNK-SDOC-VN317-EMAIL-04-01",
+  "doc_id": "SDOC-VN317-EMAIL-04",
+  "supplier_id": "SUP-VN-317",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f59"
+  },
+  "filename": "email_VN317_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: sales@binhduongpaper.vn | To: procurement@freshmart.com | Date: 2026-04-20 | Subject: Q2–Q3 Capacity Confirmation. Facility operating at 62% capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard transit via Cat Lai port to US West Coast is 22–25 days. No current port disruptions at Ho Chi Minh City terminals.",
+  "auto_embed_text": "From: sales@binhduongpaper.vn | To: procurement@freshmart.com | Date: 2026-04-20 | Subject: Q2–Q3 Capacity Confirmation. Facility operating at 62% capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard transit via Cat Lai port to US West Coast is 22–25 days. No current port disruptions at Ho Chi Minh City terminals.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2be"
+  },
+  "chunk_id": "CHUNK-SDOC-TW204-AUD-03-01",
+  "doc_id": "SDOC-TW204-AUD-03",
+  "supplier_id": "SUP-TW-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5a"
+  },
+  "filename": "audit_TW204_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 5 — Tariff Exposure Assessment. Taipei Precision Packaging's primary export classifications fall under HS 3923 (plastic packaging articles). These are currently subject to the same US Section 301 tariff schedule as CN-origin equivalents under the USTR Taiwan review. The audit team assessed the supplier's tariff exposure as equivalent to CN-region packaging suppliers — high. FreshMart procurement should factor this into alternative supplier selection for CN tariff risk scenarios.",
+  "auto_embed_text": "Section 5 — Tariff Exposure Assessment. Taipei Precision Packaging's primary export classifications fall under HS 3923 (plastic packaging articles). These are currently subject to the same US Section 301 tariff schedule as CN-origin equivalents under the USTR Taiwan review. The audit team assessed the supplier's tariff exposure as equivalent to CN-region packaging suppliers — high. FreshMart procurement should factor this into alternative supplier selection for CN tariff risk scenarios.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2bf"
+  },
+  "chunk_id": "CHUNK-SDOC-TW204-EMAIL-04-01",
+  "doc_id": "SDOC-TW204-EMAIL-04",
+  "supplier_id": "SUP-TW-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5a"
+  },
+  "filename": "email_TW204_tariff_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@taiprecpack.com.tw | To: procurement@freshmart.com | Date: 2026-05-20 | Subject: Tariff Situation Update. We are monitoring the current US trade policy situation closely. Our legal counsel advises that Taiwan-origin plastic packaging is likely to be covered under the same tariff schedule as Chinese-origin goods for HS 3923. We will update you immediately upon any official USTR announcement.",
+  "auto_embed_text": "From: export@taiprecpack.com.tw | To: procurement@freshmart.com | Date: 2026-05-20 | Subject: Tariff Situation Update. We are monitoring the current US trade policy situation closely. Our legal counsel advises that Taiwan-origin plastic packaging is likely to be covered under the same tariff schedule as Chinese-origin goods for HS 3923. We will update you immediately upon any official USTR announcement.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c2"
+  },
+  "chunk_id": "CHUNK-SDOC-MTY-AUD-03-01",
+  "doc_id": "SDOC-MTY-AUD-03",
+  "supplier_id": "SUP-MONTERREY-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5f"
+  },
+  "filename": "audit_MTY_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 3 — Storm and Climate Risk. Monterrey is subject to seasonal hurricane-related rainfall events (typically August–October). The facility has flood barriers and emergency generator backup. The 2023 Hurricane Norma event caused a 2-day production halt — supplier activated contingency stock protocol and fulfilled all FreshMart orders from safety stock. Business continuity plan updated post-event and approved by FreshMart in November 2023.",
+  "auto_embed_text": "Section 3 — Storm and Climate Risk. Monterrey is subject to seasonal hurricane-related rainfall events (typically August–October). The facility has flood barriers and emergency generator backup. The 2023 Hurricane Norma event caused a 2-day production halt — supplier activated contingency stock protocol and fulfilled all FreshMart orders from safety stock. Business continuity plan updated post-event and approved by FreshMart in November 2023.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d3"
+  },
+  "chunk_id": "CHUNK-SDOC-MED-EMAIL-04-01",
+  "doc_id": "SDOC-MED-EMAIL-04",
+  "supplier_id": "SUP-MEDELLIN-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f64"
+  },
+  "filename": "email_Medellin_season_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exports@tropicalharvest.com.co | To: procurement@freshmart.com | Date: 2026-04-01 | Subject: Season Outlook Q2 2026. Physalis harvest started well — Brix values 14–16, excellent for this time of year. Pitaya volumes approximately 8% ahead of last year. Lead time to Miami warehouse remains 3 days air freight. Please send Q2 orders by April 15 to secure allocation.",
+  "auto_embed_text": "From: exports@tropicalharvest.com.co | To: procurement@freshmart.com | Date: 2026-04-01 | Subject: Season Outlook Q2 2026. Physalis harvest started well — Brix values 14–16, excellent for this time of year. Pitaya volumes approximately 8% ahead of last year. Lead time to Miami warehouse remains 3 days air freight. Please send Q2 orders by April 15 to secure allocation.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d4"
+  },
+  "chunk_id": "CHUNK-SDOC-LIM-CERT-01-01",
+  "doc_id": "SDOC-LIM-CERT-01",
+  "supplier_id": "SUP-LIMA-PE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f65"
+  },
+  "filename": "ggap_cert_Lima_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Agroexportaciones del Sur S.A.C., Carretera Panamericana Sur Km 354, Ica, Peru. Product scope: table grapes (Red Globe, Crimson Seedless), asparagus, and blueberries. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-PE-2025-003301. Valid: 2025-07-01 to 2027-08-31.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Agroexportaciones del Sur S.A.C., Carretera Panamericana Sur Km 354, Ica, Peru. Product scope: table grapes (Red Globe, Crimson Seedless), asparagus, and blueberries. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-PE-2025-003301. Valid: 2025-07-01 to 2027-08-31.",
+  "valid_until": "2027-08-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d9"
+  },
+  "chunk_id": "CHUNK-SDOC-SAO-CTR-02-01",
+  "doc_id": "SDOC-SAO-CTR-02",
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f66"
+  },
+  "filename": "contrato_marco_SAO_2025.pdf",
+  "page_ref": 5,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 15 — Currency Risk Allocation. Invoices are denominated in USD. In the event that BRL has depreciated or appreciated by more than 15% against USD since the last pricing review, either party may request a price adjustment discussion. Semi-annual review mechanism applies. Adjustments are not automatic and require written agreement.",
+  "auto_embed_text": "Article 15 — Currency Risk Allocation. Invoices are denominated in USD. In the event that BRL has depreciated or appreciated by more than 15% against USD since the last pricing review, either party may request a price adjustment discussion. Semi-annual review mechanism applies. Adjustments are not automatic and require written agreement.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2db"
+  },
+  "chunk_id": "CHUNK-SDOC-SAO-EMAIL-04-01",
+  "doc_id": "SDOC-SAO-EMAIL-04",
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f66"
+  },
+  "filename": "email_SAO_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: comercial@brasilpack.com.br | To: procurement@freshmart.com | Date: 2026-04-18 | Subject: Q3 Capacity and Logistics Update. Facility at 61% capacity. Santos port operating normally. Panama Canal no restrictions currently in effect. Q3 orders should be placed by June 1 to secure preferred sailing slots. Standard transit via Panama to NY/NJ is 18–21 days.",
+  "auto_embed_text": "From: comercial@brasilpack.com.br | To: procurement@freshmart.com | Date: 2026-04-18 | Subject: Q3 Capacity and Logistics Update. Facility at 61% capacity. Santos port operating normally. Panama Canal no restrictions currently in effect. Q3 orders should be placed by June 1 to secure preferred sailing slots. Standard transit via Panama to NY/NJ is 18–21 days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2dc"
+  },
+  "chunk_id": "CHUNK-SDOC-CUR-CERT-01-01",
+  "doc_id": "SDOC-CUR-CERT-01",
+  "supplier_id": "SUP-CURITIBA-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f67"
+  },
+  "filename": "fsc_cert_CUR_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "FSC Chain of Custody Certificate. Papelera Sul Brasileira S.A., Rodovia BR-116 Km 92, Fazenda Rio Grande, Paraná 83820-000, Brazil. FSC scope: certified sustainable forestry sourcing. Certificate number: FSC-COC-BR-2025-0088. ISO 9001:2015 also held — scope: paper and cardboard packaging — food-grade. Certificate number BR-QMS-2025-00489, valid to 2027-10-31. Both issued by Rainforest Alliance. FSC certificate valid to 2028-03-31.",
+  "auto_embed_text": "FSC Chain of Custody Certificate. Papelera Sul Brasileira S.A., Rodovia BR-116 Km 92, Fazenda Rio Grande, Paraná 83820-000, Brazil. FSC scope: certified sustainable forestry sourcing. Certificate number: FSC-COC-BR-2025-0088. ISO 9001:2015 also held — scope: paper and cardboard packaging — food-grade. Certificate number BR-QMS-2025-00489, valid to 2027-10-31. Both issued by Rainforest Alliance. FSC certificate valid to 2028-03-31.",
+  "valid_until": "2027-10-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2de"
+  },
+  "chunk_id": "CHUNK-SDOC-CUR-SUST-03-01",
+  "doc_id": "SDOC-CUR-SUST-03",
+  "supplier_id": "SUP-CURITIBA-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f67"
+  },
+  "filename": "sustainability_audit_CUR_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit November 2025 under FSC Certified standard. 100% of raw fibre sourced from FSC-certified managed forests in Paraná state. Zero deforestation commitment verified by satellite monitoring (PRODES/INPE). Scope 1+2 emissions: 12.1 tCO2e per tonne of output — 18% reduction vs 2020 baseline. Water use: closed-loop system, zero discharge to Iguaçu watershed. Auditor: Rainforest Alliance Brazil.",
+  "auto_embed_text": "Sustainability audit November 2025 under FSC Certified standard. 100% of raw fibre sourced from FSC-certified managed forests in Paraná state. Zero deforestation commitment verified by satellite monitoring (PRODES/INPE). Scope 1+2 emissions: 12.1 tCO2e per tonne of output — 18% reduction vs 2020 baseline. Water use: closed-loop system, zero discharge to Iguaçu watershed. Auditor: Rainforest Alliance Brazil.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2df"
+  },
+  "chunk_id": "CHUNK-SDOC-CUR-EMAIL-04-01",
+  "doc_id": "SDOC-CUR-EMAIL-04",
+  "supplier_id": "SUP-CURITIBA-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f67"
+  },
+  "filename": "email_CUR_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exports@papelerasul.com.br | To: procurement@freshmart.com | Date: 2026-05-12 | Subject: Q3 Availability. Facility at 64% capacity with room for incremental FreshMart volume. Paranaguá port operating normally. No current Panama Canal restrictions affecting our US East Coast routes. Standard transit NY/NJ: 17–20 days via Panama.",
+  "auto_embed_text": "From: exports@papelerasul.com.br | To: procurement@freshmart.com | Date: 2026-05-12 | Subject: Q3 Availability. Facility at 64% capacity with room for incremental FreshMart volume. Paranaguá port operating normally. No current Panama Canal restrictions affecting our US East Coast routes. Standard transit NY/NJ: 17–20 days via Panama.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ea"
+  },
+  "chunk_id": "CHUNK-SDOC-BER-SUST-03-01",
+  "doc_id": "SDOC-BER-SUST-03",
+  "supplier_id": "SUP-BERLIN-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6c"
+  },
+  "filename": "sustainability_audit_Berlin_2025.pdf",
+  "page_ref": 5,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit August 2025 under ISO 14001. Facility achieved 100% renewable electricity via Ørsted Wind Germany PPA. Emergency generator backup provides 72 hours cold chain continuity. Scope 1+2 carbon intensity: 0.43 tCO2e per tonne of chilled product output. Reviewed the 2024 power outage event (August 14, 6.5 hours) — confirmed no temperature exceedances. Auditor: TÜV Rheinland Germany.",
+  "auto_embed_text": "Sustainability audit August 2025 under ISO 14001. Facility achieved 100% renewable electricity via Ørsted Wind Germany PPA. Emergency generator backup provides 72 hours cold chain continuity. Scope 1+2 carbon intensity: 0.43 tCO2e per tonne of chilled product output. Reviewed the 2024 power outage event (August 14, 6.5 hours) — confirmed no temperature exceedances. Auditor: TÜV Rheinland Germany.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ec"
+  },
+  "chunk_id": "CHUNK-SDOC-HAM-CERT-01-01",
+  "doc_id": "SDOC-HAM-CERT-01",
+  "supplier_id": "SUP-HAMBURG-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6d"
+  },
+  "filename": "iso_cert_Hamburg_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Nordpack Verpackungen GmbH, Moorfleeter Deich 200, 22113 Hamburg, Germany. Scope: industrial and retail packaging. Certificate number: DE-QMS-2025-02281. Valid: 2025-01-01 to 2027-12-31.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Nordpack Verpackungen GmbH, Moorfleeter Deich 200, 22113 Hamburg, Germany. Scope: industrial and retail packaging. Certificate number: DE-QMS-2025-02281. Valid: 2025-01-01 to 2027-12-31.",
+  "valid_until": "2027-12-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f2"
+  },
+  "chunk_id": "CHUNK-SDOC-TH055-AUD-03-01",
+  "doc_id": "SDOC-TH055-AUD-03",
+  "supplier_id": "SUP-TH-055",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5c"
+  },
+  "filename": "audit_TH055_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 6 — Flood Risk Assessment. Facility lies in Chao Phraya flood plain. Elevated equipment platform (+1.8m above floor level) and pre-season pump deployment in place. Agreement with secondary processing facility in Chonburi (45km away) covers overflow volume. 2022 flooding caused 11-day production halt — Chonburi facility successfully activated. Audit team assessed measures adequate for 1-in-5-year event. Recommended additional offsite storage capacity for 1-in-20-year scenario.",
+  "auto_embed_text": "Section 6 — Flood Risk Assessment. Facility lies in Chao Phraya flood plain. Elevated equipment platform (+1.8m above floor level) and pre-season pump deployment in place. Agreement with secondary processing facility in Chonburi (45km away) covers overflow volume. 2022 flooding caused 11-day production halt — Chonburi facility successfully activated. Audit team assessed measures adequate for 1-in-5-year event. Recommended additional offsite storage capacity for 1-in-20-year scenario.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f5"
+  },
+  "chunk_id": "CHUNK-SDOC-IN077-CTR-02-01",
+  "doc_id": "SDOC-IN077-CTR-02",
+  "supplier_id": "SUP-IN-077",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5d"
+  },
+  "filename": "contrato_marco_IN077_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — EU Food Safety Compliance. The Supplier acknowledges that EU import requirements for spices and food ingredients, including maximum residue limits (MRLs) under Regulation (EC) 396/2005 and aflatoxin limits under Regulation (EC) 1881/2006, are subject to periodic revision. In the event of new EU compliance requirements affecting goods under this Agreement, the Supplier shall provide updated test certificates within 30 days of the regulatory effective date.",
+  "auto_embed_text": "Article 9 — EU Food Safety Compliance. The Supplier acknowledges that EU import requirements for spices and food ingredients, including maximum residue limits (MRLs) under Regulation (EC) 396/2005 and aflatoxin limits under Regulation (EC) 1881/2006, are subject to periodic revision. In the event of new EU compliance requirements affecting goods under this Agreement, the Supplier shall provide updated test certificates within 30 days of the regulatory effective date.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f7"
+  },
+  "chunk_id": "CHUNK-SDOC-IN077-EMAIL-04-01",
+  "doc_id": "SDOC-IN077-EMAIL-04",
+  "supplier_id": "SUP-IN-077",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5d"
+  },
+  "filename": "email_IN077_compliance_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exports@mumbaispicefoods.in | To: procurement@freshmart.com | Date: 2026-03-15 | Subject: EU Compliance Update Q1 2026. All EU-destined FreshMart SKUs have been tested against updated EC 2023/915 aflatoxin limits. All results within specification — test reports attached. FSSAI export licence renewed January 2026. No changes to our production process or raw material suppliers.",
+  "auto_embed_text": "From: exports@mumbaispicefoods.in | To: procurement@freshmart.com | Date: 2026-03-15 | Subject: EU Compliance Update Q1 2026. All EU-destined FreshMart SKUs have been tested against updated EC 2023/915 aflatoxin limits. All results within specification — test reports attached. FSSAI export licence renewed January 2026. No changes to our production process or raw material suppliers.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2fd"
+  },
+  "chunk_id": "CHUNK-SDOC-FRE-CTR-02-01",
+  "doc_id": "SDOC-FRE-CTR-02",
+  "supplier_id": "SUP-FRESNO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f72"
+  },
+  "filename": "contrato_marco_Fresno_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Drought and Water Availability Risk. The Supplier operates in the San Joaquin Valley, subject to recurring California drought cycles. In the event that State Water Board allocations fall below 40% of the Supplier's water rights entitlement in any season, FreshMart and the Supplier shall meet within 10 business days to agree volume reductions for the affected growing season. Neither party shall be in breach for volume shortfalls directly attributable to state-mandated water restrictions.",
+  "auto_embed_text": "Article 8 — Drought and Water Availability Risk. The Supplier operates in the San Joaquin Valley, subject to recurring California drought cycles. In the event that State Water Board allocations fall below 40% of the Supplier's water rights entitlement in any season, FreshMart and the Supplier shall meet within 10 business days to agree volume reductions for the affected growing season. Neither party shall be in breach for volume shortfalls directly attributable to state-mandated water restrictions.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2fe"
+  },
+  "chunk_id": "CHUNK-SDOC-FRE-SUST-03-01",
+  "doc_id": "SDOC-FRE-SUST-03",
+  "supplier_id": "SUP-FRESNO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f72"
+  },
+  "filename": "sustainability_audit_Fresno_2026.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit January 2026 under SCS Global Services standard. Drip irrigation: 82% of acreage (up from 68% in 2022). Water use per acre reduced 31% since 2020. Senior (pre-1914) water rights on Kings River system — highest priority allocation in drought years. Groundwater pumping used as supplement in drought years — costs up 7% in 2021 drought season. Solar power covers 41% of facility electricity. Auditor: SCS Global Services.",
+  "auto_embed_text": "Sustainability audit January 2026 under SCS Global Services standard. Drip irrigation: 82% of acreage (up from 68% in 2022). Water use per acre reduced 31% since 2020. Senior (pre-1914) water rights on Kings River system — highest priority allocation in drought years. Groundwater pumping used as supplement in drought years — costs up 7% in 2021 drought season. Solar power covers 41% of facility electricity. Auditor: SCS Global Services.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a308"
+  },
+  "chunk_id": "CHUNK-SDOC-SEA-CERT-01-01",
+  "doc_id": "SDOC-SEA-CERT-01",
+  "supplier_id": "SUP-SEATTLE-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f74"
+  },
+  "filename": "usda_organic_cert_Seattle_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "USDA National Organic Program Certificate. Operation: Cascade Organics Co., 4520 First Avenue South, Seattle, Washington 98134, USA. Scope: organic produce and processed grocery. Certificate number: NOP-WA-2025-001244. Valid: 2025-01-01 to 2027-02-28. GlobalG.A.P. also held — scope: berries, apples, pears. Valid to 2027-01-31. Certifying agent: Oregon Tilth Certified Organic.",
+  "auto_embed_text": "USDA National Organic Program Certificate. Operation: Cascade Organics Co., 4520 First Avenue South, Seattle, Washington 98134, USA. Scope: organic produce and processed grocery. Certificate number: NOP-WA-2025-001244. Valid: 2025-01-01 to 2027-02-28. GlobalG.A.P. also held — scope: berries, apples, pears. Valid to 2027-01-31. Certifying agent: Oregon Tilth Certified Organic.",
+  "valid_until": "2027-01-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30b"
+  },
+  "chunk_id": "CHUNK-SDOC-SEA-EMAIL-04-01",
+  "doc_id": "SDOC-SEA-EMAIL-04",
+  "supplier_id": "SUP-SEATTLE-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f74"
+  },
+  "filename": "email_Seattle_season_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: procurement@cascadeorganics.com | To: procurement@freshmart.com | Date: 2026-05-20 | Subject: Berry Season Outlook 2026. Early crop assessments from our Washington farm partners are positive. No heat advisories currently in effect for the Pacific Northwest. BC partners on standby per our contingency arrangement. Blueberry peak availability forecast July 10–September 5.",
+  "auto_embed_text": "From: procurement@cascadeorganics.com | To: procurement@freshmart.com | Date: 2026-05-20 | Subject: Berry Season Outlook 2026. Early crop assessments from our Washington farm partners are positive. No heat advisories currently in effect for the Pacific Northwest. BC partners on standby per our contingency arrangement. Blueberry peak availability forecast July 10–September 5.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30f"
+  },
+  "chunk_id": "CHUNK-SDOC-CRK-CTR-02-01",
+  "doc_id": "SDOC-CRK-CTR-02",
+  "supplier_id": "SUP-CORK-IE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f68"
+  },
+  "filename": "contrato_marco_Cork_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — Cold Chain Compliance. All dairy products stored at maximum 4°C from production through to departure handover. Sensitech ColdMark monitoring devices included in all FreshMart export consignments. Temperature exceedance above 6°C at any monitoring point constitutes a non-conformance event requiring immediate notification and root cause report within 48 hours.",
+  "auto_embed_text": "Article 6 — Cold Chain Compliance. All dairy products stored at maximum 4°C from production through to departure handover. Sensitech ColdMark monitoring devices included in all FreshMart export consignments. Temperature exceedance above 6°C at any monitoring point constitutes a non-conformance event requiring immediate notification and root cause report within 48 hours.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a316"
+  },
+  "chunk_id": "CHUNK-SDOC-WAR-CERT-01-01",
+  "doc_id": "SDOC-WAR-CERT-01",
+  "supplier_id": "SUP-WARSAW-PL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6e"
+  },
+  "filename": "iso_cert_Warsaw_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemysłowa 44, 05-092 Łomianki, Masovian Voivodeship, Poland. Scope: packaging materials — rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemysłowa 44, 05-092 Łomianki, Masovian Voivodeship, Poland. Scope: packaging materials — rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
+  "valid_until": "2027-03-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a318"
+  },
+  "chunk_id": "CHUNK-SDOC-TOR-CERT-01-01",
+  "doc_id": "SDOC-TOR-CERT-01",
+  "supplier_id": "SUP-TORONTO-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f75"
+  },
+  "filename": "brc_cert_Toronto_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A. Great Lakes Dairy Partners Inc., 150 Confectionery Court, Brampton, Ontario L6T 4V3, Canada. Scope: dairy — milk, yogurt, cheese. Audit type: Unannounced. Valid to 2028-03-31. ISO 22000:2018 also held — valid to 2028-03-31. Certification body: Intertek.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A. Great Lakes Dairy Partners Inc., 150 Confectionery Court, Brampton, Ontario L6T 4V3, Canada. Scope: dairy — milk, yogurt, cheese. Audit type: Unannounced. Valid to 2028-03-31. ISO 22000:2018 also held — valid to 2028-03-31. Certification body: Intertek.",
+  "valid_until": "2027-08-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31b"
+  },
+  "chunk_id": "CHUNK-SDOC-MON-CTR-02-01",
+  "doc_id": "SDOC-MON-CTR-02",
+  "supplier_id": "SUP-MONTREAL-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f76"
+  },
+  "filename": "contrato_marco_Montreal_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 11 — Bilingual Labelling Compliance. All packaging produced for FreshMart's Canadian distribution must comply with the Consumer Packaging and Labelling Act bilingual requirements (English/French). Artwork validation by external translation agency is required for all new SKUs before press approval. The Supplier shall maintain CFIA-compliant bilingual labelling documentation per SKU, available for FreshMart's annual compliance review.",
+  "auto_embed_text": "Article 11 — Bilingual Labelling Compliance. All packaging produced for FreshMart's Canadian distribution must comply with the Consumer Packaging and Labelling Act bilingual requirements (English/French). Artwork validation by external translation agency is required for all new SKUs before press approval. The Supplier shall maintain CFIA-compliant bilingual labelling documentation per SKU, available for FreshMart's annual compliance review.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a321"
+  },
+  "chunk_id": "CHUNK-SDOC-NAI-CTR-02-01",
+  "doc_id": "SDOC-NAI-CTR-02",
+  "supplier_id": "SUP-NAIROBI-KE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f7a"
+  },
+  "filename": "contrato_marco_Nairobi_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Air Freight and Cold Chain. All FreshMart shipments transported by air freight from Jomo Kenyatta International (NBO) on Kenya Airways or Ethiopian Airlines cargo to Chicago O'Hare (ORD) cold store. Transit temperature not to exceed 4°C for beans and peas. Sensitech TempTale loggers in every consignment. Temperature data submitted to FreshMart quality system within 12 hours of arrival.",
+  "auto_embed_text": "Article 8 — Air Freight and Cold Chain. All FreshMart shipments transported by air freight from Jomo Kenyatta International (NBO) on Kenya Airways or Ethiopian Airlines cargo to Chicago O'Hare (ORD) cold store. Transit temperature not to exceed 4°C for beans and peas. Sensitech TempTale loggers in every consignment. Temperature data submitted to FreshMart quality system within 12 hours of arrival.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a291"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-CERT-01-02",
+  "doc_id": "SDOC-SHZ441-CERT-01",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "iso_cert_SHZ441_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "certificate",
+  "chunk_text": "Stage 2 initial audit conducted 2024-06-12 and 2024-06-13. No major nonconformities raised. Two minor nonconformities relating to calibration record completeness were closed prior to certificate issuance. Next surveillance audit scheduled Q2 2025. IATF 16949 dual certification held under the same facility scope covering automotive and industrial packaging — certificate number CN-IATF-2024-18875, valid to 2027-06-30.",
+  "auto_embed_text": "Stage 2 initial audit conducted 2024-06-12 and 2024-06-13. No major nonconformities raised. Two minor nonconformities relating to calibration record completeness were closed prior to certificate issuance. Next surveillance audit scheduled Q2 2025. IATF 16949 dual certification held under the same facility scope covering automotive and industrial packaging — certificate number CN-IATF-2024-18875, valid to 2027-06-30.",
+  "valid_until": "2027-06-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a295"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-EMAIL-04-01",
+  "doc_id": "SDOC-SHZ441-EMAIL-04",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "email_SHZ441_capacity_May2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "email",
+  "chunk_text": "From: operations@shenzhenadvancedmaterials.com | To: procurement@freshmart.com | Date: 2026-05-02 | Subject: Capacity Confirmation Q3 2026. Our Longhua facility is currently operating at 65% of installed capacity and can accommodate the Q3 2026 purchase order volumes as indicated in your forecast dated April 28.",
+  "auto_embed_text": "From: operations@shenzhenadvancedmaterials.com | To: procurement@freshmart.com | Date: 2026-05-02 | Subject: Capacity Confirmation Q3 2026. Our Longhua facility is currently operating at 65% of installed capacity and can accommodate the Q3 2026 purchase order volumes as indicated in your forecast dated April 28.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a297"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-CERT-01-01",
+  "doc_id": "SDOC-VALLE-CERT-01",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "ggap_cert_ValleVerde_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate of Conformance. Producer: Valle Verde Productores S.C., Carretera Oaxaca-Pochutla Km 14, San Marcos Tlapazola, Oaxaca, Mexico. Scope: fresh produce — avocado, mango, citrus. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-004471. Valid from 2025-03-01 to 2026-10-15. Issued by Control Union Certifications México S.A.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate of Conformance. Producer: Valle Verde Productores S.C., Carretera Oaxaca-Pochutla Km 14, San Marcos Tlapazola, Oaxaca, Mexico. Scope: fresh produce — avocado, mango, citrus. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-004471. Valid from 2025-03-01 to 2026-10-15. Issued by Control Union Certifications México S.A.",
+  "valid_until": "2026-10-15T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a299"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-CTR-02-01",
+  "doc_id": "SDOC-VALLE-CTR-02",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "contrato_marco_ValleVerde_2025.pdf",
+  "page_ref": 5,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — Cold Chain Compliance. The Supplier shall maintain continuous cold chain from packing facility through to FreshMart's distribution centre. Avocados: 5°C–7°C. Mangoes: 10°C–12°C. Limes: 8°C–10°C. Time-temperature records must be provided within 24 hours of delivery. Any exceedance above 2°C for more than 2 consecutive hours constitutes a non-conformance event triggering the claims procedure in Article 14.",
+  "auto_embed_text": "Article 6 — Cold Chain Compliance. The Supplier shall maintain continuous cold chain from packing facility through to FreshMart's distribution centre. Avocados: 5°C–7°C. Mangoes: 10°C–12°C. Limes: 8°C–10°C. Time-temperature records must be provided within 24 hours of delivery. Any exceedance above 2°C for more than 2 consecutive hours constitutes a non-conformance event triggering the claims procedure in Article 14.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29e"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-CERT-01-01",
+  "doc_id": "SDOC-GDL-CERT-01",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "iso_cert_GDL_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Empaque del Pacifico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, Mexico. Scope: packaging materials including food-grade and industrial. Certificate number: MX-QMS-2024-05531. Valid: 2024-10-01 to 2027-12-31. Issued by Bureau Veritas Mexico.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Empaque del Pacifico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, Mexico. Scope: packaging materials including food-grade and industrial. Certificate number: MX-QMS-2024-05531. Valid: 2024-10-01 to 2027-12-31. Issued by Bureau Veritas Mexico.",
+  "valid_until": "2027-12-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a5"
+  },
+  "chunk_id": "CHUNK-SDOC-GZH112-CTR-02-01",
+  "doc_id": "SDOC-GZH112-CTR-02",
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f54"
+  },
+  "filename": "contrato_marco_GZH112_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Section 4 — Tariff and Duty Escalation Clause. In the event that applicable US import tariffs on goods classified under HS Chapter 39 increase by more than ten (10) percentage points above the rate in effect on the Agreement date, either party may request a pricing review. The Supplier shall provide a full cost breakdown within seven (7) days of any such request. Agreed adjustments apply prospectively.",
+  "auto_embed_text": "Section 4 — Tariff and Duty Escalation Clause. In the event that applicable US import tariffs on goods classified under HS Chapter 39 increase by more than ten (10) percentage points above the rate in effect on the Agreement date, either party may request a pricing review. The Supplier shall provide a full cost breakdown within seven (7) days of any such request. Agreed adjustments apply prospectively.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a8"
+  },
+  "chunk_id": "CHUNK-SDOC-SHA087-CERT-01-01",
+  "doc_id": "SDOC-SHA087-CERT-01",
+  "supplier_id": "SUP-SHANGHAI-087",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f55"
+  },
+  "filename": "iso22000_cert_SHA087_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 22000:2018 Certificate. Shanghai Fresh Logistics Co., Pudong New Area, Shanghai, China. Scope: food safety management. Certificate number: SH-FSMS-2025-00783. Valid: 2025-01-15 to 2027-03-01. Issued by DNV Business Assurance.",
+  "auto_embed_text": "ISO 22000:2018 Certificate. Shanghai Fresh Logistics Co., Pudong New Area, Shanghai, China. Scope: food safety management. Certificate number: SH-FSMS-2025-00783. Valid: 2025-01-15 to 2027-03-01. Issued by DNV Business Assurance.",
+  "valid_until": "2027-03-01T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ab"
+  },
+  "chunk_id": "CHUNK-SDOC-SHA087-EMAIL-04-01",
+  "doc_id": "SDOC-SHA087-EMAIL-04",
+  "supplier_id": "SUP-SHANGHAI-087",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f55"
+  },
+  "filename": "email_SHA087_capacity_May2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: ops@shanghaifreshlogistics.com | To: procurement@freshmart.com | Date: 2026-05-10 | Subject: Q3 Capacity and Port Update. Warehouse capacity at 58%. Yangshan port operating normally with average dwell times 2.3 days. We recommend submitting Q3 orders by June 15 to secure preferred sailing slots on COSCO and Evergreen services to US West Coast.",
+  "auto_embed_text": "From: ops@shanghaifreshlogistics.com | To: procurement@freshmart.com | Date: 2026-05-10 | Subject: Q3 Capacity and Port Update. Warehouse capacity at 58%. Yangshan port operating normally with average dwell times 2.3 days. We recommend submitting Q3 orders by June 15 to secure preferred sailing slots on COSCO and Evergreen services to US West Coast.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b1"
+  },
+  "chunk_id": "CHUNK-SDOC-VN088-CTR-02-01",
+  "doc_id": "SDOC-VN088-CTR-02",
+  "supplier_id": "SUP-VN-088",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f57"
+  },
+  "filename": "contrato_marco_VN088_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 11 — US Tariff Exposure Acknowledgement. The Supplier acknowledges that goods exported from Vietnam to the United States may be subject to US trade remedies including Section 301 and anti-dumping measures. The Supplier shall notify FreshMart within three (3) business days of any official announcement that materially changes applicable duty rates. Parties agree to meet within ten (10) business days to assess impact and discuss mitigation options.",
+  "auto_embed_text": "Article 11 — US Tariff Exposure Acknowledgement. The Supplier acknowledges that goods exported from Vietnam to the United States may be subject to US trade remedies including Section 301 and anti-dumping measures. The Supplier shall notify FreshMart within three (3) business days of any official announcement that materially changes applicable duty rates. Parties agree to meet within ten (10) business days to assess impact and discuss mitigation options.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b7"
+  },
+  "chunk_id": "CHUNK-SDOC-VN204-EMAIL-04-01",
+  "doc_id": "SDOC-VN204-EMAIL-04",
+  "supplier_id": "SUP-VN-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f58"
+  },
+  "filename": "email_VN204_tradepolicy_May2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@hcmpackagingcorp.vn | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Trade Policy Update. Our legal team advises that packaging materials classified under HS Chapter 39 are under review in the ongoing USTR Section 301 investigation. We recommend ensuring purchase orders requiring US delivery before a potential tariff effective date be submitted and confirmed as soon as possible.",
+  "auto_embed_text": "From: export@hcmpackagingcorp.vn | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Trade Policy Update. Our legal team advises that packaging materials classified under HS Chapter 39 are under review in the ongoing USTR Section 301 investigation. We recommend ensuring purchase orders requiring US delivery before a potential tariff effective date be submitted and confirmed as soon as possible.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b8"
+  },
+  "chunk_id": "CHUNK-SDOC-VN317-CERT-01-01",
+  "doc_id": "SDOC-VN317-CERT-01",
+  "supplier_id": "SUP-VN-317",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f59"
+  },
+  "filename": "iso_cert_VN317_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Binh Duong Paper & Packaging Co., My Phuoc Industrial Zone 3, Ben Cat, Binh Duong Province, Vietnam. Scope: corrugated and folding carton packaging. Certificate number: VN-QMS-2024-01147. Valid: 2024-11-01 to 2027-11-30.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Binh Duong Paper & Packaging Co., My Phuoc Industrial Zone 3, Ben Cat, Binh Duong Province, Vietnam. Scope: corrugated and folding carton packaging. Certificate number: VN-QMS-2024-01147. Valid: 2024-11-01 to 2027-11-30.",
+  "valid_until": "2027-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2bc"
+  },
+  "chunk_id": "CHUNK-SDOC-TW204-CERT-01-01",
+  "doc_id": "SDOC-TW204-CERT-01",
+  "supplier_id": "SUP-TW-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5a"
+  },
+  "filename": "iso_cert_TW204_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Taipei Precision Packaging Inc., Linkou Industrial District, New Taipei City 24442, Taiwan. Scope: precision packaging and electronics. Certificate number: TW-QMS-2025-00214. Valid: 2025-02-01 to 2027-01-31. Issued by SGS Taiwan Ltd.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Taipei Precision Packaging Inc., Linkou Industrial District, New Taipei City 24442, Taiwan. Scope: precision packaging and electronics. Certificate number: TW-QMS-2025-00214. Valid: 2025-02-01 to 2027-01-31. Issued by SGS Taiwan Ltd.",
+  "valid_until": "2027-01-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c4"
+  },
+  "chunk_id": "CHUNK-SDOC-SIN-CERT-01-01",
+  "doc_id": "SDOC-SIN-CERT-01",
+  "supplier_id": "SUP-SINALOA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f61"
+  },
+  "filename": "ggap_cert_Sinaloa_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate of Conformance. Producer: Agroindustrias del Noroeste S.A., Carretera Culiacán–Navolato Km 8, Culiacán, Sinaloa 80140, Mexico. Product scope: tomatoes (field and greenhouse), bell peppers, cucumbers, and jalapeños. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-009341. Valid: 2025-01-15 to 2026-11-30.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate of Conformance. Producer: Agroindustrias del Noroeste S.A., Carretera Culiacán–Navolato Km 8, Culiacán, Sinaloa 80140, Mexico. Product scope: tomatoes (field and greenhouse), bell peppers, cucumbers, and jalapeños. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-009341. Valid: 2025-01-15 to 2026-11-30.",
+  "valid_until": "2026-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ca"
+  },
+  "chunk_id": "CHUNK-SDOC-CDMX-SUST-03-01",
+  "doc_id": "SDOC-CDMX-SUST-03",
+  "supplier_id": "SUP-CDMX-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f62"
+  },
+  "filename": "sustainability_audit_CDMX_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit conducted September 2025 under ISO 14001 standard. Renewable electricity share: 62% (up from 48% in FY2024). Water consumption intensity reduced 11%. Recycled content in board supply chain: 68%. On track for 80% renewable electricity target by FY2027. Auditor: BSI Group México. Certification renewed to 2028-01-31.",
+  "auto_embed_text": "Sustainability audit conducted September 2025 under ISO 14001 standard. Renewable electricity share: 62% (up from 48% in FY2024). Water consumption intensity reduced 11%. Recycled content in board supply chain: 68%. On track for 80% renewable electricity target by FY2027. Auditor: BSI Group México. Certification renewed to 2028-01-31.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2cb"
+  },
+  "chunk_id": "CHUNK-SDOC-CDMX-EMAIL-04-01",
+  "doc_id": "SDOC-CDMX-EMAIL-04",
+  "supplier_id": "SUP-CDMX-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f62"
+  },
+  "filename": "email_CDMX_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: operaciones@empaquecentral.com.mx | To: procurement@freshmart.com | Date: 2026-05-22 | Subject: Q3 Availability. Facility at 58% capacity. We can confirm Q3 volumes with 4 weeks lead time. Transit to Monterrey DC is 6 hours, to Laredo crossing 8 hours. No disruptions to CDMX–Monterrey corridor currently.",
+  "auto_embed_text": "From: operaciones@empaquecentral.com.mx | To: procurement@freshmart.com | Date: 2026-05-22 | Subject: Q3 Availability. Facility at 58% capacity. We can confirm Q3 volumes with 4 weeks lead time. Transit to Monterrey DC is 6 hours, to Laredo crossing 8 hours. No disruptions to CDMX–Monterrey corridor currently.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ce"
+  },
+  "chunk_id": "CHUNK-SDOC-BOG-AUD-03-01",
+  "doc_id": "SDOC-BOG-AUD-03",
+  "supplier_id": "SUP-BOGOTA-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f63"
+  },
+  "filename": "audit_Bogota_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 4 — Panama Canal Routing Risk. The 2023–2024 Panama Canal drought-related restrictions added 9–13 days to sea freight transit times. Supplier's air freight channel for FreshMart fresh herb orders was unaffected throughout the disruption. Audit team assessed this mitigation as adequate — air freight as primary channel for time-sensitive FreshMart SKUs eliminates the canal risk for this product range. No action required.",
+  "auto_embed_text": "Section 4 — Panama Canal Routing Risk. The 2023–2024 Panama Canal drought-related restrictions added 9–13 days to sea freight transit times. Supplier's air freight channel for FreshMart fresh herb orders was unaffected throughout the disruption. Audit team assessed this mitigation as adequate — air freight as primary channel for time-sensitive FreshMart SKUs eliminates the canal risk for this product range. No action required.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d1"
+  },
+  "chunk_id": "CHUNK-SDOC-MED-CTR-02-01",
+  "doc_id": "SDOC-MED-CTR-02",
+  "supplier_id": "SUP-MEDELLIN-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f64"
+  },
+  "filename": "contrato_marco_Medellin_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 7 — Air Freight and Lead Time Commitment. All FreshMart-destined exotic fruit shipments are transported by air freight from José María Córdova Airport (MDE) to Miami International (MIA). Standard lead time from harvest to Miami cold store is 3 business days. Supplier commits to 48-hour notification if harvest yield falls below 80% of forecast due to weather or crop disease.",
+  "auto_embed_text": "Article 7 — Air Freight and Lead Time Commitment. All FreshMart-destined exotic fruit shipments are transported by air freight from José María Córdova Airport (MDE) to Miami International (MIA). Standard lead time from harvest to Miami cold store is 3 business days. Supplier commits to 48-hour notification if harvest yield falls below 80% of forecast due to weather or crop disease.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2dd"
+  },
+  "chunk_id": "CHUNK-SDOC-CUR-CTR-02-01",
+  "doc_id": "SDOC-CUR-CTR-02",
+  "supplier_id": "SUP-CURITIBA-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f67"
+  },
+  "filename": "contrato_marco_CUR_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Panama Canal and Port Paranaguá Logistics. Primary export terminal is Port Paranaguá (100km from facility). In the event of Panama Canal restrictions, the Supplier will notify FreshMart within 48 hours and present rerouting options. Alternative routing via Buenos Aires adds approximately 5 days to US East Coast transit. Additional freight costs are handled under the force majeure provisions of Article 14.",
+  "auto_embed_text": "Article 8 — Panama Canal and Port Paranaguá Logistics. Primary export terminal is Port Paranaguá (100km from facility). In the event of Panama Canal restrictions, the Supplier will notify FreshMart within 48 hours and present rerouting options. Alternative routing via Buenos Aires adds approximately 5 days to US East Coast transit. Additional freight costs are handled under the force majeure provisions of Article 14.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e8"
+  },
+  "chunk_id": "CHUNK-SDOC-BER-CERT-01-01",
+  "doc_id": "SDOC-BER-CERT-01",
+  "supplier_id": "SUP-BERLIN-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6c"
+  },
+  "filename": "brc_cert_Berlin_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A. Deutsche Frischware GmbH, Siemensstraße 12, 14612 Falkensee, Brandenburg, Germany. Scope: food production — ambient and dairy. Audit type: Unannounced. Certificate date: 2025-10-15. Valid to 2027-09-30. ISO 22000:2018 also held — valid to 2027-09-30. Both issued by DQS GmbH.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A. Deutsche Frischware GmbH, Siemensstraße 12, 14612 Falkensee, Brandenburg, Germany. Scope: food production — ambient and dairy. Audit type: Unannounced. Certificate date: 2025-10-15. Valid to 2027-09-30. ISO 22000:2018 also held — valid to 2027-09-30. Both issued by DQS GmbH.",
+  "valid_until": "2027-06-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ed"
+  },
+  "chunk_id": "CHUNK-SDOC-HAM-CTR-02-01",
+  "doc_id": "SDOC-HAM-CTR-02",
+  "supplier_id": "SUP-HAMBURG-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6d"
+  },
+  "filename": "contrato_marco_Hamburg_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Hamburg Port and Rotterdam Fallback. Standard outbound logistics use Hamburg Hansaport terminal. In the event of Hamburg port disruption, cargo can be redirected to Rotterdam Maasvlakte (250km, 1 day road transit) or Bremerhaven CTB terminal (120km, 4-hour transit). Redirection notice to FreshMart within 24 hours. No additional cost for Hamburg–Bremerhaven redirection; Rotterdam redirection cost shared equally.",
+  "auto_embed_text": "Article 8 — Hamburg Port and Rotterdam Fallback. Standard outbound logistics use Hamburg Hansaport terminal. In the event of Hamburg port disruption, cargo can be redirected to Rotterdam Maasvlakte (250km, 1 day road transit) or Bremerhaven CTB terminal (120km, 4-hour transit). Redirection notice to FreshMart within 24 hours. No additional cost for Hamburg–Bremerhaven redirection; Rotterdam redirection cost shared equally.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ef"
+  },
+  "chunk_id": "CHUNK-SDOC-HAM-EMAIL-04-01",
+  "doc_id": "SDOC-HAM-EMAIL-04",
+  "supplier_id": "SUP-HAMBURG-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6d"
+  },
+  "filename": "email_Hamburg_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: vertrieb@nordpackverpackungen.de | To: procurement@freshmart.com | Date: 2026-04-22 | Subject: Capacity Confirmation Q3 2026. Hamburg facility at 58% installed capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard delivery to Rotterdam for trans-Atlantic loading is 1 business day. No current disruptions at Hamburg port.",
+  "auto_embed_text": "From: vertrieb@nordpackverpackungen.de | To: procurement@freshmart.com | Date: 2026-04-22 | Subject: Capacity Confirmation Q3 2026. Hamburg facility at 58% installed capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard delivery to Rotterdam for trans-Atlantic loading is 1 business day. No current disruptions at Hamburg port.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f0"
+  },
+  "chunk_id": "CHUNK-SDOC-TH055-CERT-01-01",
+  "doc_id": "SDOC-TH055-CERT-01",
+  "supplier_id": "SUP-TH-055",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5c"
+  },
+  "filename": "ggap_cert_TH055_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Bangkok Agro Exports Ltd., 88 Moo 4, Bang Phli Industrial Estate, Samut Prakan, Thailand. Product scope: cassava starch, fresh ginger, frozen vegetables (edamame, baby corn, snap peas). Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-TH-2025-007812. Valid: 2025-05-01 to 2026-10-31.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Bangkok Agro Exports Ltd., 88 Moo 4, Bang Phli Industrial Estate, Samut Prakan, Thailand. Product scope: cassava starch, fresh ginger, frozen vegetables (edamame, baby corn, snap peas). Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-TH-2025-007812. Valid: 2025-05-01 to 2026-10-31.",
+  "valid_until": "2026-10-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f6"
+  },
+  "chunk_id": "CHUNK-SDOC-IN077-AUD-03-01",
+  "doc_id": "SDOC-IN077-AUD-03",
+  "supplier_id": "SUP-IN-077",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5d"
+  },
+  "filename": "audit_IN077_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 5 — EU MRL Compliance and US East Coast Port Risk. Pre-shipment pesticide residue testing conducted at accredited Mumbai laboratory (SGS India) for all EU and US-destined consignments. 99.1% of tested samples within EU MRL limits in the last 24 months. Logistics for US East Coast deliveries routed via Nhava Sheva port. RISK-LOG-004 (US East Coast port labor disruption) is applicable — supplier has contingency arrangement to divert to US Gulf ports (Houston) if East Coast ports are disrupted.",
+  "auto_embed_text": "Section 5 — EU MRL Compliance and US East Coast Port Risk. Pre-shipment pesticide residue testing conducted at accredited Mumbai laboratory (SGS India) for all EU and US-destined consignments. 99.1% of tested samples within EU MRL limits in the last 24 months. Logistics for US East Coast deliveries routed via Nhava Sheva port. RISK-LOG-004 (US East Coast port labor disruption) is applicable — supplier has contingency arrangement to divert to US Gulf ports (Houston) if East Coast ports are disrupted.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2fc"
+  },
+  "chunk_id": "CHUNK-SDOC-FRE-CERT-01-01",
+  "doc_id": "SDOC-FRE-CERT-01",
+  "supplier_id": "SUP-FRESNO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f72"
+  },
+  "filename": "usda_organic_cert_Fresno_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "USDA National Organic Program Certificate of Compliance. Operation: Central Valley Fresh Foods LLC, 3414 South Maple Avenue, Fresno, California 93725, USA. Scope: certified organic produce — stone fruit, grapes, nuts. Certificate number: NOP-CA-2025-004871. Valid: 2025-04-01 to 2026-12-31. Certifying agent: CCOF Certification Services LLC. GlobalG.A.P. also held — scope: fresh produce. Valid to 2026-09-30.",
+  "auto_embed_text": "USDA National Organic Program Certificate of Compliance. Operation: Central Valley Fresh Foods LLC, 3414 South Maple Avenue, Fresno, California 93725, USA. Scope: certified organic produce — stone fruit, grapes, nuts. Certificate number: NOP-CA-2025-004871. Valid: 2025-04-01 to 2026-12-31. Certifying agent: CCOF Certification Services LLC. GlobalG.A.P. also held — scope: fresh produce. Valid to 2026-09-30.",
+  "valid_until": "2026-09-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a309"
+  },
+  "chunk_id": "CHUNK-SDOC-SEA-CTR-02-01",
+  "doc_id": "SDOC-SEA-CTR-02",
+  "supplier_id": "SUP-SEATTLE-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f74"
+  },
+  "filename": "contrato_marco_Seattle_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — Pacific Northwest Climate Risk. The Supplier's farm partner network spans Washington and Oregon, both subject to Pacific Northwest heat dome and wildfire smoke events. In the event that a NOAA-declared extreme heat event (temperature exceeding 38°C for 3 consecutive days) affects more than 40% of the Supplier's contracted farm partners, the Supplier may invoke force majeure for up to 30% volume shortfall with 48-hour notice.",
+  "auto_embed_text": "Article 9 — Pacific Northwest Climate Risk. The Supplier's farm partner network spans Washington and Oregon, both subject to Pacific Northwest heat dome and wildfire smoke events. In the event that a NOAA-declared extreme heat event (temperature exceeding 38°C for 3 consecutive days) affects more than 40% of the Supplier's contracted farm partners, the Supplier may invoke force majeure for up to 30% volume shortfall with 48-hour notice.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30c"
+  },
+  "chunk_id": "CHUNK-SDOC-JP033-CERT-01-01",
+  "doc_id": "SDOC-JP033-CERT-01",
+  "supplier_id": "SUP-JP-033",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5b"
+  },
+  "filename": "brc_cert_JP033_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A. Osaka Quality Foods Ltd., 3-14 Sakurajima, Konohana-ku, Osaka 554-0021, Japan. Scope: food production and distribution. Audit type: Announced. Certificate issue date: 2025-08-20. Valid to 2028-02-28. ISO 22000:2018 also held — valid to 2028-02-28. Certification body: NSF International.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A. Osaka Quality Foods Ltd., 3-14 Sakurajima, Konohana-ku, Osaka 554-0021, Japan. Scope: food production and distribution. Audit type: Announced. Certificate issue date: 2025-08-20. Valid to 2028-02-28. ISO 22000:2018 also held — valid to 2028-02-28. Certification body: NSF International.",
+  "valid_until": "2027-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a311"
+  },
+  "chunk_id": "CHUNK-SDOC-DUB-SUST-02-01",
+  "doc_id": "SDOC-DUB-SUST-02",
+  "supplier_id": "SUP-DUBLIN-IE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f69"
+  },
+  "filename": "sustainability_audit_Dublin_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit October 2025 under ISO 14001. Scope 1 carbon intensity: 0.87 kg CO2e per kg of dairy product — in line with grass-fed system benchmarks. Verified by Carbon Trust under ISO 14064-1. Committed to 30% absolute reduction by 2030 against 2021 baseline, aligned with Science Based Target. Renewable electricity: 64% via Irish wind PPA.",
+  "auto_embed_text": "Sustainability audit October 2025 under ISO 14001. Scope 1 carbon intensity: 0.87 kg CO2e per kg of dairy product — in line with grass-fed system benchmarks. Verified by Carbon Trust under ISO 14064-1. Committed to 30% absolute reduction by 2030 against 2021 baseline, aligned with Science Based Target. Renewable electricity: 64% via Irish wind PPA.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a315"
+  },
+  "chunk_id": "CHUNK-SDOC-BAR-CTR-02-01",
+  "doc_id": "SDOC-BAR-CTR-02",
+  "supplier_id": "SUP-BARCELONA-ES",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6f"
+  },
+  "filename": "contrato_marco_BCN_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — EU Food Contact Regulation Compliance. All food-contact packaging supplied under this Agreement must have current declarations of compliance (DoC) under EU Regulation (EC) No 1935/2004. Migration testing must be completed within the past 24 months for all FreshMart-specific SKUs. The Supplier shall notify FreshMart within 10 business days of any DoC expiry and provide a renewed DoC within 30 days.",
+  "auto_embed_text": "Article 9 — EU Food Contact Regulation Compliance. All food-contact packaging supplied under this Agreement must have current declarations of compliance (DoC) under EU Regulation (EC) No 1935/2004. Migration testing must be completed within the past 24 months for all FreshMart-specific SKUs. The Supplier shall notify FreshMart within 10 business days of any DoC expiry and provide a renewed DoC within 30 days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a317"
+  },
+  "chunk_id": "CHUNK-SDOC-WAR-CTR-02-01",
+  "doc_id": "SDOC-WAR-CTR-02",
+  "supplier_id": "SUP-WARSAW-PL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6e"
+  },
+  "filename": "contrato_marco_Warsaw_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 14 — Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+  "auto_embed_text": "Article 14 — Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a293"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-CTR-02-02",
+  "doc_id": "SDOC-SHZ441-CTR-02",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "contrato_marco_SHZ441_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 12 — Price Adjustment for Regulatory Cost Changes. In the event that a governmental authority imposes new import tariffs or similar regulatory charges that directly affect the cost of goods supplied under this Agreement, the Supplier may request a price review by submitting written notice with supporting documentation within three (3) business days of the announcement. FreshMart shall schedule a review meeting within ten (10) business days. Agreed adjustments apply prospectively from the date of written acceptance.",
+  "auto_embed_text": "Article 12 — Price Adjustment for Regulatory Cost Changes. In the event that a governmental authority imposes new import tariffs or similar regulatory charges that directly affect the cost of goods supplied under this Agreement, the Supplier may request a price review by submitting written notice with supporting documentation within three (3) business days of the announcement. FreshMart shall schedule a review meeting within ten (10) business days. Agreed adjustments apply prospectively from the date of written acceptance.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29a"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-CTR-02-02",
+  "doc_id": "SDOC-VALLE-CTR-02",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "contrato_marco_ValleVerde_2025.pdf",
+  "page_ref": 6,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — Force Majeure and Natural Events. The Supplier operates in a region subject to seasonal tropical weather events. The Supplier shall maintain a business continuity plan covering loss of at least 40% of crop yield, including alternative sourcing arrangements with neighbouring cooperatives. If a declared weather emergency prevents fulfilment of more than 30% of a confirmed purchase order, the Supplier may invoke force majeure provided written notice is given within 48 hours of the event onset.",
+  "auto_embed_text": "Article 9 — Force Majeure and Natural Events. The Supplier operates in a region subject to seasonal tropical weather events. The Supplier shall maintain a business continuity plan covering loss of at least 40% of crop yield, including alternative sourcing arrangements with neighbouring cooperatives. If a declared weather emergency prevents fulfilment of more than 30% of a confirmed purchase order, the Supplier may invoke force majeure provided written notice is given within 48 hours of the event onset.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29b"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-AUD-03-01",
+  "doc_id": "SDOC-VALLE-AUD-03",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "audit_ValleVerde_Mar2026.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 4.2 — Climate and Weather Risk Preparedness. The supplier's growing region in Oaxaca Pacific coast experienced two weather events in September and October 2025 that reduced avocado yield by approximately 18%. Current business continuity includes coordination with three neighbouring cooperatives (Cooperativa Miahuatlán, Agrofrutos del Sur, Productores Unidos de Candelaria) who can provide supplemental volume on 10–14 days' notice. Audit team noted these arrangements are not formalised in written agreements — corrective action recommended before the 2026 season.",
+  "auto_embed_text": "Section 4.2 — Climate and Weather Risk Preparedness. The supplier's growing region in Oaxaca Pacific coast experienced two weather events in September and October 2025 that reduced avocado yield by approximately 18%. Current business continuity includes coordination with three neighbouring cooperatives (Cooperativa Miahuatlán, Agrofrutos del Sur, Productores Unidos de Candelaria) who can provide supplemental volume on 10–14 days' notice. Audit team noted these arrangements are not formalised in written agreements — corrective action recommended before the 2026 season.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29d"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-EMAIL-05-01",
+  "doc_id": "SDOC-VALLE-EMAIL-05",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "email_ValleVerde_season_Apr2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: gerencia@valleverdesc.com.mx | To: procurement@freshmart.com | Date: 2026-04-14 | Subject: Season Outlook and Q2–Q3 Availability. Hass avocado season is progressing well — projecting 12% volume increase vs 2025 for May–August window. No weather alerts active for our growing zones. CONAGUA seasonal forecast indicates above-average rainfall in Oaxaca May–July — monitoring closely. Committed to volumes in purchase orders ORD-2026-0388 and ORD-2026-0389.",
+  "auto_embed_text": "From: gerencia@valleverdesc.com.mx | To: procurement@freshmart.com | Date: 2026-04-14 | Subject: Season Outlook and Q2–Q3 Availability. Hass avocado season is progressing well — projecting 12% volume increase vs 2025 for May–August window. No weather alerts active for our growing zones. CONAGUA seasonal forecast indicates above-average rainfall in Oaxaca May–July — monitoring closely. Committed to volumes in purchase orders ORD-2026-0388 and ORD-2026-0389.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a1"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-AUD-03-01",
+  "doc_id": "SDOC-GDL-AUD-03",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "audit_GDL_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 2 — Capacity Headroom Assessment. At time of audit (March 2025) the facility was operating at 61% of installed capacity with confirmed FreshMart allocation representing 18% of total output. The supplier confirmed ability to ramp to 85% capacity within 3 weeks given advance notice, providing approximately 24% additional headroom for incremental FreshMart volume. No corrective actions raised on capacity management.",
+  "auto_embed_text": "Finding 2 — Capacity Headroom Assessment. At time of audit (March 2025) the facility was operating at 61% of installed capacity with confirmed FreshMart allocation representing 18% of total output. The supplier confirmed ability to ramp to 85% capacity within 3 weeks given advance notice, providing approximately 24% additional headroom for incremental FreshMart volume. No corrective actions raised on capacity management.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a3"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-EMAIL-05-01",
+  "doc_id": "SDOC-GDL-EMAIL-05",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "email_GDL_capacity_Jun2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: ventas@empaquepacifico.com.mx | To: procurement@freshmart.com | Date: 2026-06-02 | Subject: Q3 2026 Capacity Availability. We confirm availability for incremental Q3 volume with 3 weeks lead time. Current facility utilisation is 63%. No disruptions to our Guadalajara–Laredo logistics corridor. Standard transit to LA DC remains 4 business days. Please confirm forecast by June 20 to secure allocation.",
+  "auto_embed_text": "From: ventas@empaquepacifico.com.mx | To: procurement@freshmart.com | Date: 2026-06-02 | Subject: Q3 2026 Capacity Availability. We confirm availability for incremental Q3 volume with 3 weeks lead time. Current facility utilisation is 63%. No disruptions to our Guadalajara–Laredo logistics corridor. Standard transit to LA DC remains 4 business days. Please confirm forecast by June 20 to secure allocation.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a4"
+  },
+  "chunk_id": "CHUNK-SDOC-GZH112-CERT-01-01",
+  "doc_id": "SDOC-GZH112-CERT-01",
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f54"
+  },
+  "filename": "iso_cert_GZH112_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Guangzhou Flex Packaging Ltd., 22 Panyu Industrial Zone, Guangzhou, Guangdong 511400, China. Scope: flexible packaging. Certificate number: CN-QMS-2024-20011. Valid: 2024-09-01 to 2027-09-15. Issued by SGS (China) Co., Ltd.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Guangzhou Flex Packaging Ltd., 22 Panyu Industrial Zone, Guangzhou, Guangdong 511400, China. Scope: flexible packaging. Certificate number: CN-QMS-2024-20011. Valid: 2024-09-01 to 2027-09-15. Issued by SGS (China) Co., Ltd.",
+  "valid_until": "2027-09-15T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a6"
+  },
+  "chunk_id": "CHUNK-SDOC-GZH112-AUD-03-01",
+  "doc_id": "SDOC-GZH112-AUD-03",
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f54"
+  },
+  "filename": "audit_GZH112_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 5 — Export Documentation Lead Times. Current export documentation process requires 5–7 working days from order confirmation to bill of lading issuance. In the context of Yantian port congestion events, this lead time compounds transit delays. Supplier has committed to streamlining to 3 working days by Q3 2025 via digital document management platform. Follow-up review scheduled October 2025.",
+  "auto_embed_text": "Finding 5 — Export Documentation Lead Times. Current export documentation process requires 5–7 working days from order confirmation to bill of lading issuance. In the context of Yantian port congestion events, this lead time compounds transit delays. Supplier has committed to streamlining to 3 working days by Q3 2025 via digital document management platform. Follow-up review scheduled October 2025.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a7"
+  },
+  "chunk_id": "CHUNK-SDOC-GZH112-EMAIL-04-01",
+  "doc_id": "SDOC-GZH112-EMAIL-04",
+  "supplier_id": "SUP-GUANGZHOU-112",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f54"
+  },
+  "filename": "email_GZH112_tariff_Jun2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@gzflexpack.com | To: procurement@freshmart.com | Date: 2026-06-03 | Subject: Tariff Impact Assessment. Following the US trade announcement of June 1, our primary HS classification 3923.29 falls within scope of the announced tariff increase. We estimate a landed cost increase of 8–11% on current order values. We will formally invoke the pricing review clause in Section 4 and submit cost breakdown documentation by June 10.",
+  "auto_embed_text": "From: export@gzflexpack.com | To: procurement@freshmart.com | Date: 2026-06-03 | Subject: Tariff Impact Assessment. Following the US trade announcement of June 1, our primary HS classification 3923.29 falls within scope of the announced tariff increase. We estimate a landed cost increase of 8–11% on current order values. We will formally invoke the pricing review clause in Section 4 and submit cost breakdown documentation by June 10.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2aa"
+  },
+  "chunk_id": "CHUNK-SDOC-SHA087-AUD-03-01",
+  "doc_id": "SDOC-SHA087-AUD-03",
+  "supplier_id": "SUP-SHANGHAI-087",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f55"
+  },
+  "filename": "audit_SHA087_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 7 — Export Documentation Lead Times. The audit team noted that the supplier's current export documentation process requires 5–7 working days from order confirmation to bill of lading issuance. In the context of Shenzhen/Shanghai port congestion events, this lead time compounds transit delays. Corrective action: streamline document preparation to 3 working days by Q3 2025 through implementation of a digital document management platform.",
+  "auto_embed_text": "Finding 7 — Export Documentation Lead Times. The audit team noted that the supplier's current export documentation process requires 5–7 working days from order confirmation to bill of lading issuance. In the context of Shenzhen/Shanghai port congestion events, this lead time compounds transit delays. Corrective action: streamline document preparation to 3 working days by Q3 2025 through implementation of a digital document management platform.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2af"
+  },
+  "chunk_id": "CHUNK-SDOC-DGN099-EMAIL-04-01",
+  "doc_id": "SDOC-DGN099-EMAIL-04",
+  "supplier_id": "SUP-DONGGUAN-099",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f56"
+  },
+  "filename": "email_DGN099_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: sales@dgecopack.com | To: procurement@freshmart.com | Date: 2026-05-15 | Subject: Production Capacity Update. Facility operating at approximately 70% capacity with room to absorb additional volume within 3–4 weeks lead time. Dongguan is approximately 60km from Yantian port. Current congestion is adding 8–12 days to transit schedules. Please confirm Q3 forecast at earliest convenience.",
+  "auto_embed_text": "From: sales@dgecopack.com | To: procurement@freshmart.com | Date: 2026-05-15 | Subject: Production Capacity Update. Facility operating at approximately 70% capacity with room to absorb additional volume within 3–4 weeks lead time. Dongguan is approximately 60km from Yantian port. Current congestion is adding 8–12 days to transit schedules. Please confirm Q3 forecast at earliest convenience.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c3"
+  },
+  "chunk_id": "CHUNK-SDOC-MTY-EMAIL-04-01",
+  "doc_id": "SDOC-MTY-EMAIL-04",
+  "supplier_id": "SUP-MONTERREY-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5f"
+  },
+  "filename": "email_MTY_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: ventas@envasesnortenos.com.mx | To: procurement@freshmart.com | Date: 2026-05-05 | Subject: Q3 Capacity Confirmation. Facility operating at 55% capacity. Can accommodate Q3 incremental volume with 3 weeks lead time. No current disruptions to Laredo border crossing. Standard transit to LA DC is 5 business days.",
+  "auto_embed_text": "From: ventas@envasesnortenos.com.mx | To: procurement@freshmart.com | Date: 2026-05-05 | Subject: Q3 Capacity Confirmation. Facility operating at 55% capacity. Can accommodate Q3 incremental volume with 3 weeks lead time. No current disruptions to Laredo border crossing. Standard transit to LA DC is 5 business days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c5"
+  },
+  "chunk_id": "CHUNK-SDOC-SIN-CTR-02-01",
+  "doc_id": "SDOC-SIN-CTR-02",
+  "supplier_id": "SUP-SINALOA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f61"
+  },
+  "filename": "contrato_marco_Sinaloa_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — Cold Chain and Weather Contingency. All tomato and pepper shipments must be maintained at 10°C–13°C from packing to delivery. In the event of a tropical storm warning issued for Sinaloa state, the Supplier shall notify FreshMart within 6 hours and provide an updated fulfilment forecast within 24 hours. Partial fulfilment of up to 35% volume shortfall is permissible under force majeure without financial penalty.",
+  "auto_embed_text": "Article 6 — Cold Chain and Weather Contingency. All tomato and pepper shipments must be maintained at 10°C–13°C from packing to delivery. In the event of a tropical storm warning issued for Sinaloa state, the Supplier shall notify FreshMart within 6 hours and provide an updated fulfilment forecast within 24 hours. Partial fulfilment of up to 35% volume shortfall is permissible under force majeure without financial penalty.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c7"
+  },
+  "chunk_id": "CHUNK-SDOC-SIN-EMAIL-04-01",
+  "doc_id": "SDOC-SIN-EMAIL-04",
+  "supplier_id": "SUP-SINALOA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f61"
+  },
+  "filename": "email_Sinaloa_season_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exportaciones@agroindustriasnoroeste.com.mx | To: procurement@freshmart.com | Date: 2026-04-05 | Subject: Spring Season Outlook. Tomato crop is on track for normal yields. Current reservoir level is 52% — improved from last year. No tropical storm activity forecast for Sinaloa through June per CONAGUA. Confirming Q2 volumes as discussed.",
+  "auto_embed_text": "From: exportaciones@agroindustriasnoroeste.com.mx | To: procurement@freshmart.com | Date: 2026-04-05 | Subject: Spring Season Outlook. Tomato crop is on track for normal yields. Current reservoir level is 52% — improved from last year. No tropical storm activity forecast for Sinaloa through June per CONAGUA. Confirming Q2 volumes as discussed.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2cd"
+  },
+  "chunk_id": "CHUNK-SDOC-BOG-CTR-02-01",
+  "doc_id": "SDOC-BOG-CTR-02",
+  "supplier_id": "SUP-BOGOTA-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f63"
+  },
+  "filename": "contrato_marco_Bogota_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Logistics and Panama Canal Exposure. Fresh herb shipments to FreshMart are routed via air freight from El Dorado International Airport (BOG) for time-sensitive orders, eliminating Panama Canal exposure for priority SKUs. Sea freight via Buenaventura port is used only for non-perishable bulk orders and is subject to Panama Canal capacity risk covered under Article 12 force majeure provisions.",
+  "auto_embed_text": "Article 8 — Logistics and Panama Canal Exposure. Fresh herb shipments to FreshMart are routed via air freight from El Dorado International Airport (BOG) for time-sensitive orders, eliminating Panama Canal exposure for priority SKUs. Sea freight via Buenaventura port is used only for non-perishable bulk orders and is subject to Panama Canal capacity risk covered under Article 12 force majeure provisions.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d2"
+  },
+  "chunk_id": "CHUNK-SDOC-MED-AUD-03-01",
+  "doc_id": "SDOC-MED-AUD-03",
+  "supplier_id": "SUP-MEDELLIN-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f64"
+  },
+  "filename": "audit_Medellin_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 3 — Panama Canal Exposure. Tropical Harvest's FreshMart shipments are 100% air freight from Medellín. No Panama Canal exposure for this supplier's FreshMart product range. Sea freight is used only for bulk domestic Colombian market. Audit team confirmed logistics configuration is appropriate for perishable exotic fruits. No action required.",
+  "auto_embed_text": "Section 3 — Panama Canal Exposure. Tropical Harvest's FreshMart shipments are 100% air freight from Medellín. No Panama Canal exposure for this supplier's FreshMart product range. Sea freight is used only for bulk domestic Colombian market. Audit team confirmed logistics configuration is appropriate for perishable exotic fruits. No action required.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d6"
+  },
+  "chunk_id": "CHUNK-SDOC-LIM-AUD-03-01",
+  "doc_id": "SDOC-LIM-AUD-03",
+  "supplier_id": "SUP-LIMA-PE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f65"
+  },
+  "filename": "audit_Lima_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 5 — Panama Canal Exposure Mitigation. Supplier's response to 2023–2024 canal restrictions: added 12–18 days to transit times and increased freight costs by an estimated 22%. Air freight contingency with LAN Cargo established for asparagus and premium berries. Arrangement activated in 2024 for 3 shipments — successfully covered time-sensitive volume. Sea freight route maintained for table grapes. Audit team assessed mitigation as adequate for current FreshMart SKU mix.",
+  "auto_embed_text": "Section 5 — Panama Canal Exposure Mitigation. Supplier's response to 2023–2024 canal restrictions: added 12–18 days to transit times and increased freight costs by an estimated 22%. Air freight contingency with LAN Cargo established for asparagus and premium berries. Arrangement activated in 2024 for 3 shipments — successfully covered time-sensitive volume. Sea freight route maintained for table grapes. Audit team assessed mitigation as adequate for current FreshMart SKU mix.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d8"
+  },
+  "chunk_id": "CHUNK-SDOC-SAO-CERT-01-01",
+  "doc_id": "SDOC-SAO-CERT-01",
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f66"
+  },
+  "filename": "iso_cert_SAO_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. BrasilPack Indústria e Comércio Ltda., Rodovia Anhanguera Km 18, Guarulhos, São Paulo 07222-900, Brazil. Scope: packaging materials and consumer goods. Certificate number: BR-QMS-2025-00317. Valid: 2025-01-01 to 2027-07-31.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. BrasilPack Indústria e Comércio Ltda., Rodovia Anhanguera Km 18, Guarulhos, São Paulo 07222-900, Brazil. Scope: packaging materials and consumer goods. Certificate number: BR-QMS-2025-00317. Valid: 2025-01-01 to 2027-07-31.",
+  "valid_until": "2027-07-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e0"
+  },
+  "chunk_id": "CHUNK-SDOC-AMS-CERT-01-01",
+  "doc_id": "SDOC-AMS-CERT-01",
+  "supplier_id": "SUP-AMSTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6a"
+  },
+  "filename": "iso_cert_AMS_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Noord-Holland Packaging B.V., Westpoort Industrial Zone, Molenwerf 4, 1014 BE Amsterdam, Netherlands. Scope: sustainable packaging materials. Certificate number: NL-QMS-2025-00741. Valid: 2025-05-01 to 2028-01-31. Issued by Lloyd's Register.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Noord-Holland Packaging B.V., Westpoort Industrial Zone, Molenwerf 4, 1014 BE Amsterdam, Netherlands. Scope: sustainable packaging materials. Certificate number: NL-QMS-2025-00741. Valid: 2025-05-01 to 2028-01-31. Issued by Lloyd's Register.",
+  "valid_until": "2028-01-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e1"
+  },
+  "chunk_id": "CHUNK-SDOC-AMS-CTR-02-01",
+  "doc_id": "SDOC-AMS-CTR-02",
+  "supplier_id": "SUP-AMSTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6a"
+  },
+  "filename": "contrato_marco_AMS_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — Rotterdam Port Congestion Contingency. Primary export terminal is Rotterdam Maasvlakte II. In the event of average dwell times at Rotterdam exceeding 5 days for a period of more than 48 hours, the Supplier may activate the standing diversion arrangement to Antwerp-Bruges APM Terminal. Activation notice to FreshMart within 24 hours. Transit differential: Antwerp adds 1.5 days to US East Coast routing.",
+  "auto_embed_text": "Article 9 — Rotterdam Port Congestion Contingency. Primary export terminal is Rotterdam Maasvlakte II. In the event of average dwell times at Rotterdam exceeding 5 days for a period of more than 48 hours, the Supplier may activate the standing diversion arrangement to Antwerp-Bruges APM Terminal. Activation notice to FreshMart within 24 hours. Transit differential: Antwerp adds 1.5 days to US East Coast routing.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e6"
+  },
+  "chunk_id": "CHUNK-SDOC-ROT-SUST-03-01",
+  "doc_id": "SDOC-ROT-SUST-03",
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6b"
+  },
+  "filename": "sustainability_audit_ROT_2026.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit January 2026 under ISO 14001. Facility achieved carbon neutrality for Scope 1+2 in 2025 through renewable electricity and on-site solar installation. Participating in Port of Rotterdam Hydrogen Hub pilot for clean logistics fuel from 2027. Auditor: DNV Netherlands.",
+  "auto_embed_text": "Sustainability audit January 2026 under ISO 14001. Facility achieved carbon neutrality for Scope 1+2 in 2025 through renewable electricity and on-site solar installation. Participating in Port of Rotterdam Hydrogen Hub pilot for clean logistics fuel from 2027. Auditor: DNV Netherlands.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e7"
+  },
+  "chunk_id": "CHUNK-SDOC-ROT-EMAIL-04-01",
+  "doc_id": "SDOC-ROT-EMAIL-04",
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6b"
+  },
+  "filename": "email_ROT_portcongestion_May2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: ops@deltalogisticsrdam.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Update. As of this morning, Maasvlakte II operating at 85% gate capacity with vessel dwell times averaging 4.2 days (normal 2.0 days). We are closely monitoring the situation and have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning.",
+  "auto_embed_text": "From: ops@deltalogisticsrdam.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Update. As of this morning, Maasvlakte II operating at 85% gate capacity with vessel dwell times averaging 4.2 days (normal 2.0 days). We are closely monitoring the situation and have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ee"
+  },
+  "chunk_id": "CHUNK-SDOC-HAM-SUST-03-01",
+  "doc_id": "SDOC-HAM-SUST-03",
+  "supplier_id": "SUP-HAMBURG-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6d"
+  },
+  "filename": "sustainability_audit_Hamburg_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit July 2025 under ISO 14001. Renewable electricity: 78% via Hamburg Stadtwerke green tariff. Recycled fibre content: 71% of all corrugated board. Participated in Hamburg Climate Action 2030 programme since 2021. Scope 2 emissions reduced 44% since baseline year 2019. Auditor: Bureau Veritas Germany.",
+  "auto_embed_text": "Sustainability audit July 2025 under ISO 14001. Renewable electricity: 78% via Hamburg Stadtwerke green tariff. Recycled fibre content: 71% of all corrugated board. Participated in Hamburg Climate Action 2030 programme since 2021. Scope 2 emissions reduced 44% since baseline year 2019. Auditor: Bureau Veritas Germany.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f1"
+  },
+  "chunk_id": "CHUNK-SDOC-TH055-CTR-02-01",
+  "doc_id": "SDOC-TH055-CTR-02",
+  "supplier_id": "SUP-TH-055",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5c"
+  },
+  "filename": "contrato_marco_TH055_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 10 — Flood Risk and Business Continuity. The Supplier's primary processing facility lies within the Chao Phraya river flood plain in Samut Prakan province. In the event of a Category 3 or higher flood warning issued by the Thai Meteorological Department, the Supplier shall notify FreshMart within 6 hours and activate the secondary processing facility agreement with Chonburi Cold Storage Co. (45km outside flood zone) within 24 hours.",
+  "auto_embed_text": "Article 10 — Flood Risk and Business Continuity. The Supplier's primary processing facility lies within the Chao Phraya river flood plain in Samut Prakan province. In the event of a Category 3 or higher flood warning issued by the Thai Meteorological Department, the Supplier shall notify FreshMart within 6 hours and activate the secondary processing facility agreement with Chonburi Cold Storage Co. (45km outside flood zone) within 24 hours.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f9"
+  },
+  "chunk_id": "CHUNK-SDOC-CPT-CTR-02-01",
+  "doc_id": "SDOC-CPT-CTR-02",
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f79"
+  },
+  "filename": "contrato_marco_CapeTown_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — EU Food Safety Compliance. All fresh produce exported to EU markets under this Agreement must comply with current EU MRL requirements under Regulation (EC) 396/2005. The Supplier shall provide pre-shipment pesticide residue test certificates from an ISO 17025 accredited laboratory for each lot. In the event of a new EU import restriction affecting the Supplier's product categories, notification must be provided within 5 business days.",
+  "auto_embed_text": "Article 9 — EU Food Safety Compliance. All fresh produce exported to EU markets under this Agreement must comply with current EU MRL requirements under Regulation (EC) 396/2005. The Supplier shall provide pre-shipment pesticide residue test certificates from an ISO 17025 accredited laboratory for each lot. In the event of a new EU import restriction affecting the Supplier's product categories, notification must be provided within 5 business days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a300"
+  },
+  "chunk_id": "CHUNK-SDOC-CHI-CERT-01-01",
+  "doc_id": "SDOC-CHI-CERT-01",
+  "supplier_id": "SUP-CHICAGO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f73"
+  },
+  "filename": "brc_cert_Chicago_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A. Midwest Dairy Alliance LLC, 1800 South Kilbourn Avenue, Chicago, Illinois 60623, USA. Scope: dairy processing — fluid milk, butter, cheese. Audit type: Unannounced. Valid to 2027-08-31. ISO 22000:2018 also held — valid to 2027-08-31. Both issued by NSF International.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A. Midwest Dairy Alliance LLC, 1800 South Kilbourn Avenue, Chicago, Illinois 60623, USA. Scope: dairy processing — fluid milk, butter, cheese. Audit type: Unannounced. Valid to 2027-08-31. ISO 22000:2018 also held — valid to 2027-08-31. Both issued by NSF International.",
+  "valid_until": "2027-05-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a301"
+  },
+  "chunk_id": "CHUNK-SDOC-CHI-CTR-02-01",
+  "doc_id": "SDOC-CHI-CTR-02",
+  "supplier_id": "SUP-CHICAGO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f73"
+  },
+  "filename": "contrato_marco_Chicago_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 5 — Service Level Agreement. Minimum OTIF delivery rate: 97.5% on rolling 13-week basis. OTIF defined as delivery of correct quantity within agreed window with no quality non-conformances at goods-in inspection. If OTIF falls below 95%, supplier submits root cause analysis within 3 business days and corrective action plan within 7 business days. Financial service credit of 0.5% of invoice value per 1 percentage point below 95% OTIF may be applied.",
+  "auto_embed_text": "Article 5 — Service Level Agreement. Minimum OTIF delivery rate: 97.5% on rolling 13-week basis. OTIF defined as delivery of correct quantity within agreed window with no quality non-conformances at goods-in inspection. If OTIF falls below 95%, supplier submits root cause analysis within 3 business days and corrective action plan within 7 business days. Financial service credit of 0.5% of invoice value per 1 percentage point below 95% OTIF may be applied.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a306"
+  },
+  "chunk_id": "CHUNK-SDOC-LAX-SUST-03-01",
+  "doc_id": "SDOC-LAX-SUST-03",
+  "supplier_id": "SUP-LOSANGELES-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f71"
+  },
+  "filename": "sustainability_audit_LAX_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit November 2025 under FSC Certified standard. Cooling towers converted to closed-loop — water use reduced 31%. Sub-meter monitoring installed across all process areas. Currently Tier 1 State Water allocation — no production restrictions in effect. Solar panels installed Q2 2025 covering 28% of facility electricity. Participating in California Water Action Collaborative. Auditor: SCS Global Services.",
+  "auto_embed_text": "Sustainability audit November 2025 under FSC Certified standard. Cooling towers converted to closed-loop — water use reduced 31%. Sub-meter monitoring installed across all process areas. Currently Tier 1 State Water allocation — no production restrictions in effect. Solar panels installed Q2 2025 covering 28% of facility electricity. Participating in California Water Action Collaborative. Auditor: SCS Global Services.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30a"
+  },
+  "chunk_id": "CHUNK-SDOC-SEA-SUST-03-01",
+  "doc_id": "SDOC-SEA-SUST-03",
+  "supplier_id": "SUP-SEATTLE-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f74"
+  },
+  "filename": "sustainability_audit_Seattle_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit April 2025 under SCS Global Services standard. Crop heat stress insurance covers 60% of annual revenue. BC Canada farm partner arrangement (2 partners) provides supplemental volume during Pacific Northwest extreme heat events — activated July 2023 for 15% volume shortfall, successfully delivered. 100% organic inputs. Scope 1+2 carbon neutral since 2024 via Washington State renewable electricity. Auditor: SCS Global Services.",
+  "auto_embed_text": "Sustainability audit April 2025 under SCS Global Services standard. Crop heat stress insurance covers 60% of annual revenue. BC Canada farm partner arrangement (2 partners) provides supplemental volume during Pacific Northwest extreme heat events — activated July 2023 for 15% volume shortfall, successfully delivered. 100% organic inputs. Scope 1+2 carbon neutral since 2024 via Washington State renewable electricity. Auditor: SCS Global Services.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30d"
+  },
+  "chunk_id": "CHUNK-SDOC-JP033-CTR-02-01",
+  "doc_id": "SDOC-JP033-CTR-02",
+  "supplier_id": "SUP-JP-033",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5b"
+  },
+  "filename": "contrato_marco_JP033_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Allergen Management and Food Safety. Supplier maintains dedicated allergen-free production lines for FreshMart product range. Pre-production CIP cleaning procedures validated annually. All 14 EU-regulated allergens plus sesame and mustard covered in allergen risk assessment. Allergen incident notification to FreshMart within 2 hours of detection.",
+  "auto_embed_text": "Article 8 — Allergen Management and Food Safety. Supplier maintains dedicated allergen-free production lines for FreshMart product range. Pre-production CIP cleaning procedures validated annually. All 14 EU-regulated allergens plus sesame and mustard covered in allergen risk assessment. Allergen incident notification to FreshMart within 2 hours of detection.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a30e"
+  },
+  "chunk_id": "CHUNK-SDOC-CRK-CERT-01-01",
+  "doc_id": "SDOC-CRK-CERT-01",
+  "supplier_id": "SUP-CORK-IE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f68"
+  },
+  "filename": "brc_cert_Cork_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A+. Kerry Foods (Cork) Ltd., Charleville Road, Rathluirc, Co. Cork, Ireland. Scope: food safety management — dairy. Audit type: Unannounced. Certificate date: 2025-11-03. Valid to 2027-04-30. ISO 22000:2018 also held — valid to 2027-04-30.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A+. Kerry Foods (Cork) Ltd., Charleville Road, Rathluirc, Co. Cork, Ireland. Scope: food safety management — dairy. Audit type: Unannounced. Certificate date: 2025-11-03. Valid to 2027-04-30. ISO 22000:2018 also held — valid to 2027-04-30.",
+  "valid_until": "2026-09-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a310"
+  },
+  "chunk_id": "CHUNK-SDOC-DUB-CERT-01-01",
+  "doc_id": "SDOC-DUB-CERT-01",
+  "supplier_id": "SUP-DUBLIN-IE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f69"
+  },
+  "filename": "brc_cert_Dublin_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "BRC Global Standard for Food Safety Grade A. Leinster Fresh Dairy Co-op, Portlaoise Road, Monasterevin, Co. Kildare, Ireland. Scope: food safety — dairy and chilled. Audit date: 2025-09-15. Valid to 2028-01-31. ISO 22000:2018 also held — valid to 2028-01-31. Certification body: Lloyd's Register Quality Assurance.",
+  "auto_embed_text": "BRC Global Standard for Food Safety Grade A. Leinster Fresh Dairy Co-op, Portlaoise Road, Monasterevin, Co. Kildare, Ireland. Scope: food safety — dairy and chilled. Audit date: 2025-09-15. Valid to 2028-01-31. ISO 22000:2018 also held — valid to 2028-01-31. Certification body: Lloyd's Register Quality Assurance.",
+  "valid_until": "2027-08-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a312"
+  },
+  "chunk_id": "CHUNK-SDOC-MIL-CERT-01-01",
+  "doc_id": "SDOC-MIL-CERT-01",
+  "supplier_id": "SUP-MILAN-IT",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f70"
+  },
+  "filename": "iso_cert_Milan_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Imballaggi del Nord S.p.A., Via dell'Industria 33, 20060 Bussero, Metropolitan City of Milan, Italy. Scope: luxury and premium retail packaging. Certificate number: IT-QMS-2025-01201. Valid: 2025-06-01 to 2027-11-30.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Imballaggi del Nord S.p.A., Via dell'Industria 33, 20060 Bussero, Metropolitan City of Milan, Italy. Scope: luxury and premium retail packaging. Certificate number: IT-QMS-2025-01201. Valid: 2025-06-01 to 2027-11-30.",
+  "valid_until": "2027-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a314"
+  },
+  "chunk_id": "CHUNK-SDOC-BAR-CERT-01-01",
+  "doc_id": "SDOC-BAR-CERT-01",
+  "supplier_id": "SUP-BARCELONA-ES",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6f"
+  },
+  "filename": "iso_ggap_cert_BCN_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "Dual Certification. Envases Mediterráneos S.L., Polígon Industrial Can Roqueta, Carrer dels Emprenedors 22, 08202 Sabadell, Catalonia, Spain. (1) ISO 9001:2015 — Scope: food-grade packaging and fresh produce distribution. Valid to 2027-09-30. (2) GLOBALG.A.P. CoC Chain of Custody — for fresh produce packaging compliance, certificate number GGAP-ES-COC-2025-00441. Valid to 2026-12-31. Both certified by Bureau Veritas Spain.",
+  "auto_embed_text": "Dual Certification. Envases Mediterráneos S.L., Polígon Industrial Can Roqueta, Carrer dels Emprenedors 22, 08202 Sabadell, Catalonia, Spain. (1) ISO 9001:2015 — Scope: food-grade packaging and fresh produce distribution. Valid to 2027-09-30. (2) GLOBALG.A.P. CoC Chain of Custody — for fresh produce packaging compliance, certificate number GGAP-ES-COC-2025-00441. Valid to 2026-12-31. Both certified by Bureau Veritas Spain.",
+  "valid_until": "2026-12-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a319"
+  },
+  "chunk_id": "CHUNK-SDOC-TOR-CTR-02-01",
+  "doc_id": "SDOC-TOR-CTR-02",
+  "supplier_id": "SUP-TORONTO-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f75"
+  },
+  "filename": "contrato_marco_Toronto_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — CUSMA/USMCA Export Compliance. All dairy products exported to the USA under this Agreement are shipped under CUSMA (USMCA) preferential tariff treatment. The Supplier shall maintain current CFIA export certificates and US FDA facility registration (FEI number 3014588120) for the duration of this Agreement. Any suspension or lapse in either certification must be notified to FreshMart within 24 hours.",
+  "auto_embed_text": "Article 6 — CUSMA/USMCA Export Compliance. All dairy products exported to the USA under this Agreement are shipped under CUSMA (USMCA) preferential tariff treatment. The Supplier shall maintain current CFIA export certificates and US FDA facility registration (FEI number 3014588120) for the duration of this Agreement. Any suspension or lapse in either certification must be notified to FreshMart within 24 hours.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31c"
+  },
+  "chunk_id": "CHUNK-SDOC-VAN-CERT-01-01",
+  "doc_id": "SDOC-VAN-CERT-01",
+  "supplier_id": "SUP-VANCOUVER-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f77"
+  },
+  "filename": "ggap_usda_cert_Vancouver_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "Dual Certification. Pacific Rim Fresh Produce Ltd., 3600 East Hastings Street, Vancouver, British Columbia V5K 2A9, Canada. (1) GLOBALG.A.P. IFA v6.0 — Product scope: blueberries, cranberries, and greenhouse vegetables. Valid to 2027-03-31. (2) USDA NOP Organic Handler — same products, organic grade. Certificate NOP-BC-2025-000441. Valid to 2027-01-31. Both certified by Oregon Tilth Certified Organic.",
+  "auto_embed_text": "Dual Certification. Pacific Rim Fresh Produce Ltd., 3600 East Hastings Street, Vancouver, British Columbia V5K 2A9, Canada. (1) GLOBALG.A.P. IFA v6.0 — Product scope: blueberries, cranberries, and greenhouse vegetables. Valid to 2027-03-31. (2) USDA NOP Organic Handler — same products, organic grade. Certificate NOP-BC-2025-000441. Valid to 2027-01-31. Both certified by Oregon Tilth Certified Organic.",
+  "valid_until": "2027-01-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31f"
+  },
+  "chunk_id": "CHUNK-SDOC-CAI-CTR-02-01",
+  "doc_id": "SDOC-CAI-CTR-02",
+  "supplier_id": "SUP-CAIRO-EG",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f78"
+  },
+  "filename": "contrato_marco_Cairo_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — EU Pesticide Residue Compliance. All EU-destined shipments must be accompanied by pre-harvest pesticide residue test certificates from an accredited Egyptian laboratory (Intertek Egypt). The Supplier shall maintain 100% lot-level traceability. Any detection above EU MRL limits requires immediate notification to FreshMart and diversion of the affected lot to non-EU markets.",
+  "auto_embed_text": "Article 9 — EU Pesticide Residue Compliance. All EU-destined shipments must be accompanied by pre-harvest pesticide residue test certificates from an accredited Egyptian laboratory (Intertek Egypt). The Supplier shall maintain 100% lot-level traceability. Any detection above EU MRL limits requires immediate notification to FreshMart and diversion of the affected lot to non-EU markets.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a320"
+  },
+  "chunk_id": "CHUNK-SDOC-NAI-CERT-01-01",
+  "doc_id": "SDOC-NAI-CERT-01",
+  "supplier_id": "SUP-NAIROBI-KE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f7a"
+  },
+  "filename": "ggap_cert_Nairobi_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: East Africa Fresh Exports Ltd., Thika Road, Ruiru Industrial Zone, Kiambu County, Kenya. Product scope: French beans, snow peas, sugar snap peas, and baby courgettes for air-freight export to European and North American markets. Certificate number: GGAP-KE-2025-001441. Valid: 2025-01-01 to 2026-09-30. Certification body: SGS Kenya.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: East Africa Fresh Exports Ltd., Thika Road, Ruiru Industrial Zone, Kiambu County, Kenya. Product scope: French beans, snow peas, sugar snap peas, and baby courgettes for air-freight export to European and North American markets. Certificate number: GGAP-KE-2025-001441. Valid: 2025-01-01 to 2026-09-30. Certification body: SGS Kenya.",
+  "valid_until": "2026-09-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a292"
+  },
+  "chunk_id": "CHUNK-SDOC-SHZ441-CTR-02-01",
+  "doc_id": "SDOC-SHZ441-CTR-02",
+  "supplier_id": "SUP-SHENZHEN-441",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f53"
+  },
+  "filename": "contrato_marco_SHZ441_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Force Majeure. Neither party shall be liable for delay or failure to perform its obligations to the extent caused by an event beyond that party's reasonable control, including but not limited to acts of government, imposition of trade sanctions or tariffs, port closures, natural disasters, or pandemics. The affected party must notify the other party in writing within five (5) business days of the force majeure event.",
+  "auto_embed_text": "Article 8 — Force Majeure. Neither party shall be liable for delay or failure to perform its obligations to the extent caused by an event beyond that party's reasonable control, including but not limited to acts of government, imposition of trade sanctions or tariffs, port closures, natural disasters, or pandemics. The affected party must notify the other party in writing within five (5) business days of the force majeure event.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a298"
+  },
+  "chunk_id": "CHUNK-SDOC-VALLE-CERT-01-02",
+  "doc_id": "SDOC-VALLE-CERT-01",
+  "supplier_id": "SUP-VALLE-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f60"
+  },
+  "filename": "ggap_cert_ValleVerde_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "certificate",
+  "chunk_text": "Full compliance confirmed across all applicable control points in Annex AF, AB, and FV (Fruit and Vegetables). One minor nonconformity recorded in the previous cycle relating to pesticide storage labelling — resolved and verified closed. Traceability system covers harvest-to-packing-to-dispatch at lot level. USDA Organic handler certificate also held — scope: certified organic produce. Certificate number NOP-MX-2025-004471, valid to 2026-12-31.",
+  "auto_embed_text": "Full compliance confirmed across all applicable control points in Annex AF, AB, and FV (Fruit and Vegetables). One minor nonconformity recorded in the previous cycle relating to pesticide storage labelling — resolved and verified closed. Traceability system covers harvest-to-packing-to-dispatch at lot level. USDA Organic handler certificate also held — scope: certified organic produce. Certificate number NOP-MX-2025-004471, valid to 2026-12-31.",
+  "valid_until": "2026-10-15T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a29f"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-CTR-02-01",
+  "doc_id": "SDOC-GDL-CTR-02",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "contrato_marco_GDL_2023.pdf",
+  "page_ref": 11,
+  "chunk_index": 1,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 7 — Urgent Delivery Clause. In the event that FreshMart issues an urgent purchase order with a delivery window of less than 21 days, the Supplier shall confirm acceptance or rejection within 24 hours. Upon acceptance, the Supplier commits to allocating production capacity equivalent to at least 80% of the requested volume within 5 business days. Urgent orders are subject to a 4% premium over the standard framework price.",
+  "auto_embed_text": "Article 7 — Urgent Delivery Clause. In the event that FreshMart issues an urgent purchase order with a delivery window of less than 21 days, the Supplier shall confirm acceptance or rejection within 24 hours. Upon acceptance, the Supplier commits to allocating production capacity equivalent to at least 80% of the requested volume within 5 business days. Urgent orders are subject to a 4% premium over the standard framework price.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a0"
+  },
+  "chunk_id": "CHUNK-SDOC-GDL-CTR-02-02",
+  "doc_id": "SDOC-GDL-CTR-02",
+  "supplier_id": "SUP-GUADALAJARA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5e"
+  },
+  "filename": "contrato_marco_GDL_2023.pdf",
+  "page_ref": 12,
+  "chunk_index": 2,
+  "chunk_total": 2,
+  "doc_type": "contract",
+  "chunk_text": "Article 7.2 — Logistics Commitment for Urgent Orders. For urgent orders accepted under Article 7, the Supplier guarantees ex-works despatch within 7 business days of order confirmation. FreshMart's standard carrier (XPO Logistics MX) will collect within 24 hours of despatch notification. Estimated transit to FreshMart Los Angeles DC: 4 business days via road to Laredo crossing then US domestic carrier.",
+  "auto_embed_text": "Article 7.2 — Logistics Commitment for Urgent Orders. For urgent orders accepted under Article 7, the Supplier guarantees ex-works despatch within 7 business days of order confirmation. FreshMart's standard carrier (XPO Logistics MX) will collect within 24 hours of despatch notification. Estimated transit to FreshMart Los Angeles DC: 4 business days via road to Laredo crossing then US domestic carrier.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2a9"
+  },
+  "chunk_id": "CHUNK-SDOC-SHA087-CTR-02-01",
+  "doc_id": "SDOC-SHA087-CTR-02",
+  "supplier_id": "SUP-SHANGHAI-087",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f55"
+  },
+  "filename": "contrato_marco_SHA087_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 11 — Port Disruption Protocol. In the event of a declared port disruption at Shanghai Yangshan or Waigaoqiao terminals causing average dwell times exceeding 5 days, the Supplier shall notify FreshMart within 24 hours and present rerouting options within 48 hours. Approved alternatives include Ningbo-Zhoushan port (150km) or Tianjin port (1,200km for northern cargo). Additional freight costs for approved rerouting are borne equally by both parties.",
+  "auto_embed_text": "Article 11 — Port Disruption Protocol. In the event of a declared port disruption at Shanghai Yangshan or Waigaoqiao terminals causing average dwell times exceeding 5 days, the Supplier shall notify FreshMart within 24 hours and present rerouting options within 48 hours. Approved alternatives include Ningbo-Zhoushan port (150km) or Tianjin port (1,200km for northern cargo). Additional freight costs for approved rerouting are borne equally by both parties.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ac"
+  },
+  "chunk_id": "CHUNK-SDOC-DGN099-CERT-01-01",
+  "doc_id": "SDOC-DGN099-CERT-01",
+  "supplier_id": "SUP-DONGGUAN-099",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f56"
+  },
+  "filename": "iso_cert_DGN099_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Dongguan Eco Print & Pack Co., Changping Town Industrial Estate, Dongguan, Guangdong, China. Scope: printed packaging and labels. Certificate number: CN-QMS-2025-31102. Valid: 2025-04-01 to 2026-12-31. No major nonconformities at initial certification audit.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Dongguan Eco Print & Pack Co., Changping Town Industrial Estate, Dongguan, Guangdong, China. Scope: printed packaging and labels. Certificate number: CN-QMS-2025-31102. Valid: 2025-04-01 to 2026-12-31. No major nonconformities at initial certification audit.",
+  "valid_until": "2026-12-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ad"
+  },
+  "chunk_id": "CHUNK-SDOC-DGN099-CTR-02-01",
+  "doc_id": "SDOC-DGN099-CTR-02",
+  "supplier_id": "SUP-DONGGUAN-099",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f56"
+  },
+  "filename": "contrato_marco_DGN099_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 10 — Tariff Exposure Notification. The Supplier acknowledges that goods exported to the United States may be subject to US Section 301 tariffs on Chinese-origin goods. The Supplier shall notify FreshMart within three (3) business days of any official announcement that materially changes the applicable duty rates. Both parties agree to meet within ten (10) business days to assess impact and discuss mitigation options.",
+  "auto_embed_text": "Article 10 — Tariff Exposure Notification. The Supplier acknowledges that goods exported to the United States may be subject to US Section 301 tariffs on Chinese-origin goods. The Supplier shall notify FreshMart within three (3) business days of any official announcement that materially changes the applicable duty rates. Both parties agree to meet within ten (10) business days to assess impact and discuss mitigation options.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b2"
+  },
+  "chunk_id": "CHUNK-SDOC-VN088-AUD-03-01",
+  "doc_id": "SDOC-VN088-AUD-03",
+  "supplier_id": "SUP-VN-088",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f57"
+  },
+  "filename": "audit_VN088_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 1 — Certification Gap. ISO 9001 certificate expired 2025-11-30. Renewal application submitted to Bureau Veritas Vietnam in October 2025. As of audit date (December 2025), renewal certificate not yet issued. FreshMart procurement standard requires active ISO 9001 certification for packaging suppliers. This supplier is currently non-compliant. Corrective action required: provide renewed certificate within 30 days or supply relationship will be placed on hold.",
+  "auto_embed_text": "Finding 1 — Certification Gap. ISO 9001 certificate expired 2025-11-30. Renewal application submitted to Bureau Veritas Vietnam in October 2025. As of audit date (December 2025), renewal certificate not yet issued. FreshMart procurement standard requires active ISO 9001 certification for packaging suppliers. This supplier is currently non-compliant. Corrective action required: provide renewed certificate within 30 days or supply relationship will be placed on hold.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b3"
+  },
+  "chunk_id": "CHUNK-SDOC-VN088-EMAIL-04-01",
+  "doc_id": "SDOC-VN088-EMAIL-04",
+  "supplier_id": "SUP-VN-088",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f57"
+  },
+  "filename": "email_VN088_certupdate_Jan2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@hanoiindustrialsupplies.vn | To: procurement@freshmart.com | Date: 2026-01-08 | Subject: ISO 9001 Renewal Update. We are following up on the certification renewal status. Bureau Veritas has scheduled the Stage 2 audit for February 14–15, 2026. We anticipate the renewed certificate will be issued by end of February. We apologise for the delay and confirm that our quality management processes have not changed during this interim period.",
+  "auto_embed_text": "From: export@hanoiindustrialsupplies.vn | To: procurement@freshmart.com | Date: 2026-01-08 | Subject: ISO 9001 Renewal Update. We are following up on the certification renewal status. Bureau Veritas has scheduled the Stage 2 audit for February 14–15, 2026. We anticipate the renewed certificate will be issued by end of February. We apologise for the delay and confirm that our quality management processes have not changed during this interim period.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2b4"
+  },
+  "chunk_id": "CHUNK-SDOC-VN204-CERT-01-01",
+  "doc_id": "SDOC-VN204-CERT-01",
+  "supplier_id": "SUP-VN-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f58"
+  },
+  "filename": "iso_cert_VN204_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Ho Chi Minh Packaging Corp., Binh Tan Industrial Zone, Ho Chi Minh City, Vietnam. Scope: packaging materials including food-grade. Certificate number: VN-QMS-2025-00892. Valid to 2027-08-15. Issued by TÜV Rheinland Vietnam Co., Ltd.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Ho Chi Minh Packaging Corp., Binh Tan Industrial Zone, Ho Chi Minh City, Vietnam. Scope: packaging materials including food-grade. Certificate number: VN-QMS-2025-00892. Valid to 2027-08-15. Issued by TÜV Rheinland Vietnam Co., Ltd.",
+  "valid_until": "2027-08-15T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2bd"
+  },
+  "chunk_id": "CHUNK-SDOC-TW204-CTR-02-01",
+  "doc_id": "SDOC-TW204-CTR-02",
+  "supplier_id": "SUP-TW-204",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5a"
+  },
+  "filename": "contrato_marco_TW204_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 10 — Geopolitical Risk Notification. The parties acknowledge that the supply relationship may be affected by geopolitical developments in the Taiwan Strait region and by US trade policy covering Taiwan-origin goods. Taiwan is currently included in applies_to_regions for RISK-GEO-001 (US-CN tariff escalation), which means tariff exposure is equivalent to CN-region suppliers for affected HS categories. The Supplier shall notify FreshMart of any government-issued guidance or export restriction within 24 hours.",
+  "auto_embed_text": "Article 10 — Geopolitical Risk Notification. The parties acknowledge that the supply relationship may be affected by geopolitical developments in the Taiwan Strait region and by US trade policy covering Taiwan-origin goods. Taiwan is currently included in applies_to_regions for RISK-GEO-001 (US-CN tariff escalation), which means tariff exposure is equivalent to CN-region suppliers for affected HS categories. The Supplier shall notify FreshMart of any government-issued guidance or export restriction within 24 hours.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c0"
+  },
+  "chunk_id": "CHUNK-SDOC-MTY-CERT-01-01",
+  "doc_id": "SDOC-MTY-CERT-01",
+  "supplier_id": "SUP-MONTERREY-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5f"
+  },
+  "filename": "iso_cert_MTY_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, Mexico. Scope: rigid and flexible packaging. Certificate number: MX-QMS-2025-06204. Valid: 2025-03-01 to 2027-05-31.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, Mexico. Scope: rigid and flexible packaging. Certificate number: MX-QMS-2025-06204. Valid: 2025-03-01 to 2027-05-31.",
+  "valid_until": "2027-05-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c1"
+  },
+  "chunk_id": "CHUNK-SDOC-MTY-CTR-02-01",
+  "doc_id": "SDOC-MTY-CTR-02",
+  "supplier_id": "SUP-MONTERREY-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5f"
+  },
+  "filename": "contrato_marco_MTY_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 7 — Delivery Lead Times and Transit Risk. Supplier facility in Apodaca, Nuevo León is 250km from the Laredo–Nuevo Laredo land border crossing. Standard delivery to FreshMart's Chicago DC is 4–6 business days by road. In the event of border crossing delays exceeding 24 hours, the Supplier shall notify FreshMart immediately. FreshMart's SLA allows a 48-hour grace period before a delayed delivery is recorded as a non-conformance.",
+  "auto_embed_text": "Article 7 — Delivery Lead Times and Transit Risk. Supplier facility in Apodaca, Nuevo León is 250km from the Laredo–Nuevo Laredo land border crossing. Standard delivery to FreshMart's Chicago DC is 4–6 business days by road. In the event of border crossing delays exceeding 24 hours, the Supplier shall notify FreshMart immediately. FreshMart's SLA allows a 48-hour grace period before a delayed delivery is recorded as a non-conformance.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c6"
+  },
+  "chunk_id": "CHUNK-SDOC-SIN-AUD-03-01",
+  "doc_id": "SDOC-SIN-AUD-03",
+  "supplier_id": "SUP-SINALOA-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f61"
+  },
+  "filename": "audit_Sinaloa_2026.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Finding 2 — Water Availability and Drought Risk. Supplier sources 100% of irrigation water from the Sinaloa River system and Gustavo Díaz Ordaz reservoir. In 2024–2025, reservoir levels fell to 38% of capacity, requiring reduction of irrigated acreage by 15%. Supplier has applied for secondary water rights allocation from a nearby aquifer — currently under CONAGUA review. FreshMart recommends contingency volume discussion before each growing season.",
+  "auto_embed_text": "Finding 2 — Water Availability and Drought Risk. Supplier sources 100% of irrigation water from the Sinaloa River system and Gustavo Díaz Ordaz reservoir. In 2024–2025, reservoir levels fell to 38% of capacity, requiring reduction of irrigated acreage by 15%. Supplier has applied for secondary water rights allocation from a nearby aquifer — currently under CONAGUA review. FreshMart recommends contingency volume discussion before each growing season.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c8"
+  },
+  "chunk_id": "CHUNK-SDOC-CDMX-CERT-01-01",
+  "doc_id": "SDOC-CDMX-CERT-01",
+  "supplier_id": "SUP-CDMX-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f62"
+  },
+  "filename": "iso_cert_CDMX_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Soluciones de Empaque Central S.A., Parque Industrial Vallejo, Avenida Ceylan 880, Azcapotzalco, Ciudad de México 02300, Mexico. Scope: consumer retail packaging. Certificate number: MX-QMS-2025-07001. Valid: 2025-06-01 to 2028-01-31.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Soluciones de Empaque Central S.A., Parque Industrial Vallejo, Avenida Ceylan 880, Azcapotzalco, Ciudad de México 02300, Mexico. Scope: consumer retail packaging. Certificate number: MX-QMS-2025-07001. Valid: 2025-06-01 to 2028-01-31.",
+  "valid_until": "2028-01-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2c9"
+  },
+  "chunk_id": "CHUNK-SDOC-CDMX-CTR-02-01",
+  "doc_id": "SDOC-CDMX-CTR-02",
+  "supplier_id": "SUP-CDMX-MX",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f62"
+  },
+  "filename": "contrato_marco_CDMX_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 5 — Packaging Sustainability Requirements. All paperboard supplied under this Agreement must contain a minimum of 60% post-consumer recycled content, verified by mill certificate per shipment. The Supplier must achieve ISO 14001 certification by December 2025 as a condition of framework renewal. Current ISO 14001 certification held under certificate number MX-EMS-2025-07001, valid to 2028-01-31.",
+  "auto_embed_text": "Article 5 — Packaging Sustainability Requirements. All paperboard supplied under this Agreement must contain a minimum of 60% post-consumer recycled content, verified by mill certificate per shipment. The Supplier must achieve ISO 14001 certification by December 2025 as a condition of framework renewal. Current ISO 14001 certification held under certificate number MX-EMS-2025-07001, valid to 2028-01-31.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2cc"
+  },
+  "chunk_id": "CHUNK-SDOC-BOG-CERT-01-01",
+  "doc_id": "SDOC-BOG-CERT-01",
+  "supplier_id": "SUP-BOGOTA-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f63"
+  },
+  "filename": "ggap_cert_Bogota_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Flores y Alimentos de Colombia Ltda., Vereda El Rosal, Municipio de Facatativá, Cundinamarca, Colombia. Product scope: fresh herbs (cilantro, mint, parsley) and cut flowers for export. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-CO-2025-001187. Valid: 2025-02-01 to 2027-02-28. Issued by Control Union Colombia.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Flores y Alimentos de Colombia Ltda., Vereda El Rosal, Municipio de Facatativá, Cundinamarca, Colombia. Product scope: fresh herbs (cilantro, mint, parsley) and cut flowers for export. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-CO-2025-001187. Valid: 2025-02-01 to 2027-02-28. Issued by Control Union Colombia.",
+  "valid_until": "2027-02-28T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2cf"
+  },
+  "chunk_id": "CHUNK-SDOC-BOG-SUST-04-01",
+  "doc_id": "SDOC-BOG-SUST-04",
+  "supplier_id": "SUP-BOGOTA-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f63"
+  },
+  "filename": "sustainability_audit_Bogota_2025.pdf",
+  "page_ref": 2,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit September 2025 under Rainforest Alliance standard. Smallholder farmer network covers 18 families across Cundinamarca. Zero pesticide applications on mint and cilantro product lines — exclusively organic inputs. Water use intensity: 4.2 L per kg of fresh herb production. Certification renewed to 2026-06-01 under Rainforest Alliance. Auditor: Icontec International Colombia.",
+  "auto_embed_text": "Sustainability audit September 2025 under Rainforest Alliance standard. Smallholder farmer network covers 18 families across Cundinamarca. Zero pesticide applications on mint and cilantro product lines — exclusively organic inputs. Water use intensity: 4.2 L per kg of fresh herb production. Certification renewed to 2026-06-01 under Rainforest Alliance. Auditor: Icontec International Colombia.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d0"
+  },
+  "chunk_id": "CHUNK-SDOC-MED-CERT-01-01",
+  "doc_id": "SDOC-MED-CERT-01",
+  "supplier_id": "SUP-MEDELLIN-CO",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f64"
+  },
+  "filename": "ggap_cert_Medellin_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Tropical Harvest S.A.S., Km 22 Autopista Medellín–Bogotá, Municipio de Guarne, Antioquia, Colombia. Product scope: physalis, pitaya (dragon fruit), uchuva (cape gooseberry), and tropical juice concentrates. Certificate number: GGAP-CO-2025-002041. Valid: 2025-04-01 to 2027-07-31.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Tropical Harvest S.A.S., Km 22 Autopista Medellín–Bogotá, Municipio de Guarne, Antioquia, Colombia. Product scope: physalis, pitaya (dragon fruit), uchuva (cape gooseberry), and tropical juice concentrates. Certificate number: GGAP-CO-2025-002041. Valid: 2025-04-01 to 2027-07-31.",
+  "valid_until": "2027-07-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d5"
+  },
+  "chunk_id": "CHUNK-SDOC-LIM-CTR-02-01",
+  "doc_id": "SDOC-LIM-CTR-02",
+  "supplier_id": "SUP-LIMA-PE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f65"
+  },
+  "filename": "contrato_marco_Lima_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 9 — Panama Canal Risk and Air Freight Contingency. Approximately 70% of FreshMart-destined volume ships via Callao port through the Panama Canal to US East Coast ports. In the event of canal capacity restrictions adding more than 10 days to transit, the Supplier may activate the air freight contingency agreement with LAN Cargo for asparagus and high-value berry SKUs. Additional air freight cost above sea freight baseline is shared equally between parties up to a maximum of USD 2.50 per kg.",
+  "auto_embed_text": "Article 9 — Panama Canal Risk and Air Freight Contingency. Approximately 70% of FreshMart-destined volume ships via Callao port through the Panama Canal to US East Coast ports. In the event of canal capacity restrictions adding more than 10 days to transit, the Supplier may activate the air freight contingency agreement with LAN Cargo for asparagus and high-value berry SKUs. Additional air freight cost above sea freight baseline is shared equally between parties up to a maximum of USD 2.50 per kg.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2d7"
+  },
+  "chunk_id": "CHUNK-SDOC-LIM-EMAIL-04-01",
+  "doc_id": "SDOC-LIM-EMAIL-04",
+  "supplier_id": "SUP-LIMA-PE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f65"
+  },
+  "filename": "email_Lima_season_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exports@agroexportacionesdelsur.com.pe | To: procurement@freshmart.com | Date: 2026-03-10 | Subject: Asparagus and Grape Season Outlook 2026. Asparagus season started 2 weeks early due to favourable temperature conditions. Current Callao port operating normally — no canal restrictions in effect. Table grape volumes projected at 105% of 2025 levels. Confirming Q2 allocations as discussed.",
+  "auto_embed_text": "From: exports@agroexportacionesdelsur.com.pe | To: procurement@freshmart.com | Date: 2026-03-10 | Subject: Asparagus and Grape Season Outlook 2026. Asparagus season started 2 weeks early due to favourable temperature conditions. Current Callao port operating normally — no canal restrictions in effect. Table grape volumes projected at 105% of 2025 levels. Confirming Q2 allocations as discussed.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2da"
+  },
+  "chunk_id": "CHUNK-SDOC-SAO-AUD-03-01",
+  "doc_id": "SDOC-SAO-AUD-03",
+  "supplier_id": "SUP-SAOPAULO-BR",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f66"
+  },
+  "filename": "audit_SAO_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 4 — Panama Canal and Port Santos Logistics. Santos port (50km from facility) is the primary export terminal. Panama Canal restrictions in 2023–2024 added average 14 days to US East Coast transit. Supplier has pre-established priority booking arrangement with Hamburg Sud for alternate sailing slots via Suez when canal capacity is restricted. Additional cost of Suez routing is approximately USD 380 per container — passed through to FreshMart per Article 12.",
+  "auto_embed_text": "Section 4 — Panama Canal and Port Santos Logistics. Santos port (50km from facility) is the primary export terminal. Panama Canal restrictions in 2023–2024 added average 14 days to US East Coast transit. Supplier has pre-established priority booking arrangement with Hamburg Sud for alternate sailing slots via Suez when canal capacity is restricted. Additional cost of Suez routing is approximately USD 380 per container — passed through to FreshMart per Article 12.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e2"
+  },
+  "chunk_id": "CHUNK-SDOC-AMS-SUST-03-01",
+  "doc_id": "SDOC-AMS-SUST-03",
+  "supplier_id": "SUP-AMSTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6a"
+  },
+  "filename": "sustainability_audit_AMS_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit October 2025 under ISO 14001 standard. Renewable electricity: 91% via Dutch wind PPA. Recycled content in corrugated board: 82%. Carbon intensity: 0.31 tCO2e per tonne of packaging output — best-in-class for Netherlands packaging sector. Water use intensity reduced 19% since 2020. Auditor: Bureau Veritas Netherlands.",
+  "auto_embed_text": "Sustainability audit October 2025 under ISO 14001 standard. Renewable electricity: 91% via Dutch wind PPA. Recycled content in corrugated board: 82%. Carbon intensity: 0.31 tCO2e per tonne of packaging output — best-in-class for Netherlands packaging sector. Water use intensity reduced 19% since 2020. Auditor: Bureau Veritas Netherlands.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e3"
+  },
+  "chunk_id": "CHUNK-SDOC-AMS-EMAIL-04-01",
+  "doc_id": "SDOC-AMS-EMAIL-04",
+  "supplier_id": "SUP-AMSTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6a"
+  },
+  "filename": "email_AMS_portupdate_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: logistics@nhpackaging.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Situation Update. Rotterdam Maasvlakte II currently operating at 85% gate capacity with dwell times averaging 4.2 days vs usual 2.0 days. We have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning. Follow-up update Friday.",
+  "auto_embed_text": "From: logistics@nhpackaging.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Situation Update. Rotterdam Maasvlakte II currently operating at 85% gate capacity with dwell times averaging 4.2 days vs usual 2.0 days. We have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning. Follow-up update Friday.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e4"
+  },
+  "chunk_id": "CHUNK-SDOC-ROT-CERT-01-01",
+  "doc_id": "SDOC-ROT-CERT-01",
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6b"
+  },
+  "filename": "iso_cert_ROT_2024.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Delta Logistics & Packaging B.V., Waalhaven Oostzijde 12, 3087 BM Rotterdam, Netherlands. Scope: packaging and distribution — food and non-food. Certificate number: NL-QMS-2024-00553. Valid: 2024-07-01 to 2027-06-30.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Delta Logistics & Packaging B.V., Waalhaven Oostzijde 12, 3087 BM Rotterdam, Netherlands. Scope: packaging and distribution — food and non-food. Certificate number: NL-QMS-2024-00553. Valid: 2024-07-01 to 2027-06-30.",
+  "valid_until": "2027-06-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e5"
+  },
+  "chunk_id": "CHUNK-SDOC-ROT-CTR-02-01",
+  "doc_id": "SDOC-ROT-CTR-02",
+  "supplier_id": "SUP-ROTTERDAM-NL",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6b"
+  },
+  "filename": "contrato_marco_ROT_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — Port Disruption and Rerouting. As the Supplier's facility is located within the Port of Rotterdam logistics zone, the Supplier is directly exposed to port disruption events. In the event of a Rotterdam port disruption exceeding 72 hours, the Supplier shall coordinate cargo transfer to Antwerp-Bruges or Felixstowe within 48 hours of notification and absorb the first EUR 500 per container of additional cost. Costs above this threshold are shared equally.",
+  "auto_embed_text": "Article 6 — Port Disruption and Rerouting. As the Supplier's facility is located within the Port of Rotterdam logistics zone, the Supplier is directly exposed to port disruption events. In the event of a Rotterdam port disruption exceeding 72 hours, the Supplier shall coordinate cargo transfer to Antwerp-Bruges or Felixstowe within 48 hours of notification and absorb the first EUR 500 per container of additional cost. Costs above this threshold are shared equally.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2e9"
+  },
+  "chunk_id": "CHUNK-SDOC-BER-CTR-02-01",
+  "doc_id": "SDOC-BER-CTR-02",
+  "supplier_id": "SUP-BERLIN-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6c"
+  },
+  "filename": "contrato_marco_Berlin_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 6 — Cold Chain Compliance. All chilled and dairy products must be maintained at a maximum of 4°C from production through to FreshMart distribution centre handover. Continuous temperature monitoring via Sensitech ColdMark loggers included in all FreshMart export consignments. A temperature exceedance above 6°C at any monitoring point constitutes a non-conformance event requiring a root cause report within 48 hours.",
+  "auto_embed_text": "Article 6 — Cold Chain Compliance. All chilled and dairy products must be maintained at a maximum of 4°C from production through to FreshMart distribution centre handover. Continuous temperature monitoring via Sensitech ColdMark loggers included in all FreshMart export consignments. A temperature exceedance above 6°C at any monitoring point constitutes a non-conformance event requiring a root cause report within 48 hours.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2eb"
+  },
+  "chunk_id": "CHUNK-SDOC-BER-EMAIL-04-01",
+  "doc_id": "SDOC-BER-EMAIL-04",
+  "supplier_id": "SUP-BERLIN-DE",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f6c"
+  },
+  "filename": "email_Berlin_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@deutschefrischware.de | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Q3 Capacity Confirmation. Production facility at 62% capacity. No Rotterdam port disruptions currently affecting our Bremerhaven loading schedule. Standard transit Hamburg–Newark is 14 days. Q3 orders should be submitted by June 10.",
+  "auto_embed_text": "From: export@deutschefrischware.de | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Q3 Capacity Confirmation. Production facility at 62% capacity. No Rotterdam port disruptions currently affecting our Bremerhaven loading schedule. Standard transit Hamburg–Newark is 14 days. Q3 orders should be submitted by June 10.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f3"
+  },
+  "chunk_id": "CHUNK-SDOC-TH055-EMAIL-04-01",
+  "doc_id": "SDOC-TH055-EMAIL-04",
+  "supplier_id": "SUP-TH-055",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5c"
+  },
+  "filename": "email_TH055_floodseason_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: export@bangkokagro.co.th | To: procurement@freshmart.com | Date: 2026-08-15 | Subject: Flood Season Preparedness Update. Thai Meteorological Department has issued early seasonal flood advisory for central Thailand. Our Chonburi backup facility agreement has been pre-activated for October–November peak risk window. Current facility operating normally. We will provide weekly status updates through the flood season.",
+  "auto_embed_text": "From: export@bangkokagro.co.th | To: procurement@freshmart.com | Date: 2026-08-15 | Subject: Flood Season Preparedness Update. Thai Meteorological Department has issued early seasonal flood advisory for central Thailand. Our Chonburi backup facility agreement has been pre-activated for October–November peak risk window. Current facility operating normally. We will provide weekly status updates through the flood season.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f4"
+  },
+  "chunk_id": "CHUNK-SDOC-IN077-CERT-01-01",
+  "doc_id": "SDOC-IN077-CERT-01",
+  "supplier_id": "SUP-IN-077",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f5d"
+  },
+  "filename": "iso22000_cert_IN077_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 22000:2018 Certificate. Mumbai Spice & Foods Pvt. Ltd., Plot 47, MIDC Taloja Industrial Area, Navi Mumbai, Maharashtra 410208, India. Scope: spices, condiments and dry grocery. Certificate number: IN-FSMS-2025-00412. Valid to 2027-07-31. Issued by Bureau Veritas India Pvt. Ltd. FSSAI Licence also held — scope: food manufacturing and export. Licence number 10025022002847, valid to 2027-09-30.",
+  "auto_embed_text": "ISO 22000:2018 Certificate. Mumbai Spice & Foods Pvt. Ltd., Plot 47, MIDC Taloja Industrial Area, Navi Mumbai, Maharashtra 410208, India. Scope: spices, condiments and dry grocery. Certificate number: IN-FSMS-2025-00412. Valid to 2027-07-31. Issued by Bureau Veritas India Pvt. Ltd. FSSAI Licence also held — scope: food manufacturing and export. Licence number 10025022002847, valid to 2027-09-30.",
+  "valid_until": "2027-07-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2f8"
+  },
+  "chunk_id": "CHUNK-SDOC-CPT-CERT-01-01",
+  "doc_id": "SDOC-CPT-CERT-01",
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f79"
+  },
+  "filename": "ggap_cert_CapeTown_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Cape Harvest Agricultural Exports Pty. Ltd., Farm Eikenhof, Villiersdorp Road, Elgin Valley, Western Cape 7180, South Africa. Product scope: apples (Granny Smith, Fuji, Pink Lady), pears (Packham's Triumph), and table grapes. Certificate number: GGAP-ZA-2025-004801. Valid: 2025-03-01 to 2027-04-30.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Cape Harvest Agricultural Exports Pty. Ltd., Farm Eikenhof, Villiersdorp Road, Elgin Valley, Western Cape 7180, South Africa. Product scope: apples (Granny Smith, Fuji, Pink Lady), pears (Packham's Triumph), and table grapes. Certificate number: GGAP-ZA-2025-004801. Valid: 2025-03-01 to 2027-04-30.",
+  "valid_until": "2027-04-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2fa"
+  },
+  "chunk_id": "CHUNK-SDOC-CPT-SUST-03-01",
+  "doc_id": "SDOC-CPT-SUST-03",
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f79"
+  },
+  "filename": "sustainability_audit_CapeTown_2025.pdf",
+  "page_ref": 4,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "sustainability_report",
+  "chunk_text": "Sustainability audit March 2025 under Rainforest Alliance standard. Water rights: licensed DWS irrigation from Theewaterskloof catchment plus borehole allocation. Current dam level 61%. Pressure-compensating drip irrigation on 100% of apple orchard blocks — water use reduced 22% vs 2016 baseline. Biodiversity corridors maintained on 8% of farm area. Auditor: Rainforest Alliance South Africa.",
+  "auto_embed_text": "Sustainability audit March 2025 under Rainforest Alliance standard. Water rights: licensed DWS irrigation from Theewaterskloof catchment plus borehole allocation. Current dam level 61%. Pressure-compensating drip irrigation on 100% of apple orchard blocks — water use reduced 22% vs 2016 baseline. Biodiversity corridors maintained on 8% of farm area. Auditor: Rainforest Alliance South Africa.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2fb"
+  },
+  "chunk_id": "CHUNK-SDOC-CPT-EMAIL-04-01",
+  "doc_id": "SDOC-CPT-EMAIL-04",
+  "supplier_id": "SUP-CAPETOWN-ZA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f79"
+  },
+  "filename": "email_CapeTown_season_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: exports@capeharvestexports.co.za | To: procurement@freshmart.com | Date: 2026-03-05 | Subject: Autumn Harvest Outlook 2026. Apple harvest has started — early quality assessments show excellent Brix and firmness for Granny Smith. Western Cape dam levels at 61%, no water restrictions currently in effect. EU MRL test results for first 2026 lots all within specification. Confirming Q2 volumes.",
+  "auto_embed_text": "From: exports@capeharvestexports.co.za | To: procurement@freshmart.com | Date: 2026-03-05 | Subject: Autumn Harvest Outlook 2026. Apple harvest has started — early quality assessments show excellent Brix and firmness for Granny Smith. Western Cape dam levels at 61%, no water restrictions currently in effect. EU MRL test results for first 2026 lots all within specification. Confirming Q2 volumes.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a2ff"
+  },
+  "chunk_id": "CHUNK-SDOC-FRE-EMAIL-04-01",
+  "doc_id": "SDOC-FRE-EMAIL-04",
+  "supplier_id": "SUP-FRESNO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f72"
+  },
+  "filename": "email_Fresno_droughtupdate_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: operations@centralvalleyfreshfoods.com | To: procurement@freshmart.com | Date: 2026-05-01 | Subject: Water Situation Update — 2026 Season. Reservoir levels across the San Joaquin Valley are at 71% of capacity following a wet winter — substantially better than 2021 and 2022. We anticipate normal water allocations for the 2026 growing season. No volume adjustments anticipated for FreshMart orders. Almond and pistachio crop outlook is positive.",
+  "auto_embed_text": "From: operations@centralvalleyfreshfoods.com | To: procurement@freshmart.com | Date: 2026-05-01 | Subject: Water Situation Update — 2026 Season. Reservoir levels across the San Joaquin Valley are at 71% of capacity following a wet winter — substantially better than 2021 and 2022. We anticipate normal water allocations for the 2026 growing season. No volume adjustments anticipated for FreshMart orders. Almond and pistachio crop outlook is positive.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a302"
+  },
+  "chunk_id": "CHUNK-SDOC-CHI-AUD-03-01",
+  "doc_id": "SDOC-CHI-AUD-03",
+  "supplier_id": "SUP-CHICAGO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f73"
+  },
+  "filename": "audit_Chicago_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "audit_report",
+  "chunk_text": "Section 3 — Drought and Water Supply Risk. Chicago facility sources municipal water from Lake Michigan — not subject to California drought risk. Production is unaffected by US West Coast water restrictions. RISK-CLM-002 (California drought) does not apply to this supplier. Primary risk exposure is logistics: Midwest Dairy uses rail and road transport exclusively, with no port dependency. US East Coast port labor disruption (RISK-LOG-004) has no direct impact.",
+  "auto_embed_text": "Section 3 — Drought and Water Supply Risk. Chicago facility sources municipal water from Lake Michigan — not subject to California drought risk. Production is unaffected by US West Coast water restrictions. RISK-CLM-002 (California drought) does not apply to this supplier. Primary risk exposure is logistics: Midwest Dairy uses rail and road transport exclusively, with no port dependency. US East Coast port labor disruption (RISK-LOG-004) has no direct impact.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a303"
+  },
+  "chunk_id": "CHUNK-SDOC-CHI-EMAIL-04-01",
+  "doc_id": "SDOC-CHI-EMAIL-04",
+  "supplier_id": "SUP-CHICAGO-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f73"
+  },
+  "filename": "email_Chicago_capacity_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: procurement-ops@midwestdairyalliance.com | To: procurement@freshmart.com | Date: 2026-04-30 | Subject: Q3 Capacity Confirmation. Facility operating at 68% capacity. Q3 volumes confirmed as per forecast. OTIF performance for Q1 2026: 98.4%. No supply chain disruptions anticipated for summer dairy season.",
+  "auto_embed_text": "From: procurement-ops@midwestdairyalliance.com | To: procurement@freshmart.com | Date: 2026-04-30 | Subject: Q3 Capacity Confirmation. Facility operating at 68% capacity. Q3 volumes confirmed as per forecast. OTIF performance for Q1 2026: 98.4%. No supply chain disruptions anticipated for summer dairy season.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a304"
+  },
+  "chunk_id": "CHUNK-SDOC-LAX-CERT-01-01",
+  "doc_id": "SDOC-LAX-CERT-01",
+  "supplier_id": "SUP-LOSANGELES-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f71"
+  },
+  "filename": "iso_cert_LAX_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Pacific Coast Packaging Inc., 2800 East Vernon Avenue, Vernon, California 90058, USA. Scope: retail packaging — food and non-food. Certificate number: US-QMS-2025-04471. Valid: 2025-08-01 to 2027-11-30.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Pacific Coast Packaging Inc., 2800 East Vernon Avenue, Vernon, California 90058, USA. Scope: retail packaging — food and non-food. Certificate number: US-QMS-2025-04471. Valid: 2025-08-01 to 2027-11-30.",
+  "valid_until": "2027-11-30T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a305"
+  },
+  "chunk_id": "CHUNK-SDOC-LAX-CTR-02-01",
+  "doc_id": "SDOC-LAX-CTR-02",
+  "supplier_id": "SUP-LOSANGELES-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f71"
+  },
+  "filename": "contrato_marco_LAX_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 8 — Water Use and Regulatory Risk. The Supplier acknowledges that its Vernon, California facility may be subject to State Water Board water use restrictions during declared drought emergencies. In the event of Tier 2 or higher water restrictions that affect production capacity, the Supplier shall notify FreshMart within 48 hours and provide an updated delivery schedule within 5 business days.",
+  "auto_embed_text": "Article 8 — Water Use and Regulatory Risk. The Supplier acknowledges that its Vernon, California facility may be subject to State Water Board water use restrictions during declared drought emergencies. In the event of Tier 2 or higher water restrictions that affect production capacity, the Supplier shall notify FreshMart within 48 hours and provide an updated delivery schedule within 5 business days.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a307"
+  },
+  "chunk_id": "CHUNK-SDOC-LAX-EMAIL-04-01",
+  "doc_id": "SDOC-LAX-EMAIL-04",
+  "supplier_id": "SUP-LOSANGELES-US",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f71"
+  },
+  "filename": "email_LAX_droughtupdate_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: ops@pacificcoastpackaging.com | To: procurement@freshmart.com | Date: 2026-05-03 | Subject: Water Situation and Q3 Capacity. Current State Water Board allocation is Tier 1 — no production restrictions in effect. Following the wet 2025–2026 winter, reservoir levels in Southern California are at 78% capacity. We do not anticipate any water-related production constraints for Q3 2026. Facility at 61% capacity with headroom for incremental volume.",
+  "auto_embed_text": "From: ops@pacificcoastpackaging.com | To: procurement@freshmart.com | Date: 2026-05-03 | Subject: Water Situation and Q3 Capacity. Current State Water Board allocation is Tier 1 — no production restrictions in effect. Following the wet 2025–2026 winter, reservoir levels in Southern California are at 78% capacity. We do not anticipate any water-related production constraints for Q3 2026. Facility at 61% capacity with headroom for incremental volume.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a313"
+  },
+  "chunk_id": "CHUNK-SDOC-MIL-CTR-02-01",
+  "doc_id": "SDOC-MIL-CTR-02",
+  "supplier_id": "SUP-MILAN-IT",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f70"
+  },
+  "filename": "contrato_marco_Milan_2025.pdf",
+  "page_ref": 3,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "contract",
+  "chunk_text": "Article 7 — MAP Technology and Shelf Life Guarantee. Modified atmosphere packaging supplied under this Agreement shall maintain oxygen levels below 0.5% and extend shelf life to a minimum of 11 days at 4°C as validated by Q4 2025 trial. Any deviation from validated MAP parameters constitutes a non-conformance event. Supplier shall maintain gas composition monitoring records for all FreshMart production runs.",
+  "auto_embed_text": "Article 7 — MAP Technology and Shelf Life Guarantee. Modified atmosphere packaging supplied under this Agreement shall maintain oxygen levels below 0.5% and extend shelf life to a minimum of 11 days at 4°C as validated by Q4 2025 trial. Any deviation from validated MAP parameters constitutes a non-conformance event. Supplier shall maintain gas composition monitoring records for all FreshMart production runs.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31a"
+  },
+  "chunk_id": "CHUNK-SDOC-MON-CERT-01-01",
+  "doc_id": "SDOC-MON-CERT-01",
+  "supplier_id": "SUP-MONTREAL-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f76"
+  },
+  "filename": "iso_cert_Montreal_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "ISO 9001:2015 Certificate. Emballages Québec Ltée., 4455 Boulevard des Grandes Prairies, Saint-Léonard, Québec H1R 1A4, Canada. Scope: sustainable paper and cardboard packaging. Certificate number: CA-QMS-2025-00812. Valid: 2025-02-01 to 2027-10-31. Certification body: BSI Group Canada Inc.",
+  "auto_embed_text": "ISO 9001:2015 Certificate. Emballages Québec Ltée., 4455 Boulevard des Grandes Prairies, Saint-Léonard, Québec H1R 1A4, Canada. Scope: sustainable paper and cardboard packaging. Certificate number: CA-QMS-2025-00812. Valid: 2025-02-01 to 2027-10-31. Certification body: BSI Group Canada Inc.",
+  "valid_until": "2027-10-31T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31d"
+  },
+  "chunk_id": "CHUNK-SDOC-VAN-EMAIL-02-01",
+  "doc_id": "SDOC-VAN-EMAIL-02",
+  "supplier_id": "SUP-VANCOUVER-CA",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f77"
+  },
+  "filename": "email_Vancouver_blueberry_2026.eml",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "email",
+  "chunk_text": "From: operations@pacificrimfresh.ca | To: procurement@freshmart.com | Date: 2026-05-28 | Subject: BC Blueberry Crop Update 2026 Season. Early indicators are positive — BC Blueberry Council May 15 assessment forecasts 6% yield increase vs 2025. Our farms tracking ahead of last year on Brix (12.5 vs 11.8 at this point in 2025). Peak availability July 15–September 10. Please confirm Q3 forecast volumes by June 30.",
+  "auto_embed_text": "From: operations@pacificrimfresh.ca | To: procurement@freshmart.com | Date: 2026-05-28 | Subject: BC Blueberry Crop Update 2026 Season. Early indicators are positive — BC Blueberry Council May 15 assessment forecasts 6% yield increase vs 2025. Our farms tracking ahead of last year on Brix (12.5 vs 11.8 at this point in 2025). Peak availability July 15–September 10. Please confirm Q3 forecast volumes by June 30.",
+  "valid_until": null
+},
+{
+  "_id": {
+    "$oid": "6a311d26aa8e334aa469a31e"
+  },
+  "chunk_id": "CHUNK-SDOC-CAI-CERT-01-01",
+  "doc_id": "SDOC-CAI-CERT-01",
+  "supplier_id": "SUP-CAIRO-EG",
+  "supplier_ref": {
+    "$oid": "6a2c19deaa8e334aa4699f78"
+  },
+  "filename": "ggap_cert_Cairo_2025.pdf",
+  "page_ref": 1,
+  "chunk_index": 1,
+  "chunk_total": 1,
+  "doc_type": "certificate",
+  "chunk_text": "GLOBALG.A.P. Certificate. Producer: Nile Valley Foods Export Co., Agricultural Zone, Beni Suef Governorate, Egypt. Product scope: fresh citrus (navel oranges, mandarins, lemons), fresh grapes, and pomegranates for export. Certificate number: GGAP-EG-2025-002201. Valid: 2025-10-01 to 2026-11-30. Issued by SGS Egypt.",
+  "auto_embed_text": "GLOBALG.A.P. Certificate. Producer: Nile Valley Foods Export Co., Agricultural Zone, Beni Suef Governorate, Egypt. Product scope: fresh citrus (navel oranges, mandarins, lemons), fresh grapes, and pomegranates for export. Certificate number: GGAP-EG-2025-002201. Valid: 2025-10-01 to 2026-11-30. Issued by SGS Egypt.",
+  "valid_until": "2026-11-30T00:00:00Z"
+}]

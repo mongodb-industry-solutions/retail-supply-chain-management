@@ -4,7 +4,7 @@ import { Body } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Image from "next/image";
 
-export default function AgentAvatar({ idle = false }) {
+export default function AgentAvatar({ agentCurrentThought = "ReAct Agent", idle = false }) {
   return (
     <div>
       <Image
@@ -15,12 +15,6 @@ export default function AgentAvatar({ idle = false }) {
       />
 
       <div style={{ textAlign: "center" }}>
-        <Body
-          weight="medium"
-          style={{ fontSize: 13, color: palette.gray.dark3, margin: 0 }}
-        >
-          ReAct Agent
-        </Body>
         <div
           style={{
             display: "inline-flex",
@@ -39,8 +33,15 @@ export default function AgentAvatar({ idle = false }) {
               borderRadius: "50%",
               background: idle ? palette.gray.base : "#01684a",
               display: "inline-block",
+              animation: idle ? "none" : "agentDotBlink 1s ease-in-out infinite",
             }}
           />
+          <style>{`
+            @keyframes agentDotBlink {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.25; }
+            }
+          `}</style>
           <Body
             style={{
               fontSize: 11,

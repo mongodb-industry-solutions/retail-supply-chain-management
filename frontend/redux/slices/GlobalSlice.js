@@ -1,16 +1,39 @@
+import { alternativeLayers} from "@/data/alternatives";
 import { createSlice } from "@reduxjs/toolkit";
 
 const GlobalSlice = createSlice({
   name: "Global",
   initialState: {
+    sessionId: null,
     currentStep: 1,
     maxStep: 1,
+    // Step 1
+    externalConditions: [],
     loadedExternalConditions: [],
+    // Step 2
     affectedSuppliers: [],
+    affectedSuppliersAgentReasoning: [], // events
+    affectedSuppliersAgentCurrentThought: "",
+    affectedSuppliersAgentDone: false, // agent is done once we receive an "agent_response" event.type
+    // Step 3
     selectedSupplier: null,
-    selectedAlertType: "logistical",
+    selectedSupplierAlertTypes: [], // i.e ["logistics_disruption", "geopolitical_tariff"]
+    alternativeSuppliers: [],
+    alternativeSuppliersAgentReasoning: alternativeLayers.map(layer => ({ name: layer, steps: [] })), // events
+    alternativeSuppliersAgentCurrentThought: "",
+    alternativeSuppliersAgentDone: false, // agent is done once we receive a "shortlist_ready" event.event
   },
   reducers: {
+    setSessionId(state, action) {
+      state.sessionId = action.payload;
+    },
+    setExternalConditions(state, action) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const validUntil = tomorrow.toISOString();
+      const updatedConditions = action.payload.map((signal) => ({ ...signal, valid_until: validUntil }));
+      state.externalConditions = updatedConditions;
+    },
     setCurrentStep(state, action) {
       state.currentStep = action.payload;
     },
@@ -30,21 +53,93 @@ const GlobalSlice = createSlice({
     },
     setSelectedSupplier(state, action) {
       state.selectedSupplier = action.payload;
+      state.selectedSupplierAlertTypes = action.payload.risk_scores.map(risk => risk.triggered_by.risk_type_triggered);
+      state.alternativeSuppliers = [];
+      state.alternativeSuppliersAgentReasoning = alternativeLayers.map(
+        (layer) => ({ name: layer, steps: [] }),
+      ); // events
+      state.alternativeSuppliersAgentCurrentThought = "";
+      state.alternativeSuppliersAgentDone = false;
     },
-    setSelectedAlertType(state, action) {
-      state.selectedAlertType = action.payload;
+    appendAffectedSuppliersAgentReasoning(state, action) {
+      console.log("[appendAffectedSuppliersAgentReasoning]", action.payload);
+            
+      const now = new Date();
+      const time = now.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      state.affectedSuppliersAgentReasoning.push({
+        ...action.payload,
+        time,
+        ts: now.getTime(),
+      });
+      if (action.payload.type === "agent_thought") {
+        state.affectedSuppliersAgentCurrentThought = action.payload.message;
+      }
+      // Step 2 agent is considered done once the final response arrives
+      if (action.payload.type === "agent_response") {
+        state.affectedSuppliersAgentDone = true;
+      }
+    },
+    appendAlternativeSuppliersAgentReasoning(state, action) {
+      console.log("[appendAlternativeSuppliersAgentReasoning]", action.payload);
+      const time = action.payload.timestamp
+        ? new Date(action.payload.timestamp).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+          })
+        : undefined;
+      const data = {
+        ...action.payload,
+        time,
+      };
+      console.log(
+        "[appendAlternativeSuppliersAgentReasoning] data.layer !== null",
+        data.layer !== null,
+      );
+      if (data.layer !== null)
+        state.alternativeSuppliersAgentReasoning[data.layer].steps.push(data);
+      else if (
+        data.event == "alternative_finder_started" ||
+        data.event == "stream_end"
+      )
+        console.log(
+          "[appendAlternativeSuppliersAgentReasoning] ignoring event without layer",
+          data,
+        );
+      if ((action.payload.event || action.payload.type) === "agent_thought") {
+        console.log(
+          "[appendAlternativeSuppliersAgentReasoning] agent_thought",
+          action.payload.text,
+        );
+        state.alternativeSuppliersAgentCurrentThought = action.payload.text;
+      }
+      // Step 3 agent is considered done once the shortlist is ready
+      if ((action.payload.event || action.payload.type) === "shortlist_ready") {
+        state.alternativeSuppliersAgentDone = true;
+      }
+    },
+    setAlternativeSuppliers(state, action) {
+      state.alternativeSuppliers = action.payload;
     },
   },
 });
 
 export const {
+  setSessionId,
+  setExternalConditions,
   setCurrentStep,
   setMaxStep,
   advanceToStep,
   setLoadedExternalConditions,
   setAffectedSuppliers,
   setSelectedSupplier,
-  setSelectedAlertType,
+  appendAffectedSuppliersAgentReasoning,
+  appendAlternativeSuppliersAgentReasoning,
+  setAlternativeSuppliers,
 } = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

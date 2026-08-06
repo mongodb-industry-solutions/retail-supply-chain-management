@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@leafygreen-ui/card";
 import { Body } from "@leafygreen-ui/typography";
@@ -8,36 +9,98 @@ import Button from "@leafygreen-ui/button";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { setSelectedSupplier } from "../../redux/slices/GlobalSlice";
-import { riskConfig, categoryConfig } from "../../data/suppliers";
-import { conditionConfig } from "../../data/externalConditions";
+import { riskConfig } from "../../data/suppliers";
+import { conditionConfig, RISK_TYPE_MAP } from "../../data/externalConditions";
 import SupplierTitle from "../shared/SupplierTitle";
+import ReadMore from "../shared/ReadMore";
+import { IconButton } from "@leafygreen-ui/icon-button";
+import CurlyBraces from "@leafygreen-ui/icon/dist/CurlyBraces";
+import DocModelModal from "../modals/DocModelModal";
+import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
+import { getGlossaryDefinition } from "@/lib/const/glossary";
 
-function ConditionBadgeWithRPN({ type, rpnByCondition }) {
-  const cfg = conditionConfig[type];
-  const rpn = rpnByCondition?.[type];
-  if (!cfg) return null;
+function ConditionBadgeWithRPN({ risk, triggeredBy, glossary }) {
+  const cfg =
+    conditionConfig[RISK_TYPE_MAP[triggeredBy.risk_type_triggered]] || null;
+
   return (
-    <div className="d-flex align-items-center gap-2">
-      <Badge variant={cfg.variant}>
-        {cfg.icon} {cfg.label}
-      </Badge>
-      {rpn && (
-        <Body style={{ fontSize: 13, margin: 0 }}>
-          RPN: <span style={{ color: palette.gray.dark1 }}>{rpn.base}</span>
-          <span style={{ color: palette.red.base, margin: "0 4px" }}>→</span>
-          <span style={{ color: palette.red.base, fontWeight: 700 }}>
-            {rpn.updated}
-          </span>
+    <div className="d-flex flex-column gap-2">
+      <div className="w-100">
+        {cfg !== null && (
+          <Badge variant={cfg.variant}>
+            {cfg.icon} {cfg.label}
+          </Badge>
+        )}
+      </div>
+      <div
+        className="d-flex flex-row gap-1"
+        style={{ marginTop: spacing[200] }}
+      >
+        <Body
+          style={{
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
+          }}
+        >
+          RPN Change
         </Body>
-      )}
+        <InfoSprinkle
+          triggerProps={{
+            onMouseDown: () => {},
+            onMouseOver: () => {},
+            "aria-label": "aria-label",
+          }}
+        >
+          {getGlossaryDefinition(glossary, "RPN")}
+        </InfoSprinkle>
+        {risk && (
+          <Body style={{ fontSize: 13, margin: 0 }}>
+            <span style={{ color: palette.gray.dark1 }}>
+              {risk.rpn_base} base
+            </span>
+            <span style={{ color: palette.red.base, margin: "0 4px" }}>→</span>
+            <span style={{ color: palette.red.base, fontWeight: 700 }}>
+              {risk.rpn_dynamic} dynamic
+            </span>
+          </Body>
+        )}
+      </div>
+      <div
+        className="d-flex flex-row gap-1"
+        style={{ marginTop: spacing[200] }}
+      >
+        <Body
+          style={{
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
+          }}
+        >
+          Historical Weight
+        </Body>
+        <InfoSprinkle
+          triggerProps={{
+            onMouseDown: () => {},
+            onMouseOver: () => {},
+            "aria-label": "aria-label",
+          }}
+        >
+          {getGlossaryDefinition(glossary, "historical_weight")}
+        </InfoSprinkle>
+        {risk?.triggered_by?.historical_weight}
+      </div>
     </div>
   );
 }
 
 export default function SupplierCard({ supplier, onFindAlternatives }) {
   const dispatch = useDispatch();
-  const selectedId = useSelector((s) => s.Global.selectedSupplier?.id);
-  const isSelected = selectedId === supplier.id;
+  const selectedId = useSelector((s) => s.Global.selectedSupplier?.supplier_id);
+  const isSelected = selectedId === supplier.supplier_id;
+  const [modalCondition, setModalCondition] = useState(null);
 
   return (
     <div
@@ -49,6 +112,13 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
       }
       style={{ cursor: "pointer" }}
     >
+      <DocModelModal
+        show={!!modalCondition}
+        onHide={() => setModalCondition(null)}
+        title={`Affected supplier: ${modalCondition?.supplier_name}`}
+        docModel={modalCondition}
+        whyMDB={null}
+      />
       <Card
         style={{
           borderLeft: `4px solid ${isSelected ? palette.green.dark2 : palette.gray.light2}`,
@@ -61,69 +131,77 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
           className="d-flex align-items-start justify-content-between"
           style={{ marginBottom: spacing[200] }}
         >
-          <div>
-            <SupplierTitle name={supplier.name} />
-
-            <Body style={{ fontSize: 14, color: palette.gray.dark1 }}>
-              📍{" "}
-              {supplier.location ?? `${supplier.country} — ${supplier.region}`}
-            </Body>
-          </div>
+          <SupplierTitle name={supplier?.supplier_name} />
           <div
             className="d-flex gap-2 flex-shrink-0"
             style={{ marginLeft: spacing[400] }}
           >
             <Badge
-              variant={riskConfig[supplier.riskLevel]?.variant ?? "lightgray"}
-            >
-              {riskConfig[supplier.riskLevel]?.label ?? supplier.riskLevel}
-            </Badge>
-            <Badge
               variant={
-                categoryConfig[supplier.category]?.variant ?? "lightgray"
+                riskConfig[supplier.operational_context.criticality]?.variant ??
+                "lightgray"
               }
             >
-              {supplier.category}
+              {supplier.operational_context.criticality}
             </Badge>
+            {supplier?.product_categories?.map((category) => (
+              <Badge key={category} variant="lightgray">
+                {category.replace(/_/g, " ").toUpperCase()}
+              </Badge>
+            ))}
+            <IconButton
+              onClick={() => setModalCondition(supplier)}
+              aria-label="See document"
+            >
+              <CurlyBraces />
+            </IconButton>
           </div>
         </div>
-
-        {/* Impact reason (short, bolded) */}
-        {supplier.impactReason && (
+        <div className="d-flex flex-row gap-3 mb-2">
           <Body
-            weight="medium"
             style={{
               fontSize: 14,
-              color: palette.gray.dark2,
-              marginBottom: spacing[100],
+              color: palette.gray.dark1,
             }}
           >
-            ⚠️ {supplier.impactReason}
+            📍 {`${supplier?.country} — ${supplier?.region}`}
           </Body>
-        )}
-
-        {/* Impact description */}
+          <Body
+            style={{
+              fontSize: 14,
+              color: palette.gray.dark1,
+              lineHeight: 1.6,
+            }}
+          >
+            ⚠️ {supplier.supplier_risk_level}.{" "}
+            {(supplier.requires_action ?? false)
+              ? "Action required"
+              : "No immediate action required"}
+          </Body>
+        </div>
+        {/* Impact reason (short, bolded) */}
+        <ReadMore text={supplier.natural_language_summary} weight="medium" />
         <Body
           style={{
-            fontSize: 14,
-            color: palette.gray.dark1,
-            lineHeight: 1.6,
-            marginBottom: spacing[200],
+            fontSize: 13,
+            color: palette.gray.dark2,
+            marginBottom: spacing[100],
+            fontWeight: 600,
           }}
         >
-          {supplier.impactDescription}
+          RISK SCORES:
         </Body>
-
         {/* Condition badges with RPN delta */}
         <div
           className="d-flex flex-column gap-1"
           style={{ marginBottom: spacing[200] }}
         >
-          {(supplier.affectedConditions ?? []).map((type) => (
+          {(supplier.risk_scores ?? []).map((risk) => (
             <ConditionBadgeWithRPN
-              key={type}
-              type={type}
-              rpnByCondition={supplier.rpnByCondition}
+              key={risk.risk_id}
+              risk={risk}
+              triggeredBy={risk.triggered_by}
+              glossary={supplier.glossary}
             />
           ))}
         </div>
@@ -137,33 +215,35 @@ export default function SupplierCard({ supplier, onFindAlternatives }) {
             marginBottom: spacing[200],
           }}
         >
-          <span>💰 {supplier.contractValue}</span>
-          <span>⏱ {supplier.leadTime}</span>
-          {supplier.activeOrders ? (
+          {supplier.operational_context.active_orders != null && (
             <span style={{ color: palette.red.dark2, fontWeight: 600 }}>
-              📦 {supplier.activeOrders.count} active orders (
-              {supplier.activeOrders.value})
+              📦 {supplier.operational_context.active_orders} active orders
             </span>
-          ) : (
-            <span>📦 {supplier.annualShipments} shipments/yr</span>
           )}
+          <span>💰 USD {supplier.operational_context.total_value_usd}</span>
+          <span>
+            ⏱ Earliest delivery{" "}
+            {supplier.operational_context.earliest_delivery_due}{" "}
+          </span>
         </div>
 
-        {/* Find alternative suppliers — critical severity only */}
-        {supplier.severity === "critical" && onFindAlternatives && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{ marginTop: spacing[200] }}
-          >
-            <Button
-              variant="primary"
-              size="default"
-              onClick={() => onFindAlternatives(supplier)}
+        {/* Find alternative suppliers — high severity only */}
+        {supplier.operational_context.criticality === "high" &&
+          onFindAlternatives && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ marginTop: spacing[200] }}
+              className="w-100 d-flex flex-row-reverse"
             >
-              Find alternative suppliers →
-            </Button>
-          </div>
-        )}
+              <Button
+                variant="primary"
+                size="default"
+                onClick={() => onFindAlternatives(supplier)}
+              >
+                Find alternative suppliers →
+              </Button>
+            </div>
+          )}
       </Card>
     </div>
   );

@@ -1,0 +1,452 @@
+[
+  {
+    "_id": {
+      "$oid": "6a61f5464fb164201ee654c7"
+    },
+    "evaluation_id_ref": "EVAL-85f41e8f-LAN-IT-1784804543",
+    "session_id": "85f41e8f-3214-42de-a8ef-0bba2fa941d0",
+    "blocked_supplier_id": "SUP-MILAN-IT",
+    "is_base": false,
+    "is_demo_trigger": false,
+    "status": "pending_approval",
+    "risk_types": [
+      "logistics_disruption"
+    ],
+    "reference_point": {
+      "name": "FreshMart Los Angeles DC (assumed)",
+      "coordinates": [
+        -118.2437,
+        34.0522
+      ],
+      "assumed": true
+    },
+    "candidates_evaluated": 5,
+    "candidates_discarded": 0,
+    "candidates": [
+      {
+        "supplier_id": "SUP-AMSTERDAM-NL",
+        "supplier_name": "Noord-Holland Packaging B.V.",
+        "location": "Netherlands",
+        "category": "packaging_materials",
+        "proximity_km": 8949.7,
+        "evidence_coverage": {
+          "criteria_total": 3,
+          "criteria_verified": 3
+        },
+        "precedent_summary": "weak_directional",
+        "criteria": [
+          {
+            "criterion": "compliance_certification",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-AMS-CERT-01-01",
+              "doc_type": "certificate",
+              "source_file": "iso_cert_AMS_2025.pdf",
+              "page": 1,
+              "excerpt": "ISO 9001:2015 Certificate. Noord-Holland Packaging B.V., Westpoort Industrial Zone, Molenwerf 4, 1014 BE Amsterdam, Netherlands. Scope: sustainable packaging materials. Certificate number: NL-QMS-2025-00741. Valid: 2025-05-01 to 2028-01-31. Issued by Lloyd's Register.",
+              "valid_until": "2028-01-31T00:00:00Z"
+            },
+            "note": "Certificate NL-QMS-2025-00741 by Lloyd's Register, valid through 2028-01-31, scope matches claim."
+          },
+          {
+            "criterion": "operational_status",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-AMS-EMAIL-04-01",
+              "doc_type": "email",
+              "source_file": "email_AMS_portupdate_2026.eml",
+              "page": 1,
+              "excerpt": "From: logistics@nhpackaging.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Situation Update. Rotterdam Maasvlakte II currently operating at 85% gate capacity with dwell times averaging 4.2 days vs usual 2.0 days. We have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning. Follow-up\u2026",
+              "valid_until": null
+            },
+            "note": "May 2026 email to FreshMart procurement with Rotterdam status and contingency planning confirms active engagement."
+          },
+          {
+            "criterion": "sustainability_practices",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-AMS-SUST-03-01",
+              "doc_type": "sustainability_report",
+              "source_file": "sustainability_audit_AMS_2025.pdf",
+              "page": 3,
+              "excerpt": "Sustainability audit October 2025 under ISO 14001 standard. Renewable electricity: 91% via Dutch wind PPA. Recycled content in corrugated board: 82%. Carbon intensity: 0.31 tCO2e per tonne of packaging output \u2014 best-in-class for Netherlands packaging sector. Water use intensity reduced 19% since 2020. Auditor: Bureau Veritas Netherlands.",
+              "valid_until": null
+            },
+            "note": "Bureau Veritas Oct 2025 ISO 14001 audit reports 91% renewable, 82% recycled content, 0.31 tCO2e/tonne \u2014 matches claim exactly."
+          }
+        ],
+        "rank": 1,
+        "rationale": "Top recommendation for this shortlist. All three evaluation criteria are verified compliant with direct citations: a Lloyd's Register ISO 9001 compliance_certification valid through 2028-01-31, a May 2026 email confirming active operational_status and Rotterdam contingency planning, and a Bureau Veritas ISO 14001 audit documenting sustainability_practices at 91% renewable electricity and 82% recycled content. This gives full evidence_coverage (3 of 3 criteria_verified), and while no exact_track_record exists for this supplier, a semantic_precedent on logistics_disruption provides directional supporting context. Proximity_km of 8949.7 reflects the Amsterdam location relative to the requesting site but does not offset the strong documentary evidence.",
+        "glossary": [
+          {
+            "term": "compliance_certification",
+            "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+          },
+          {
+            "term": "operational_status",
+            "definition": "Whether the supplier has real, available capacity right now and no active disruption \u2014 the current situation, not just what's on paper."
+          },
+          {
+            "term": "sustainability_practices",
+            "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+          },
+          {
+            "term": "evidence_coverage",
+            "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+          },
+          {
+            "term": "criteria_verified",
+            "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+          },
+          {
+            "term": "exact_track_record",
+            "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+          },
+          {
+            "term": "semantic_precedent",
+            "definition": "How similar situations played out elsewhere \u2014 a different supplier, a different region \u2014 used when there's no exact past case for this supplier."
+          },
+          {
+            "term": "proximity_km",
+            "definition": "How close the supplier is to where the product needs to be delivered \u2014 used to choose between already-valid candidates, never to disqualify one."
+          }
+        ]
+      },
+      {
+        "supplier_id": "SUP-ROTTERDAM-NL",
+        "supplier_name": "Delta Logistics & Packaging B.V.",
+        "location": "Netherlands",
+        "category": "packaging_materials",
+        "proximity_km": 8964.3,
+        "evidence_coverage": {
+          "criteria_total": 3,
+          "criteria_verified": 3
+        },
+        "precedent_summary": "exact_track_record",
+        "criteria": [
+          {
+            "criterion": "compliance_certification",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-ROT-CERT-01-01",
+              "doc_type": "certificate",
+              "source_file": "iso_cert_ROT_2024.pdf",
+              "page": 1,
+              "excerpt": "ISO 9001:2015 Certificate. Delta Logistics & Packaging B.V., Waalhaven Oostzijde 12, 3087 BM Rotterdam, Netherlands. Scope: packaging and distribution \u2014 food and non-food. Certificate number: NL-QMS-2024-00553. Valid: 2024-07-01 to 2027-06-30.",
+              "valid_until": "2027-06-30T00:00:00Z"
+            },
+            "note": "ISO 9001:2015 cert NL-QMS-2024-00553 valid until 2027-06-30, scope matches."
+          },
+          {
+            "criterion": "operational_status",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-ROT-EMAIL-04-01",
+              "doc_type": "email",
+              "source_file": "email_ROT_portcongestion_May2026.eml",
+              "page": 1,
+              "excerpt": "From: ops@deltalogisticsrdam.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Update. As of this morning, Maasvlakte II operating at 85% gate capacity with vessel dwell times averaging 4.2 days (normal 2.0 days). We are closely monitoring the situation and have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an a\u2026",
+              "valid_until": null
+            },
+            "note": "May 2026 email to procurement@freshmart.com confirms active ops and contingency planning."
+          },
+          {
+            "criterion": "sustainability_practices",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-ROT-SUST-03-01",
+              "doc_type": "sustainability_report",
+              "source_file": "sustainability_audit_ROT_2026.pdf",
+              "page": 2,
+              "excerpt": "Sustainability audit January 2026 under ISO 14001. Facility achieved carbon neutrality for Scope 1+2 in 2025 through renewable electricity and on-site solar installation. Participating in Port of Rotterdam Hydrogen Hub pilot for clean logistics fuel from 2027. Auditor: DNV Netherlands.",
+              "valid_until": null
+            },
+            "note": "Jan 2026 ISO 14001 audit by DNV confirms Scope 1+2 neutrality and Hydrogen Hub participation."
+          }
+        ],
+        "rank": 2,
+        "rationale": "Delta Logistics & Packaging B.V. is a strong alternative with full evidence_coverage: all three criteria_verified as compliant, including a valid ISO 9001:2015 compliance_certification (NL-QMS-2024-00553) through June 2027, confirmed operational_status via a May 2026 procurement email showing active contingency planning during Rotterdam port congestion, and sustainability_practices backed by a January 2026 DNV audit confirming Scope 1+2 carbon neutrality. Precedent is also favorable, with an exact_track_record showing a prior approved_and_successful proposal for this candidate. It ranks just below the top candidate because its proximity_km (8964.3) is marginally greater, giving the leader a slight edge on logistical closeness despite otherwise comparable evidence.",
+        "glossary": [
+          {
+            "term": "evidence_coverage",
+            "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+          },
+          {
+            "term": "criteria_verified",
+            "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+          },
+          {
+            "term": "compliance_certification",
+            "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+          },
+          {
+            "term": "operational_status",
+            "definition": "Whether the supplier has real, available capacity right now and no active disruption \u2014 the current situation, not just what's on paper."
+          },
+          {
+            "term": "sustainability_practices",
+            "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+          },
+          {
+            "term": "exact_track_record",
+            "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+          },
+          {
+            "term": "proximity_km",
+            "definition": "How close the supplier is to where the product needs to be delivered \u2014 used to choose between already-valid candidates, never to disqualify one."
+          }
+        ]
+      },
+      {
+        "supplier_id": "SUP-HAMBURG-DE",
+        "supplier_name": "Nordpack Verpackungen GmbH",
+        "location": "Germany",
+        "category": "packaging_materials",
+        "proximity_km": 9083.7,
+        "evidence_coverage": {
+          "criteria_total": 3,
+          "criteria_verified": 3
+        },
+        "precedent_summary": "weak_directional",
+        "criteria": [
+          {
+            "criterion": "compliance_certification",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-HAM-CERT-01-01",
+              "doc_type": "certificate",
+              "source_file": "iso_cert_Hamburg_2025.pdf",
+              "page": 1,
+              "excerpt": "ISO 9001:2015 Certificate. Nordpack Verpackungen GmbH, Moorfleeter Deich 200, 22113 Hamburg, Germany. Scope: industrial and retail packaging. Certificate number: DE-QMS-2025-02281. Valid: 2025-01-01 to 2027-12-31.",
+              "valid_until": "2027-12-31T00:00:00Z"
+            },
+            "note": "ISO 9001:2015 cert DE-QMS-2025-02281 valid 2025-01-01 to 2027-12-31, matches claim verbatim."
+          },
+          {
+            "criterion": "operational_status",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-HAM-EMAIL-04-01",
+              "doc_type": "email",
+              "source_file": "email_Hamburg_capacity_2026.eml",
+              "page": 1,
+              "excerpt": "From: vertrieb@nordpackverpackungen.de | To: procurement@freshmart.com | Date: 2026-04-22 | Subject: Capacity Confirmation Q3 2026. Hamburg facility at 58% installed capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard delivery to Rotterdam for trans-Atlantic loading is 1 business day. No current disruptions at Hamburg port.",
+              "valid_until": null
+            },
+            "note": "April 2026 email confirms 58% capacity, 4-week lead time, no disruptions \u2014 matches claim."
+          },
+          {
+            "criterion": "sustainability_practices",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-HAM-SUST-03-01",
+              "doc_type": "sustainability_report",
+              "source_file": "sustainability_audit_Hamburg_2025.pdf",
+              "page": 2,
+              "excerpt": "Sustainability audit July 2025 under ISO 14001. Renewable electricity: 78% via Hamburg Stadtwerke green tariff. Recycled fibre content: 71% of all corrugated board. Participated in Hamburg Climate Action 2030 programme since 2021. Scope 2 emissions reduced 44% since baseline year 2019. Auditor: Bureau Veritas Germany.",
+              "valid_until": null
+            },
+            "note": "July 2025 ISO 14001 audit confirms 78% renewable, 71% recycled fibre, 44% Scope 2 reduction, Bureau Veritas verified."
+          }
+        ],
+        "rank": 3,
+        "rationale": "Nordpack Verpackungen GmbH is a solid alternative with full evidence_coverage across all three criteria_verified (compliance_certification via ISO 9001:2015 valid through 2027, operational_status confirmed at 58% capacity with no disruptions, and sustainability_practices backed by a Bureau Veritas ISO 14001 audit showing 78% renewable electricity and 71% recycled fibre). A weak semantic_precedent from a Milan supplier on logistics_disruption offers only directional context, since no exact_track_record exists for this candidate. It ranks below the top candidate because its proximity_km of 9083.7 is farther than the leader's 8949.7 despite matching on compliant criteria and evidence coverage.",
+        "glossary": [
+          {
+            "term": "evidence_coverage",
+            "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+          },
+          {
+            "term": "criteria_verified",
+            "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+          },
+          {
+            "term": "compliance_certification",
+            "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+          },
+          {
+            "term": "operational_status",
+            "definition": "Whether the supplier has real, available capacity right now and no active disruption \u2014 the current situation, not just what's on paper."
+          },
+          {
+            "term": "sustainability_practices",
+            "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+          },
+          {
+            "term": "semantic_precedent",
+            "definition": "How similar situations played out elsewhere \u2014 a different supplier, a different region \u2014 used when there's no exact past case for this supplier."
+          },
+          {
+            "term": "exact_track_record",
+            "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+          },
+          {
+            "term": "proximity_km",
+            "definition": "How close the supplier is to where the product needs to be delivered \u2014 used to choose between already-valid candidates, never to disqualify one."
+          }
+        ]
+      },
+      {
+        "supplier_id": "SUP-WARSAW-PL",
+        "supplier_name": "Polskie Opakowania Sp. z o.o.",
+        "location": "Poland",
+        "category": "packaging_materials",
+        "proximity_km": 9647.6,
+        "evidence_coverage": {
+          "criteria_total": 3,
+          "criteria_verified": 2
+        },
+        "precedent_summary": "exact_track_record",
+        "criteria": [
+          {
+            "criterion": "compliance_certification",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-WAR-CERT-01-01",
+              "doc_type": "certificate",
+              "source_file": "iso_cert_Warsaw_2025.pdf",
+              "page": 1,
+              "excerpt": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemys\u0142owa 44, 05-092 \u0141omianki, Masovian Voivodeship, Poland. Scope: packaging materials \u2014 rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
+              "valid_until": "2027-03-31T00:00:00Z"
+            },
+            "note": "Certificate text confirms ISO 9001:2015 number PL-QMS-2025-00912, valid through 2027-03-31, not expired."
+          },
+          {
+            "criterion": "operational_status",
+            "status": "unknown",
+            "citation": null,
+            "note": "No chunk provided evidencing current active operations or commercial standing."
+          },
+          {
+            "criterion": "sustainability_practices",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-WAR-CTR-02-01",
+              "doc_type": "contract",
+              "source_file": "contrato_marco_Warsaw_2025.pdf",
+              "page": 3,
+              "excerpt": "Article 14 \u2014 Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+              "valid_until": null
+            },
+            "note": "Contract Article 14 explicitly establishes reusable crate return within 45 days and tracking system, supporting circular packaging practice."
+          }
+        ],
+        "rank": 4,
+        "rationale": "Polskie Opakowania Sp. z o.o. shows solid own evidence: compliance_certification is compliant with a valid ISO 9001:2015 certificate (PL-QMS-2025-00912) through 2027-03-31, and sustainability_practices is compliant via Article 14 of the framework contract establishing reusable crate return and tracking. Precedent is supportive, with an exact_track_record from MEM-20250616-LAUS-R (approved_and_successful, good proposal quality) plus a weak semantic_precedent on logistics_disruption. It ranks below the top candidate because its evidence_coverage is only 2 of 3 criteria_verified (operational_status remains unknown) and its proximity_km of 9647.6 is farther than the top candidate's 8949.7.",
+        "glossary": [
+          {
+            "term": "compliance_certification",
+            "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+          },
+          {
+            "term": "sustainability_practices",
+            "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+          },
+          {
+            "term": "exact_track_record",
+            "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+          },
+          {
+            "term": "semantic_precedent",
+            "definition": "How similar situations played out elsewhere \u2014 a different supplier, a different region \u2014 used when there's no exact past case for this supplier."
+          },
+          {
+            "term": "evidence_coverage",
+            "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+          },
+          {
+            "term": "criteria_verified",
+            "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+          },
+          {
+            "term": "operational_status",
+            "definition": "Whether the supplier has real, available capacity right now and no active disruption \u2014 the current situation, not just what's on paper."
+          },
+          {
+            "term": "proximity_km",
+            "definition": "How close the supplier is to where the product needs to be delivered \u2014 used to choose between already-valid candidates, never to disqualify one."
+          }
+        ]
+      },
+      {
+        "supplier_id": "SUP-BARCELONA-ES",
+        "supplier_name": "Envases Mediterr\u00e1neos S.L.",
+        "location": "Spain",
+        "category": "packaging_materials",
+        "proximity_km": 9664.8,
+        "evidence_coverage": {
+          "criteria_total": 3,
+          "criteria_verified": 1
+        },
+        "precedent_summary": "weak_directional",
+        "criteria": [
+          {
+            "criterion": "compliance_certification",
+            "status": "compliant",
+            "citation": {
+              "chunk_id": "CHUNK-SDOC-BAR-CERT-01-01",
+              "doc_type": "certificate",
+              "source_file": "iso_ggap_cert_BCN_2025.pdf",
+              "page": 1,
+              "excerpt": "Dual Certification. Envases Mediterr\u00e1neos S.L., Pol\u00edgon Industrial Can Roqueta, Carrer dels Emprenedors 22, 08202 Sabadell, Catalonia, Spain. (1) ISO 9001:2015 \u2014 Scope: food-grade packaging and fresh produce distribution. Valid to 2027-09-30. (2) GLOBALG.A.P. CoC Chain of Custody \u2014 for fresh produce packaging compliance, certificate number GGAP-ES-COC-2025-00441. Valid to 2026-12-31. Both certifie\u2026",
+              "valid_until": "2026-12-31T00:00:00Z"
+            },
+            "note": "Chunk explicitly states both ISO 9001:2015 (food-grade packaging scope, valid to 2027-09-30) and GLOBALG.A.P. CoC (valid to 2026-12-31) issued by Bureau Veritas Spain; not expired."
+          },
+          {
+            "criterion": "operational_status",
+            "status": "unknown",
+            "citation": null,
+            "note": "No chunk confirms active current operations or recent commercial correspondence; contract clause is a compliance obligation, not evidence of active operations."
+          },
+          {
+            "criterion": "sustainability_practices",
+            "status": "unknown",
+            "citation": null,
+            "note": "No chunk addresses environmental or sustainability commitments."
+          }
+        ],
+        "rank": 5,
+        "rationale": "Envases Mediterr\u00e1neos S.L. holds a verified compliance_certification, with dual ISO 9001:2015 and GLOBALG.A.P. CoC documentation confirmed by Bureau Veritas Spain and valid through 2026-12-31. However, its evidence_coverage is thin, with only 1 of 3 criteria_verified \u2014 operational_status and sustainability_practices remain unconfirmed \u2014 and there is no exact_track_record, only a weak semantic_precedent from an unrelated supplier. It ranks below the top candidate because Noord-Holland Packaging B.V. has all three criteria_verified as compliant and sits at a closer proximity_km, giving it materially stronger evidence_coverage.",
+        "glossary": [
+          {
+            "term": "compliance_certification",
+            "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+          },
+          {
+            "term": "evidence_coverage",
+            "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+          },
+          {
+            "term": "criteria_verified",
+            "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+          },
+          {
+            "term": "operational_status",
+            "definition": "Whether the supplier has real, available capacity right now and no active disruption \u2014 the current situation, not just what's on paper."
+          },
+          {
+            "term": "sustainability_practices",
+            "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+          },
+          {
+            "term": "exact_track_record",
+            "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+          },
+          {
+            "term": "semantic_precedent",
+            "definition": "How similar situations played out elsewhere \u2014 a different supplier, a different region \u2014 used when there's no exact past case for this supplier."
+          },
+          {
+            "term": "proximity_km",
+            "definition": "How close the supplier is to where the product needs to be delivered \u2014 used to choose between already-valid candidates, never to disqualify one."
+          }
+        ]
+      }
+    ],
+    "discarded_candidates": [],
+    "approved_supplier_id": null,
+    "decision_deadline": null,
+    "created_at": "2026-07-23T11:04:38.372198+00:00"
+  }
+]

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ProgressBar } from "react-bootstrap";
 import Button from "@leafygreen-ui/button";
 import { Body } from "@leafygreen-ui/typography";
@@ -11,15 +11,23 @@ import {
   advanceToStep,
   setLoadedExternalConditions,
 } from "../../redux/slices/GlobalSlice";
-import { simulatedExternalConditions } from "../../data/externalConditions";
 import SectionHeader from "../shared/SectionHeader";
 import ExternalConditionCard from "./ExternalConditionCard";
 import { Card } from "@leafygreen-ui/card";
 
 export default function SimulationPanel() {
   const dispatch = useDispatch();
+  const sessionId = useSelector((s) => s.Global.sessionId);
+  const externalConditions = useSelector((s) => s.Global.externalConditions);
+  const loadedExternalConditions = useSelector(
+    (s) => s.Global.loadedExternalConditions,
+  );
   const [isSimulating, setIsSimulating] = useState(false);
-  const [conditions, setConditions] = useState([]);
+  const [conditions, setConditions] = useState(() =>
+    sessionId && loadedExternalConditions.length > 0
+      ? loadedExternalConditions
+      : [],
+  );
   const [progress, setProgress] = useState(0);
 
   const startSimulation = useCallback(() => {
@@ -27,7 +35,7 @@ export default function SimulationPanel() {
     setConditions([]);
     setProgress(0);
 
-    const totalDuration = simulatedExternalConditions.length * 800;
+    const totalDuration = externalConditions.length * 600;
     const steps = 20;
     const stepInterval = totalDuration / steps;
 
@@ -40,15 +48,14 @@ export default function SimulationPanel() {
 
     setTimeout(() => {
       setConditions(
-        simulatedExternalConditions.map((data, i) => ({
+        externalConditions.map((data) => ({
           ...data,
-          id: `condition-${Date.now()}-${i}`,
           timestamp: new Date().toISOString(),
         })),
       );
       setIsSimulating(false);
     }, totalDuration + 100);
-  }, []);
+  }, [externalConditions]);
 
   const handleGoToAnalysis = () => {
     dispatch(setLoadedExternalConditions(conditions));
@@ -83,9 +90,9 @@ export default function SimulationPanel() {
               </Body>
               <Body style={{ color: palette.gray.dark1, fontSize: 12 }}>
                 {Math.round(
-                  (progress / 100) * simulatedExternalConditions.length,
+                  (progress / 100) * externalConditions.length,
                 )}{" "}
-                / {simulatedExternalConditions.length}
+                / {externalConditions.length}
               </Body>
             </div>
             <ProgressBar
@@ -116,7 +123,7 @@ export default function SimulationPanel() {
           <div>
             <div className="d-flex flex-column gap-2">
               {conditions.map((c) => (
-                <ExternalConditionCard key={c.id} condition={c} />
+                <ExternalConditionCard key={c.condition_id} condition={c} />
               ))}
             </div>
             <div className="d-flex justify-content-end mt-2">

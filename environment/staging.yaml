@@ -4,50 +4,68 @@ security:
   dataDesignation: ["MI"]
 
 ownership:
-  driEmail: owner.email@mongodb.com
+  driEmail: florencia.arin@mongodb.com
 
 env:
   NODE_ENV: staging
-  # AWS region for IRSA (no credentials needed)
-  AWS_REGION: us-east-1
   # Backend API URL for frontend to connect to backend health check - get <service-name> using kubectl get services
-  BACKEND_URL: http://<demo-name>-backend-web-app:80 # or http://localhost:8000 if multicontainer pod is setup and backend is running on 8000
-  COLLECTION_NAME: test-collection
+  BACKEND_URL: http://localhost:8000 # if multicontainer pod is setup and backend is running on 8000
 
 ## Single Pod Containers
 envSecrets:
   # MongoDB Configuration
-  MONGODB_URI: <secret-group>
-  DATABASE_NAME: <secret-group>
-  VOYAGE_API_KEY: <secret-group>
-  # Bedrock Inference Profiles (see cloud-cost-tracking.md)
-  CHATCOMPLETIONS_MODEL_ID: <secret-group>
-  EMBEDDINGS_MODEL_ID: <secret-group>
+  MONGODB_URI: retail-supply-chain-management-staging
+  DATABASE_NAME: retail-supply-chain-management-staging
+  ATLAS_CHARTS_BASE_URL: retail-supply-chain-management-staging
+  ATLAS_DASHBOARD_ID: retail-supply-chain-management-staging
 
 ## should be used in case of multiple sidecar containers
-# sidecarContainers:
-#   - name: backend
-#     image: 275662791714.dkr.ecr.us-east-1.amazonaws.com/kanopy-session-backend:latest
-#     env:
-#       # MongoDB connection (from Kubernetes secret)
-#       - name: MONGODB_URI
-#         valueFrom:
-#           secretKeyRef:
-#             name: session-temp-kanopy
-#             key: MONGODB_URI
+sidecarContainers:
+  - name: backend
+    image: 275662791714.dkr.ecr.us-east-1.amazonaws.com/retail-supply-chain-management-backend:latest
+    
+    ports:
+      - containerPort: 8000
+        name: backend
 
-#       - name: DATABASE_NAME
-#         valueFrom:
-#           secretKeyRef:
-#             name: session-temp-kanopy
-#             key: DATABASE_NAME
+    env:
+      - name: APP_NAME
+        value: retail-supply-chain-risk
 
-#       # Voyage AI API Key (embeddings)
-#       - name: VOYAGE_API_KEY
-#         valueFrom:
-#           secretKeyRef:
-#             name: session-temp-kanopy
-#             key: VOYAGE_API_KEY
+      # MongoDB connection (from Kubernetes secret)
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: retail-supply-chain-management-staging
+            key: MONGODB_URI
+
+      - name: DATABASE_NAME
+        valueFrom:
+          secretKeyRef:
+            name: retail-supply-chain-management-staging
+            key: DATABASE_NAME
+
+      # Voyage AI API Key (embeddings)
+      - name: VOYAGE_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: retail-supply-chain-management-staging
+            key: VOYAGE_API_KEY
+
+      - name: LLM_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: retail-supply-chain-management-staging
+            key: LLM_API_KEY
+
+      - name: LLM_BASE_URL
+        valueFrom:
+          secretKeyRef:
+            name: retail-supply-chain-management-staging
+            key: LLM_BASE_URL            
+
+      - name: ANTHROPIC_MODEL
+        value: claude-opus-4-7            
 
 ## ----------------------------- Cloud Specific Configurations -----------------------------
 

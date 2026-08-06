@@ -1,0 +1,120 @@
+[
+  {
+    "_id": {
+      "$oid": "6a61f4bf4fb164201ee654c5"
+    },
+    "evaluation_id": "EVAL-85f41e8f-LAN-IT-1784804543",
+    "supplier_id": "SUP-MILAN-IT",
+    "supplier_name": "Imballaggi del Nord S.p.A.",
+    "region": "IT",
+    "country": "Italy",
+    "product_categories": [
+      "packaging_materials"
+    ],
+    "session_id": "85f41e8f-3214-42de-a8ef-0bba2fa941d0",
+    "is_base": false,
+    "evaluated_at": "2026-07-23T11:02:23.502711+00:00",
+    "supplier_risk_level": "WATCH",
+    "requires_action": false,
+    "operational_context": {
+      "active_orders": 9,
+      "total_value_usd": 5011000,
+      "days_until_due": 19,
+      "earliest_delivery_due": "2026-08-10",
+      "criticality": "high"
+    },
+    "risk_scores": [
+      {
+        "risk_id": "RISK-LOG-008",
+        "condition_id": "COND-85F41E8F-LOG-281634",
+        "rpn_base": 60.0,
+        "rpn_dynamic": 139.15,
+        "rpn_status": "WATCH",
+        "triggered_by": {
+          "source": "GDELT",
+          "condition_score": 2.9814814814814814,
+          "historical_weight": 0.85,
+          "distance_decay": 0.915160438687535,
+          "risk_type_triggered": "logistics_disruption"
+        }
+      }
+    ],
+    "natural_language_summary": "Imballaggi del Nord S.p.A. (SUP-MILAN-IT) is currently at WATCH status, with a dynamic RPN of 139.15 more than doubling its baseline of 60.0 despite no active disruption on the Northern Italy freight corridor. The elevated score is driven primarily by a high condition score (~2.98) combined with a strong historical weight (0.85), indicating past logistics issues on this lane continue to influence the risk profile. Operational exposure is significant: 9 active orders totaling $5.01M are due in 19 days, and the high criticality of this packaging spend leaves limited buffer if conditions deteriorate. Recommend proactive confirmation of shipment schedules and identifying a secondary packaging source given the historical precedent, even though current corridor operations remain normal.",
+    "glossary": [
+      {
+        "term": "RPN",
+        "definition": "A single score combining how severe a problem would be, how likely it is to happen, and how hard it is to detect in time. The higher it is, the more urgent."
+      },
+      {
+        "term": "condition_score",
+        "definition": "How strongly an active real-world signal (a news report, a weather alert) is affecting the situation right now."
+      },
+      {
+        "term": "historical_weight",
+        "definition": "An adjustment to the risk score based on how this specific supplier has actually performed in similar situations before \u2014 not a generic assumption, its own track record."
+      },
+      {
+        "term": "precedent",
+        "definition": "Shorthand for 'this has happened before' \u2014 covers both an exact past case and a similar one used for comparison."
+      }
+    ],
+    "memory_episodes_used": []
+  },
+  {
+    "_id": {
+      "$oid": "6a61f4ca4fb164201ee654c6"
+    },
+    "evaluation_id": "EVAL-85f41e8f-OWN-ZA-1784804554",
+    "supplier_id": "SUP-CAPETOWN-ZA",
+    "supplier_name": "Cape Harvest Agricultural Exports Pty.",
+    "region": "ZA",
+    "country": "South Africa",
+    "product_categories": [
+      "fresh_produce"
+    ],
+    "session_id": "85f41e8f-3214-42de-a8ef-0bba2fa941d0",
+    "is_base": false,
+    "evaluated_at": "2026-07-23T11:02:34.372976+00:00",
+    "supplier_risk_level": "ALERT",
+    "requires_action": true,
+    "operational_context": {
+      "active_orders": 5,
+      "total_value_usd": 520000,
+      "days_until_due": 12,
+      "earliest_delivery_due": "2026-08-03",
+      "criticality": "high"
+    },
+    "risk_scores": [
+      {
+        "risk_id": "RISK-GEO-003",
+        "condition_id": "COND-85F41E8F-GEO-8FCE92",
+        "rpn_base": 30.0,
+        "rpn_dynamic": 145.66,
+        "rpn_status": "ALERT",
+        "triggered_by": {
+          "source": "GDELT",
+          "condition_score": 5.111111111111111,
+          "historical_weight": 0.95,
+          "distance_decay": null,
+          "risk_type_triggered": "geopolitical_tariff"
+        }
+      }
+    ],
+    "natural_language_summary": "Cape Harvest Agricultural Exports (SUP-CAPETOWN-ZA) is in ALERT status with a dynamic RPN of 145.66\u2014nearly 5x its baseline of 30\u2014driven by geopolitical trade corridor disruption tied to the Morocco-Spain rail capacity expansion affecting North African transit routes. Financial exposure is significant: 5 active orders totaling $520,000 with high criticality and only 12 days until due, leaving minimal buffer for rerouting or expediting fresh produce shipments. The elevated historical weighting (0.95) indicates strong precedent for similar corridor disruptions materially impacting this supplier's delivery performance. Recommend immediate engagement with the supplier to confirm shipment routing, and prepare contingency logistics or partial-fulfillment plans before the 12-day window closes.",
+    "glossary": [
+      {
+        "term": "RPN",
+        "definition": "A single score combining how severe a problem would be, how likely it is to happen, and how hard it is to detect in time. The higher it is, the more urgent."
+      },
+      {
+        "term": "historical_weight",
+        "definition": "An adjustment to the risk score based on how this specific supplier has actually performed in similar situations before \u2014 not a generic assumption, its own track record."
+      },
+      {
+        "term": "precedent",
+        "definition": "Shorthand for 'this has happened before' \u2014 covers both an exact past case and a similar one used for comparison."
+      }
+    ],
+    "memory_episodes_used": []
+  }
+]
