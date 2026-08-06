@@ -1,160 +1,147 @@
-# `alternative_finder` — validated alternative supplier search
+# `alternative_finder`
 
-A real LangGraph `StateGraph` that, given a single `evaluation_id_ref`, plans a
-search from the referenced risk evaluation, narrows the supplier universe
-entirely inside MongoDB (hybrid search + native rerank), audits each candidate
-against its own cited documents and historical precedent, ranks the survivors
-by proximity and evidence, writes a rationale, and persists a shortlist that
-waits for human approval. Progress streams to the frontend over Server-Sent
-Events.
+## What we're demonstrating
 
-This module is fully implemented and mounted — it is **not** a stub.
+Once `risk_evaluator` flags a supplier as CRITICAL, a name alone isn't enough — a procurement manager needs a replacement they can actually trust, backed by real evidence: is this candidate certified, do they have capacity, has anything gone wrong with them before. Finding that fast, across an entire supplier documents corpus, is exactly the kind of thing that stalls when vector search, full-text search, and geospatial ranking live in three different systems.
+
+![alternative_finder architecture](../../docs/images/alternative_finder_diagram.png)
+
+
+**① `plan_node`**
+- **What it does:** reads the referenced risk evaluation and the disrupted supplier's active orders, then makes one LLM call to synthesize a search plan.
+- **Objective:** turn "this supplier is disrupted" into a concrete search brief — which regions to exclude, which evidence types matter, what an ideal replacement looks like.
+- **MongoDB's role:** three reads happen before the LLM ever starts, so it never begins from a blank prompt. First, `find_one` on `supplier_risk_evaluations` by `evaluation_id` — if it doesn't resolve, the node raises rather than falling through to a guess. Then a `find` with `$in` on `risk_catalog` to resolve each risk code (like `RISK-LOG-001`) into a real risk type and its `applies_to_regions` — the exclusion list comes from catalog data, not a guess. Then a `find` on `purchase_orders` filtered to `status: "active"` to distill real time pressure (`days_until_due`, `value_usd`, `promotional_window`). Only then does one structured LLM call run — no tools, no loop — and its `doc_type_hint` output is constrained to the real `doc_type` vocabulary, so the plan can only name values the next step can actually filter on.
+- **Collections:** reads `supplier_risk_evaluations`, `risk_catalog`, `purchase_orders`.
+
+**② `funnel_node`**
+- **What it does:** narrows the whole supplier universe down to five candidates using a pre-filter, hybrid search, and native reranking.
+- **Objective:** hand the expensive reasoning step a short, high-quality shortlist instead of the entire corpus.
+- **MongoDB's role:** fully deterministic — no LLM call at all. A plain `find` builds the candidate pool over `suppliers` (active, matching product category, excluding the disrupted region and the disrupted supplier itself). Then hybrid retrieval over `supplier_documents` — each certificate, contract, or audit excerpt lives as one chunk document holding `chunk_text`, its own `auto_embed_text`, `doc_type`, and `valid_until` all together, so the evidence, its search vector, and its expiry date sit in one place, with no separate file store and no separate vector database. A single `$rankFusion` aggregation combines a `$vectorSearch` arm (on `auto_embed_text`, biased toward step ①'s `doc_type_hint`) and a `$search` arm (full-text, on `chunk_text`) — weighted 70% vector / 30% text. Native Voyage reranking (`$rerank`, model `rerank-2.5`) then runs as a further stage in an aggregation pipeline — never an external API call. One real inefficiency worth flagging: the fusion aggregation runs twice per request — once to size the candidate pool, again inside the rerank pipeline — so the fusion work itself gets paid for twice.
+- **Collections:** reads `suppliers`, `supplier_documents` (`$rankFusion` + `$rerank`).
+
+**③ `reflect_critique_node`**
+- **What it does:** for each candidate, drafts cited claims against the audit criteria, then verifies them in a separate, adversarial pass.
+- **Objective:** make sure every positive claim about a candidate traces back to a real document chunk, and that an honest "unknown" survives instead of getting papered over.
+- **MongoDB's role:** Generate and Audit are two separate LLM calls per candidate, not one. Between them sits gap resolution — a single targeted lookup, not a loop: if the gap survives that one attempt, the criterion honestly stays "unknown." Retrieval here is scoped per-supplier, over the corpus reranking already narrowed — never the full set again. Two independent precedent searches run against `agent_memory` and stay separate objects, never merged into one score: an exact per-candidate track record (a `find` on `episode.resolution.alt_supplier_id`) and a semantic precedent (`$vectorSearch` on `auto_embed_text`, filtered by `risk_type`, with **no supplier filter** — computed once per run, then attached identically to every candidate, since it describes the risk situation rather than any one candidate specifically). Deterministic guardrails then override the model where it matters: a citation that doesn't exist in the real chunk data forces the verdict to "unknown"; a citation past its `valid_until` forces "noncompliant."
+- **Collections:** reads `supplier_documents` (per-candidate, plus at most one gap lookup), `agent_memory` (`find` + `$vectorSearch`).
+
+**④ `rank_assembly_node`**
+- **What it does:** measures each surviving candidate's distance to the distribution center and applies the ranking rule.
+- **Objective:** make position an explicit, defensible number, not an implied order.
+- **MongoDB's role:** deterministic, no LLM. A single `$geoNear` on `suppliers`, scoped only to the candidates that survived the audit — it never re-touches the full corpus. A candidate with no usable location simply gets `proximity_km: null`, a real data gap rather than an invented number, and it can never win a proximity tiebreak. One honest caveat baked into the code itself: the reference distribution-center coordinate is a documented assumption (no real DC coordinate exists in the system yet), and that assumption travels downstream as an explicit flag, so nothing downstream mistakes it for a verified fact.
+- **Collections:** reads `suppliers` (`$geoNear`).
+
+**⑤ `summarize_node` → `persist_node`**
+- **What it does:** writes a plain-text rationale and glossary for each candidate, then inserts the finished shortlist as a new run document and closes the stream.
+- **Objective:** make the shortlist readable to a manager, and preserve every run as auditable history — in one move.
+- **MongoDB's role:** `summarize_node` itself makes one LLM call per candidate with no MongoDB access at all — every input is already sitting in state, produced by the earlier steps' MongoDB work: rank, proximity from `$geoNear`, evidence coverage from the audit. Glossary definitions aren't generated by the model — it only names which terms it used, and the actual wording comes verbatim from a fixed internal dictionary. A parse failure falls back to a safe, deterministic one-liner rather than crashing the stream. `persist_node` then runs the module's only write: a single `insert_one` into `supplier_alternatives` — never an upsert, so every run's history survives alongside the baseline document. The document makes the same case for the document model that `supplier_risk_evaluations` does: tightly structured fields (integer `rank`, `proximity_km`, nested citation objects with `chunk_id`/`page`/`valid_until`) sit side by side with free-form LLM prose (`rationale`) and a variable-length `glossary` array — no join, no separate text table. `approved_supplier_id` is always `null` by design; only a human reviewer sets it.
+- **Data stored:** one `supplier_alternatives` document per run — the full ranked shortlist, with citations, precedent, and rationale.
+
 
 ---
 
-## Four conceptual layers, six graph nodes
+**Why MongoDB matters in the agentic world:** three of these six steps touch an LLM — planning, the Generate/Audit pair, and the rationale write-up — and every one of them works over data MongoDB has already narrowed down, not a raw collection. `$rankFusion` and native reranking cut an entire supplier-document corpus to five candidates before any audit begins; `$geoNear` only ever measures the candidates that survived that audit; the two precedent searches return a handful of relevant episodes, not the whole of `agent_memory`. The other three steps — funnel, ranking, and persistence — are exact retrieval and math, with no model in the loop at all. As agents get more capable, [controlling token spend comes down to controlling context](https://www.mongodb.com/company/blog/technical/why-multi-agent-systems-need-memory-engineering) — this is that principle applied at every layer of a single pipeline, not just once.
 
-The design is organised around four layers (Plan → Deterministic Funnel →
-Reflect & Critique → Close), but **in code the Close layer is split into three
-nodes**, so the compiled `StateGraph` has **six** sequential nodes (no
-conditional branching, no checkpointer — in-memory per request):
+---
 
+## MongoDB capabilities used by this module
+
+1. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `funnel_node`, combining a `$vectorSearch` arm and a `$search` arm into one fused, ranked result.
+2. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as a further aggregation stage in the same pipeline; candidates are never pulled out to an external API.
+3. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — the vector arm of the hybrid search over `supplier_documents`, plus a separate cross-supplier precedent search over `agent_memory` in `reflect_critique_node`.
+4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search on `supplier_documents.chunk_text`, the lexical arm of the hybrid search. Confirmed to appear in exactly this one place — no other node uses it.
+5. [Atlas Auto-Embedding](https://www.mongodb.com/docs/vector-search/crud-embeddings/automated-embedding/) — confirmed identical to `risk_evaluator`: both `supplier_documents` and `agent_memory` declare `auto_embed_text` and pass a plain text query; Atlas generates and maintains the embedding, no client-side vector computed anywhere in this module.
+6. [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/) — proximity ranking in `rank_assembly_node`, scoped only to candidates that survived the audit.
+7. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — on `suppliers.location`, required for `$geoNear` to run.
+
+Not used here: `$geoWithin`/`$centerSphere` — that's `risk_evaluator`'s capability; see that module's README.
+
+---
+
+## 2. Anatomy of a `supplier_alternatives` document
+
+```json
+{
+  "evaluation_id_ref": "EVAL-2026-0441-A",
+  "session_id": "sess-abc123",
+  "blocked_supplier_id": "SUP-SHENZHEN-441",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": ["geopolitical_tariff"],
+  "reference_point": {
+    "type": "Point",
+    "coordinates": [-118.2, 34.0],
+    "assumed": true
+  },
+  "candidates_evaluated": 5,
+  "candidates_discarded": 0,
+  "candidates": [
+    {
+      "supplier_id": "SUP-MONTERREY-MX",
+      "supplier_name": "Monterrey Rigid Packaging S.A.",
+      "location": "Mexico",
+      "category": "packaging_materials",
+      "proximity_km": 2140.5,
+      "evidence_coverage": { "criteria_total": 3, "criteria_verified": 3 },
+      "precedent_summary": "none",
+      "criteria": [
+        {
+          "criterion": "certification_valid",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHK-MTY-CERT-004",
+            "doc_type": "certificate",
+            "source_file": "iso9001_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 — scope: rigid and flexible packaging manufacturing...",
+            "valid_until": "2027-03-01"
+          }
+        }
+      ],
+      "rank": 1,
+      "rationale": "Monterrey Rigid Packaging holds a current ISO 9001:2015 certification covering the required scope, with no prior track record on file and no directly comparable precedent found.",
+      "glossary": [
+        { "term": "ISO 9001:2015", "definition": "An international quality-management certification standard." }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-06-14T10:22:00Z"
+}
 ```
-plan_node → funnel_node → reflect_critique_node → rank_assembly_node → summarize_node → persist_node
+
+`reference_point.assumed: true` is the honest flag from `rank_assembly_node` — there's no real distribution-center coordinate in the system yet, so nothing downstream can mistake this for verified data. `candidates_discarded` and `discarded_candidates` are always `0` / `[]` — the funnel and rerank cutoff mean nothing is ever recorded as an explicit rejection. `precedent_summary` collapses the two independent precedent checks (exact track record + semantic) into one string for the persisted document; the full, unmerged objects are only available over the live SSE stream.
+
+---
+
+## 3. Endpoint
+
+**`POST /api/alternative-finder/find`**
+
+```json
+{ "evaluation_id_ref": "EVAL-..." }
 ```
 
-| Node | Layer | LLM? | What it does |
-|------|-------|------|--------------|
-| `plan_node` | Plan | 1 call | Reads the referenced `supplier_risk_evaluations` doc, resolves risk types/regions via `risk_catalog`, checks `purchase_orders` for time pressure, then one structured LLM call produces `region_exclude` / `doc_type_hint` / `profile_text`. |
-| `funnel_node` | Deterministic Funnel | **no LLM** | `$match` pre-filter on `suppliers`, then `$rankFusion` + native `$rerank` over `supplier_documents`, deduped to the top ~5 distinct suppliers. |
-| `reflect_critique_node` | Reflect & Critique | 2 calls/candidate | Per candidate: a Generate LLM call (cited claims grounded only in that supplier's chunks) and an Audit LLM call (verifies each citation, deterministic expiry guard), plus precedent lookups. |
-| `rank_assembly_node` | Close | **no LLM** | `$geoNear` proximity to an assumed distribution center, then a deterministic ranking rule that stamps a 1-indexed `rank`. |
-| `summarize_node` | Close | 1 call/candidate | One LLM call per candidate writes a plain-text `rationale` and selects glossary terms. |
-| `persist_node` | Close | **no LLM** | `insert_one` into `supplier_alternatives`, emits `shortlist_ready`. |
-
-So the LLM appears in three of the six nodes; `funnel_node`, `rank_assembly_node`,
-and `persist_node` are deterministic. (Note: the Close layer as a whole is *not*
-fully deterministic, because `summarize_node` is part of it — see ADR-006.)
-
-All single-shot LLM calls parse output with `core.json_utils._extract_json`
-(regex + `json.loads`, tolerating ```json fences); every parse failure has a
-deterministic fallback so the stream never crashes.
-
----
-
-## Collections it touches
-
-| Op | Collection | Node | Filter / capability |
-|----|-----------|------|--------------------|
-| READ | `supplier_risk_evaluations` | plan_node | `{evaluation_id: evaluation_id_ref}` |
-| READ | `risk_catalog` | plan_node | `{risk_id: {$in}}` |
-| READ | `purchase_orders` | plan_node | `{supplier_id, status:"active"}` |
-| READ | `suppliers` | funnel_node | `$match` pool (active, capacity ≤ 0.90, category `$in`, region `$nin`, `supplier_id $ne` disrupted) |
-| READ | `supplier_documents` | funnel_node | `$rankFusion` (`$vectorSearch` + `$search`) then native `$rerank` |
-| READ | `agent_memory` | reflect_critique_node | exact `find` + cross-supplier `$vectorSearch` (see below) |
-| READ | `supplier_documents` | reflect_critique_node | per-supplier `find` for grounding + one bounded gap lookup |
-| READ | `suppliers` | rank_assembly_node | `$geoNear` |
-| **WRITE** | `supplier_alternatives` | persist_node | `insert_one` |
-
-### MongoDB capabilities (all real, in-pipeline)
-
-- **`$rankFusion`** over `supplier_documents` — fuses a vector arm
-  (`$vectorSearch` on `supplier_documents_vector_index`, autoembed, filtered to
-  the pool + `doc_type_hint`) with a full-text arm (`$search` on `chunk_text`),
-  weights `{vector: 0.7, text: 0.3}`.
-- **Native `$rerank`** (Voyage `rerank-2.5`) chained after `$rankFusion` — the
-  candidate-narrowing never leaves Atlas. `$rerank` runs natively in-pipeline
-  here; no external Voyage API call is made at runtime (see
-  [ADR-007](../../docs/adr/007-backend-native_reranking.md)).
-- **`$vectorSearch`** over `agent_memory` (`agent_memory_autoembed_index`,
-  autoembed, filtered by `risk_type`) for semantic precedent; wrapped in
-  try/except so an index/feature problem degrades to "no precedent" rather than
-  failing the run.
-- **`$geoNear`** over `suppliers` — real spherical distance from each candidate
-  to the assumed distribution-center reference point (LA, flagged
-  `assumed: true`); candidates with no `location` report `proximity_km: null`.
-
-**`agent_memory` is read only — this module never writes to it.**
-
-### Two separate precedent signals (never fused)
-
-`reflect_critique_node` looks up precedent two ways and keeps them as **separate
-objects** (see ADR-008):
-
-1. **Exact track record** — a plain `find` on
-   `episode.resolution.alt_supplier_id $in <candidates>` (collection scan; no
-   index on that path).
-2. **Semantic precedent** — the cross-supplier `$vectorSearch` by `risk_type`.
-
-> ⚠️ **The exact track-record lookup structurally returns nothing today.** No
-> code anywhere in the repo writes an `agent_memory` document with an
-> `episode.resolution.alt_supplier_id` field — there is no closure/outcome
-> writer (see ADR-009), and `agent_memory` is populated only by hand-curated
-> seed data. Unless such episodes are seeded, `exact_track_record.found` is
-> always `false`. The semantic-precedent path is the only precedent signal most
-> runs will surface.
-
-### Shape of the written document (`supplier_alternatives`)
-
-`persist_node` inserts a hand-built dict (no Pydantic model) with:
-`evaluation_id_ref`, `session_id`, `blocked_supplier_id`, `is_base: false`,
-`is_demo_trigger: false`, `status: "pending_approval"`, `risk_types`,
-`reference_point` (the assumed DC), `candidates_evaluated`,
-`candidates_discarded: 0`, `candidates` (the ranked shortlist — each entry
-carries `proximity_km`, `evidence_coverage`, `precedent_summary`, `criteria`,
-`rank`, `rationale`, `glossary`), `discarded_candidates: []`,
-**`approved_supplier_id: null` (always — human approval only)**,
-`decision_deadline: null`, `created_at`. Always `insert_one`, never upsert.
-
----
-
-## Invocation contract
-
-- **Endpoint:** `POST /api/alternative-finder/find` (mounted in `main.py`).
-- **Header:** `X-Session-ID` required → **HTTP 400** if missing/empty.
-- **Request body (`FindAlternativesRequest`):** `{"evaluation_id_ref": "<id>"}`
-  — a single required field. `supplier_id` and `risk_types` are **not** in the
-  request; they are read server-side in `plan_node`. If `evaluation_id_ref`
-  doesn't resolve to a `supplier_risk_evaluations` doc, `plan_node` emits an
-  `error` (recoverable: false) and the stream ends `failed`.
-- **Response:** an SSE stream (`EventSourceResponse`).
-
-### SSE events actually emitted
-
-Each frame is `data: <json>` with a common envelope keyed on an **`event`**
-field (`{event, layer, timestamp, session_id, ...}`):
-
-`alternative_finder_started`, `layer_started`, `layer_completed`,
-`atlas_operation`, `agent_thought`, `candidate_generated`, `tool_start` /
-`tool_end` (only around the bounded gap lookup), `candidate_audited`,
-`shortlist_ready` (terminal result: `supplier_alternatives_id`,
-`approved_supplier_id: null`, `candidates`), `error`, and `stream_end`
-(`status: "completed" | "failed"`). A `None` sentinel follows `stream_end` to
-close the router loop.
+- **Headers:** `X-Session-ID` required. Confirmed real behavior: **422** if the header is missing entirely, **400** only if present but empty.
+- **Response:** Server-Sent Events, framed on an `event` key inside an envelope (`event`, `layer`, `timestamp`, `session_id`) — a different shape from `risk_evaluator`'s `type`-keyed contract. Terminal event `shortlist_ready` carries the persisted shortlist.
+- **Guarantees:** one `supplier_alternatives` document per run, `approved_supplier_id: null` until a human sets it.
 
 ```bash
 curl -N -X POST http://localhost:8000/api/alternative-finder/find \
   -H "X-Session-ID: demo-session-123" \
   -H "Content-Type: application/json" \
-  -d '{"evaluation_id_ref": "EVAL-demo-ses-ABC123-1720000000"}'
+  -d '{"evaluation_id_ref": "EVAL-2026-0441-A"}'
 ```
 
 ---
 
-## Internal state notes
+## Related
 
-State is a `TypedDict` (`AlternativeFinderState`), type hints only. No
-checkpointer — the run lives in memory for the request. Two accumulator slots
-are effectively unused: `atlas_operations` is seeded but never written (atlas
-ops go straight to the SSE queue via `_emit`), and `proximity_km` is written but
-consumed via the shortlist entries rather than re-read from state.
-
----
-
-## Cross-module dependencies
-
-- Reads the `supplier_risk_evaluations` document that `risk_evaluator` wrote,
-  by `evaluation_id`. This is the only inbound dependency.
-- Also reads shared `risk_catalog`, `purchase_orders`, `suppliers`,
-  `supplier_documents`, and `agent_memory`.
-- Does not import either other module.
+- ADR-005 — Operational Data Layer (how this module couples to the others, purely via data)
+- ADR-006 — Context-Engineered Four-Layer Architecture (the conceptual layers; the real graph has six nodes across them)
+- ADR-007 — Native In-Pipeline Reranking
+- ADR-008 — Two Separate Precedent Signals (why exact and semantic precedent are never fused into one score)
+- ADR-009 — `agent_memory` single-writer closure loop (designed, not built — this module never writes to `agent_memory`)
