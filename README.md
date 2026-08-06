@@ -109,7 +109,7 @@ retail-supply-chain-management/
 ### 🚀 Start Locally with Docker Compose
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/mongodb-industry-solutions/retail-supply-chain-management.git
 cd retail-supply-chain-management
 make build
 ```

@@ -111,7 +111,7 @@ curl -N -X POST http://localhost:8000/api/simulation/evaluate \
 
 ## Related
 
-- ADR-003 — SSE + Change Streams (should cover the `stream_listener.py` decision above)
-- ADR-004 — LangGraph checkpointing (none wired in; isolation via `session_id`, not `thread_id`)
-- ADR-005 — Operational Data Layer (how this module couples to the others, purely via data)
-- ADR-009 — `agent_memory` single-writer closure loop (designed, not built — this module never writes to `agent_memory`)
+- [ADR-003](../../docs/adr/003-backend-sse-change-stream.md) — SSE + Change Streams (should cover the `stream_listener.py` decision above)
+- [ADR-004](../../docs/adr/004-backend-langgraph-checkpointing.md) — LangGraph checkpointing (none wired in; isolation via `session_id`, not `thread_id`)
+- [ADR-005](../../docs/adr/005-backend-operational-data-layer.md) — Operational Data Layer (how this module couples to the others, purely via data)
+- [ADR-009](../../docs/adr/009-backend-agent_memory_single_writer.md) — `agent_memory`: precedent reads now, closure-loop write deferred by design (this module never writes to `agent_memory`)

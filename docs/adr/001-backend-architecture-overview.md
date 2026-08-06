@@ -13,7 +13,7 @@ The codebase must remain readable to MongoDB Solutions Architects and engineers 
 
 Run all three logical services as vertical slices within a single FastAPI application.
 
-Each slice (`ingestion_engine`, `risk_evaluator`, `alternative_finder`) owns its router, service logic, and schemas. **No slice imports from another slice.** All inter-slice communication happens via MongoDB — ingestion writes to `external_conditions`, risk evaluation reads from it, alternative finder reads from `supplier_risk_evaluations` and `suppliers`. This is the Operational Data Layer pattern described in ADR 005.
+Each slice (`ingestion_engine`, `risk_evaluator`, `alternative_finder`) owns its router, service logic, and schemas. **No slice imports from another slice.** All inter-slice communication happens via MongoDB — ingestion writes to `external_conditions`, risk evaluation reads from it, alternative finder reads from `supplier_risk_evaluations` and `suppliers`. This is the Operational Data Layer pattern described in [ADR-005](./005-backend-operational-data-layer.md).
 
 The `core/` package provides shared infrastructure (DB connection, settings, session dependency, exceptions) that all slices may import from.
 
@@ -30,7 +30,7 @@ The `core/` package provides shared infrastructure (DB connection, settings, ses
 
 In this demo both agents are activated by explicit frontend POST requests — this gives the demo full control over the flow and makes the agent steps visible to the presenter.
 
-In a production system, `risk_evaluator` would be activated by a MongoDB Change Stream watching `external_conditions` for new `is_demo_trigger: true` inserts — no frontend call required. The Change Stream activation pattern is documented in `stream_listener.py` and ADR 003 as a production reference.
+In a production system, `risk_evaluator` would be activated by a MongoDB Change Stream watching `external_conditions` for new `is_demo_trigger: true` inserts — no frontend call required. The Change Stream activation pattern is documented in `stream_listener.py` and [ADR-003](./003-backend-sse-change-stream.md) as a production reference.
 
 `alternative_finder` remains frontend-triggered in production — it is a human-in-the-loop step that only runs when the procurement manager decides to act on a flagged supplier.
 
@@ -38,9 +38,9 @@ In a production system, `risk_evaluator` would be activated by a MongoDB Change 
 
 Verified against the code today:
 
-- **Vertical slices with no cross-slice imports — real.** `ingestion_engine`, `risk_evaluator`, and `alternative_finder` each own their router/logic/schemas, import only from `core/`, and never import one another. Inter-slice communication happens exclusively through shared MongoDB collections (ingestion writes `external_conditions` → `risk_evaluator` reads it; `risk_evaluator` writes `supplier_risk_evaluations` → `alternative_finder` reads it by `evaluation_id`). This is the ODL pattern of ADR-005 and it matches the running code.
-- **Change Stream activation for `risk_evaluator` — not yet implemented.** `stream_listener.py` is a stub (`pass`); no Change Stream runs today. Both agents are activated only by their explicit frontend POSTs. The Change Stream model is a production reference — see ADR-003.
-- **LangGraph checkpointer — not yet implemented.** Neither graph compiles with a checkpointer; both run in-memory per request. See ADR-004.
+- **Vertical slices with no cross-slice imports — real.** `ingestion_engine`, `risk_evaluator`, and `alternative_finder` each own their router/logic/schemas, import only from `core/`, and never import one another. Inter-slice communication happens exclusively through shared MongoDB collections (ingestion writes `external_conditions` → `risk_evaluator` reads it; `risk_evaluator` writes `supplier_risk_evaluations` → `alternative_finder` reads it by `evaluation_id`). This is the ODL pattern of [ADR-005](./005-backend-operational-data-layer.md) and it matches the running code.
+- **Change Stream activation for `risk_evaluator` — not yet implemented.** `stream_listener.py` is a stub (`pass`); no Change Stream runs today. Both agents are activated only by their explicit frontend POSTs. The Change Stream model is a production reference — see [ADR-003](./003-backend-sse-change-stream.md).
+- **LangGraph checkpointer — not yet implemented.** Neither graph compiles with a checkpointer; both run in-memory per request. See [ADR-004](./004-backend-langgraph-checkpointing.md).
 
 ## Consequences
 
@@ -55,4 +55,4 @@ Verified against the code today:
 
 ## In Production
 
-Each slice would be an independent service with its own repository, deployment pipeline, and MongoDB connection. The ODL pattern scales naturally — each service still owns its collections and communicates only via MongoDB reads. See ADR 005 for the full production architecture including CDC sync from ERP systems.
+Each slice would be an independent service with its own repository, deployment pipeline, and MongoDB connection. The ODL pattern scales naturally — each service still owns its collections and communicates only via MongoDB reads. See [ADR-005](./005-backend-operational-data-layer.md) for the full production architecture including CDC sync from ERP systems.

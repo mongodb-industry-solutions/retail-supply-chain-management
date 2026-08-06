@@ -42,8 +42,7 @@ project-level settings above. Verified spec:
 { "$rerank": { "query": { "text": "<profile_text>" }, "path": "chunk_text",
                 "model": "rerank-2.5", "numDocsToRerank": <n> } }
 ```
-Relevance score is read via `{"$meta": "score"}` (not `relevanceScore` or
-`rerankScore`, which several early drafts assumed).
+Relevance score is read via `{"$meta": "score"}`.
 
 ## Consequences
 

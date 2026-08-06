@@ -78,7 +78,7 @@ MongoDB capabilities used (`$geoWithin`, `$vectorSearch`, `$rankFusion`, native
 `$rerank`, `$geoNear`, aggregations), the ReAct parsing/fallback behavior, the
 real SSE event types, and the confirmed dead code (`risk_evaluator`'s
 `retrieve_memory`). Note that `$rerank` runs natively in-pipeline inside
-`alternative_finder` — no external Voyage API call is made at runtime (ADR-007).
+`alternative_finder` — no external Voyage API call is made at runtime ([ADR-007](../docs/adr/007-backend-native_reranking.md)).
 
 ---
 
@@ -251,7 +251,8 @@ SSE stream. Terminal event `shortlist_ready` carries the persisted
 - [003 — SSE + Change Streams](../docs/adr/003-backend-sse-change-stream.md)
 - [004 — LangGraph Checkpointing](../docs/adr/004-backend-langgraph-checkpointing.md)
 - [005 — Operational Data Layer](../docs/adr/005-backend-operational-data-layer.md)
-- [006 — Context-Engineered Four-Layer Architecture for alternative_finder](../docs/adr/006-backend-context-engineered-four-layer-architecture.md.md)
+- [006 — Context-Engineered Four-Layer Architecture for alternative_finder](../docs/adr/006-backend-context-engineered-four-layer-architecture.md)
 - [007 — Native In-Pipeline Reranking](../docs/adr/007-backend-native_reranking.md)
 - [008 — Two Separate Precedent Signals](../docs/adr/008-backend-precedent_signals_no_fusion.md)
-- [009 — agent_memory Single-Writer Closure Loop (designed, not built)](../docs/adr/009-backend-agent_memory_single_writer.md)
+- [009 — agent_memory: Precedent Reads Now, Closure-Loop Write Deferred by Design](../docs/adr/009-backend-agent_memory_single_writer.md)
+- [010 — Direct Driver Access to Atlas, Not MCP](../docs/adr/010-backend-direct-driver-not-mcp.md)

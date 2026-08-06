@@ -139,8 +139,8 @@ curl -N -X POST http://localhost:8000/api/alternative-finder/find \
 
 ## Related
 
-- ADR-005 — Operational Data Layer (how this module couples to the others, purely via data)
-- ADR-006 — Context-Engineered Four-Layer Architecture (the conceptual layers; the real graph has six nodes across them)
-- ADR-007 — Native In-Pipeline Reranking
-- ADR-008 — Two Separate Precedent Signals (why exact and semantic precedent are never fused into one score)
-- ADR-009 — `agent_memory` single-writer closure loop (designed, not built — this module never writes to `agent_memory`)
+- [ADR-005](../../docs/adr/005-backend-operational-data-layer.md) — Operational Data Layer (how this module couples to the others, purely via data)
+- [ADR-006](../../docs/adr/006-backend-context-engineered-four-layer-architecture.md) — Context-Engineered Four-Layer Architecture (the conceptual layers; the real graph has six nodes across them)
+- [ADR-007](../../docs/adr/007-backend-native_reranking.md) — Native In-Pipeline Reranking
+- [ADR-008](../../docs/adr/008-backend-precedent_signals_no_fusion.md) — Two Separate Precedent Signals (why exact and semantic precedent are never fused into one score)
+- [ADR-009](../../docs/adr/009-backend-agent_memory_single_writer.md) — `agent_memory`: precedent reads now, closure-loop write deferred by design (this module never writes to `agent_memory`)
