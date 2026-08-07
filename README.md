@@ -138,6 +138,8 @@ The demo is structured as a step-by-step procurement workflow:
 
 Each session is fully isolated by a `session_id` generated in the browser — no state leaks between runs.
 
+Read the [user guide](docs/user-guide/README.md) to learn how to navigate each of the procurement steps effectively. 
+
 ---
 
 ## 🍃 Why MongoDB for Agentic Supply Chain Management
