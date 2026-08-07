@@ -15,7 +15,7 @@ export default function BehindTheScenes() {
     <BehindTheScenesCard
       title="Behind the Scenes: risk_evaluator"
       description="How MongoDB identifies affected suppliers in real time"
-      diagramSrc="/images/behindTheScenes/RiskEvaluator.png"
+      diagramSrc="/images/behindTheScenes/RiskEvaluator.svg"
       diagramAlt="risk_evaluator architecture: disruption signals matched to suppliers via geospatial search, scored, and weighed against historical memory with vector search"
     >
       {/* Intro */}
