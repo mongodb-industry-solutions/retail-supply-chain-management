@@ -15,7 +15,7 @@ export default function BehindTheScenes() {
     <BehindTheScenesCard
       title="Behind the Scenes: alternative_finder"
       description="How MongoDB is perfect for multimodal search"
-      diagramSrc="/images/behindTheScenes/AlternativeFinder.png"
+      diagramSrc="/images/behindTheScenes/AlternativeFinder.svg"
       diagramAlt="alternative_finder architecture: hybrid search narrows supplier candidates, evidence is audited with reflect and critique, and distance is ranked with geospatial search"
     >
       {/* Intro */}

@@ -270,9 +270,9 @@ export default function Step2() {
               <WorldMap />
             </div>
           </div>
-          <BehindTheScenes />
         </>
       )}
+      <BehindTheScenes />
     </div>
   );
 }
