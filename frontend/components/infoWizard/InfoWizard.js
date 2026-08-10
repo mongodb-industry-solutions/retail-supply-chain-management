@@ -142,21 +142,41 @@ InfoWizard.propTypes = {
   setOpen: PropTypes.func.isRequired,
   tooltipText: PropTypes.string,
   iconGlyph: PropTypes.string,
+  openModalIsButton: PropTypes.bool,
+  setOpenCallback: PropTypes.func,
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      heading: PropTypes.string.isRequired,
+      content: PropTypes.node.isRequired,
+    }),
+  ),
   sections: PropTypes.arrayOf(
     PropTypes.shape({
       heading: PropTypes.string.isRequired, // Tab title
       content: PropTypes.arrayOf(
         PropTypes.shape({
           heading: PropTypes.string,
-          body: PropTypes.string,
+          isHTML: PropTypes.bool,
+          body: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(
+              PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.shape({
+                  heading: PropTypes.string,
+                  body: PropTypes.arrayOf(PropTypes.string),
+                }),
+              ]),
+            ),
+          ]),
           image: PropTypes.shape({
             src: PropTypes.string.isRequired,
             alt: PropTypes.string.isRequired,
             width: PropTypes.number,
           }),
-        })
+        }),
       ).isRequired,
-    })
+    }),
   ),
 };
 
