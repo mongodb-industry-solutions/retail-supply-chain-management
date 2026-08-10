@@ -92,7 +92,7 @@ const InfoWizard = ({
                         {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
                         {
                           section.body && section.isHTML === true
-                            ? <div className={styles.htmlRender} contentEditable='true' dangerouslySetInnerHTML={{ __html: section.body }}></div>
+                            ? <div className={styles.htmlRender} dangerouslySetInnerHTML={{ __html: section.body }}></div>
                             : section.body && Array.isArray(section.body)
                               ? <ul className={styles.list}>
                                 {
