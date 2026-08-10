@@ -1,98 +1,183 @@
 "use client";
 
 import React, { useState } from "react";
-import Modal from "@leafygreen-ui/modal";
+
 import { H3, Body } from "@leafygreen-ui/typography";
+import Tooltip from "@leafygreen-ui/tooltip";
 import Icon from "@leafygreen-ui/icon";
-import Image from "next/image";
+import IconButton from "@leafygreen-ui/icon-button";
+import PropTypes from "prop-types";
+import styles from "./InfoWizard.module.css";
 import Button from "@leafygreen-ui/button";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
-import { TALK_TRACK } from "@/lib/const/talkTrack";
+import { Modal } from "react-bootstrap";
 
 const InfoWizard = ({
+  open,
+  setOpen,
   tooltipText = "Learn more",
   iconGlyph = "Wizard",
-  sections = TALK_TRACK,
+  sections = [],
+  openModalIsButton = false,
+  setOpenCallback = null,
+  tabs = []
 }) => {
-  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(0);
+
+  const onOpen = () => {
+    if (setOpenCallback) {
+      setOpenCallback();
+    }
+    setOpen(true);
+  };
 
   return (
     <>
-      {/* Bigger button for navbars */}
-      <Button
-        style={{ margin: "5px" }}
-        onClick={() => setOpen((prev) => !prev)}
-        leftGlyph={<Icon glyph={iconGlyph} />}
-      >
-        Tell me more!
-      </Button>
-
-      <Modal open={open} setOpen={setOpen} size={"default"} className="z-2">
-        <div className="overflow-y-auto h-[500px]">
-          <Tabs
-            aria-label="info wizard tabs"
-            setSelected={setSelected}
-            selected={selected}
+      {
+        openModalIsButton
+          /* Bigger button for navbars */
+          ? <Button onClick={onOpen} leftGlyph={<Icon glyph={iconGlyph} />}>
+            {tooltipText}
+          </Button>
+          /* Small icon button */
+          : <Tooltip
+            trigger={
+              <IconButton aria-label="Info" onClick={onOpen}>
+                <Icon glyph={iconGlyph} />
+              </IconButton>
+            }
           >
-            {sections.map((tab, tabIndex) => (
-              <Tab key={tabIndex} name={tab.heading}>
-                {tab.content.map((section, sectionIndex) => (
-                  <div key={sectionIndex} className="mb-4">
-                    {section.heading && (
-                      <H3 style={{ marginTop: "20px", marginBottom: "10px" }}>
-                        {section.heading}
-                      </H3>
-                    )}
-                    {section.body &&
-                      (Array.isArray(section.body) ? (
-                        <ul className="list-disc pl-6">
-                          {section.body.map((item, idx) =>
-                            typeof item == "object" ? (
-                              <li key={idx}>
-                                {item.heading}
-                                <ul className="list-disc pl-6">
-                                  {item.body?.map((subItem, idx) => (
-                                    <li key={idx}>
-                                      <Body>{subItem}</Body>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </li>
-                            ) : (
-                              <li key={idx}>
-                                <Body>{item}</Body>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      ) : (
-                        <Body>{section.body}</Body>
-                      ))}
+            {tooltipText}
+          </Tooltip>
+      }
 
-                    {section.image && (
-                      <div className="relative w-full h-[400px] flex justify-center items-center">
-                        <Image
-                          src={section.image.src}
-                          alt={section.image.alt}
-                          fill
-                          sizes="(max-width: 768px) 90vw, 700px"
-                          style={{
-                            objectFit: "contain",
-                            objectPosition: "center",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
+      <Modal 
+        show={open} 
+        onHide={() => setOpen(false)}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <div className={styles.modalContent}>
+          <IconButton
+            aria-label="Close"
+            onClick={() => setOpen(false)}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              background: "none",
+              border: "none",
+              fontSize: 24,
+              cursor: "pointer",
+              zIndex: 10
+            }}
+          >
+            <Icon glyph={"X"} />
+          </IconButton>
+          {
+            tabs.length > 0
+              ? <Tabs id="wizard-tabs" aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
+                {tabs.map((tab, tabIndex) => (
+                  <Tab className="wizard-tabs" key={tabIndex} name={tab.heading}>
+                    {tab.content}
+                  </Tab>
                 ))}
-              </Tab>
-            ))}
-          </Tabs>
+              </Tabs>
+              : <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
+                {sections.map((tab, tabIndex) => (
+                  <Tab key={tabIndex} name={tab.heading}>
+                    {tab.content.map((section, sectionIndex) => (
+                      <div key={sectionIndex} className={styles.section}>
+                        {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
+                        {
+                          section.body && section.isHTML === true
+                            ? <div className={styles.htmlRender} dangerouslySetInnerHTML={{ __html: section.body }}></div>
+                            : section.body && Array.isArray(section.body)
+                              ? <ul className={styles.list}>
+                                {
+                                  section.body.map((item, idx) => (
+                                    typeof (item) == 'object'
+                                      ? <li key={idx}>
+                                        {item.heading}
+                                        <ul className={styles.list}>
+                                          {
+                                            item.body.map((subItem, idx) => (
+                                              <li key={idx}><Body>{subItem}</Body></li>
+                                            ))
+                                          }
+                                        </ul>
+                                      </li>
+                                      : <li key={idx}><Body>{item}</Body></li>
+                                  )
+                                  )
+                                }
+                              </ul>
+                              : <Body>{section.body}</Body>
+                        }
+
+                        {section.image && (
+                          <img
+                            src={section.image.src}
+                            alt={section.image.alt}
+                            width={section.image.width || 550}
+                            className={styles.modalImage}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </Tab>
+                ))}
+              </Tabs>
+          }
+
         </div>
       </Modal>
     </>
   );
+};
+
+InfoWizard.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+  tooltipText: PropTypes.string,
+  iconGlyph: PropTypes.string,
+  openModalIsButton: PropTypes.bool,
+  setOpenCallback: PropTypes.func,
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      heading: PropTypes.string.isRequired,
+      content: PropTypes.node.isRequired,
+    }),
+  ),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      heading: PropTypes.string.isRequired, // Tab title
+      content: PropTypes.arrayOf(
+        PropTypes.shape({
+          heading: PropTypes.string,
+          isHTML: PropTypes.bool,
+          body: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(
+              PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.shape({
+                  heading: PropTypes.string,
+                  body: PropTypes.arrayOf(PropTypes.string),
+                }),
+              ]),
+            ),
+          ]),
+          image: PropTypes.shape({
+            src: PropTypes.string.isRequired,
+            alt: PropTypes.string.isRequired,
+            width: PropTypes.number,
+          }),
+        }),
+      ).isRequired,
+    }),
+  ),
 };
 
 export default InfoWizard;
