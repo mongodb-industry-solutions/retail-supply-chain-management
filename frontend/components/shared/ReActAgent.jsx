@@ -72,6 +72,11 @@ function buildDisplayItems(events) {
       );
       if (idx !== -1) items[idx] = { ...items[idx], status: "completed" };
     } else if(eventType === "error") {
+      // Fail the phase row that was still running, so it stops showing a clock
+      const idx = items.findLastIndex(
+        (i) => i.type === "layer" && i.status === "running"
+      );
+      if (idx !== -1) items[idx] = { ...items[idx], status: "error" };
       items.push({ type: "step", message: `Error: ${event.message}`, status: "error" });
     }
   }
@@ -210,9 +215,13 @@ export default function ReActAgent({
                                 style={{
                                   fontSize: 14,
                                   color:
-                                    item.status === "completed"
-                                      ? palette.gray.dark3
-                                      : palette.gray.dark2,
+                                    item.status === "error"
+                                      ? palette.red.dark2
+                                      : item.status === "completed"
+                                        ? palette.gray.dark3
+                                        : palette.gray.dark2,
+                                  wordBreak:
+                                    item.status === "error" ? "break-word" : undefined,
                                   fontWeight: isRunning ? 600 : undefined,
                                   margin: 0,
                                 }}

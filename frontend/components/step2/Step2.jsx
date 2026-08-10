@@ -159,7 +159,7 @@ export default function Step2() {
         <>
           <SectionHeader
             title="Affected Suppliers"
-            subtitle="Affected suppliers ranked from most to least critical."
+            subtitle="Affected suppliers identified."
             rightElement={
               <Button
                 variant="default"
