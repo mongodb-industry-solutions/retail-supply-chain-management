@@ -96,3 +96,13 @@ Relevance score is read via `{"$meta": "score"}`.
   wasn't needed, since enabling the Atlas project setting resolved the
   blocker, but it remains documented as the fallback path if native
   reranking is ever disabled or unavailable in a future environment.
+
+## Addendum
+
+Addendum: implemented a defensive fallback chain (native → external Voyage
+API → unranked fused order) so the pipeline degrades gracefully in any
+environment where native `$rerank` isn't currently exposed. This is a
+standard resilience pattern for a Preview feature with a rolling deployment
+— it does not change the default behavior described above, it only activates
+as a safety net. (See ISTTH-874 for a specific instance where this was
+exercised.)
