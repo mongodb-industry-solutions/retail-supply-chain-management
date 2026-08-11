@@ -147,3 +147,4 @@ curl -N -X POST http://localhost:8000/api/alternative-finder/find \
 - [ADR-007](../../docs/adr/007-backend-native_reranking.md) — Native In-Pipeline Reranking
 - [ADR-008](../../docs/adr/008-backend-precedent_signals_no_fusion.md) — Two Separate Precedent Signals (why exact and semantic precedent are never fused into one score)
 - [ADR-009](../../docs/adr/009-backend-agent_memory_single_writer.md) — `agent_memory`: precedent reads now, closure-loop write deferred by design (this module never writes to `agent_memory`)
+- [ADR-011](../../docs/adr/011-backend-multilingual-retrieval.md) — Multilingual retrieval: language-agnostic evidence, and the rerank fallback chain this module relies on

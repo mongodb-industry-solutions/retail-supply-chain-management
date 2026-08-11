@@ -395,16 +395,31 @@ exports = async function () {
  * the demo aging.
  *
  * IMPORTANT LIMITATION (by design, not an oversight):
- * Only 35 of the 42 documents have the valid_until date written in
+ * Only 34 of the 42 documents have the valid_until date written in
  * chunk_text in the exact same ISO format (YYYY-MM-DD) as the structured
  * field — for those, this function can safely find-and-replace just that
  * date substring, without touching anything else in the surrounding
- * prose. The other 7 documents write the date in a different text format
+ * prose. The other 8 documents write the date in a different text format
  * (e.g. prose-style), so a safe exact-match replace isn't possible without
- * risking a wrong substitution. This function deliberately SKIPS those 7
+ * risking a wrong substitution. This function deliberately SKIPS those 8
  * rather than guessing — updating the field but not the visible text
  * would create a worse inconsistency than doing nothing. Skipped doc_ids
  * are reported in the summary for manual follow-up if needed.
+ *
+ * NOTE — one of those 8 is skipped for a language reason:
+ * CHUNK-SDOC-GZH112-CERT-01-01 (doc_id SDOC-GZH112-CERT-01, zh-Hans)
+ * writes its validity dates in Chinese date format inside chunk_text
+ * (e.g. "2027年9月15日") while its structured valid_until stays ISO
+ * ("2027-09-15T00:00:00Z"). The ISO substring therefore never appears
+ * literally in the prose, so this function skips the document with
+ * reason "date not found literally in chunk_text". That is the intended
+ * behaviour of the exact-match guard, NOT a bug — but the practical
+ * consequence is that this certificate is not renewed and will age
+ * toward showing as expired. Documented here so the skip is expected
+ * rather than surprising. The same applies to any future document whose
+ * translation localises the date format; localising dates is a legitimate
+ * translation choice, and the guard is what keeps the trigger from
+ * corrupting text it cannot safely rewrite.
  *
  * DELIBERATE EXCEPTION — narrative diversity:
  * If this function renewed every single near-expiring document forever,

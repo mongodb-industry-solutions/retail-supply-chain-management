@@ -82,7 +82,15 @@ judging whether a candidate supplier is a safe replacement.
 `chunk_index`/`chunk_total`; `doc_type` (`certificate`/`contract`/
 `audit_report`/`sustainability_report`/`email`); `chunk_text` (the
 extracted passage); `auto_embed_text` (text indexed for semantic
-search); `valid_until` (ISO-8601 string, relevant for certificates).
+search); `valid_until` (ISO-8601 string, relevant for certificates);
+`language` (BCP-47 tag for the language the passage is actually written
+in — e.g. `en`, `es-MX`, `es-CO`, `es-ES`, `zh-Hans`, `vi`, `ar`).
+**On `language`:** it is present on all 146 documents, and 12 of them are
+in a language other than English — real supplier paperwork is written in
+the language of whoever issued it, not in English by default. Retrieval
+does not read this field; it is descriptive metadata, useful for the UI
+(text direction) and for anyone reasoning about the corpus. See
+[ADR-011](../../adr/011-backend-multilingual-retrieval.md).
 **Reads:** `alternative_finder` only. **Writes:** none — reference data.
 **On the chunks:** this demo ships only the already-chunked text, not the
 original source files (PDFs, emails) they came from — those aren't part
@@ -157,7 +165,14 @@ structured `{term, definition}` shape as in `supplier_risk_evaluations`
 terms that candidate's `rationale` uses).
 **Reads:** none of the current modules (it's a terminal output, meant for
 a UI/reviewer). **Writes:** `alternative_finder` only — session-generated,
-same caveat as above: this is a shape reference, not a stable seed.
+so a live run always creates its own documents rather than reading these.
+**On this seed:** it ships 3 curated example runs carrying 35 citations,
+27 of which quote a non-English source document — so it doubles as a
+worked example of what multilingual evidence looks like end to end, not
+only a field-shape reference. Note that `citation` deliberately carries
+no `language` field: the excerpt is a verbatim slice of `chunk_text`, and
+the frontend infers direction from the text itself
+([ADR-011](../../adr/011-backend-multilingual-retrieval.md)).
 **Note:** this schema is still evolving as the module is actively being
 extended — don't treat it as final.
 
