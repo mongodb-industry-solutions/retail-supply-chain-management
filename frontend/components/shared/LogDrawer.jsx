@@ -379,7 +379,11 @@ function Citation({ citation }) {
         {citation.page ? ` · p.${citation.page}` : ""}
         {citation.chunk_id ? ` · ${citation.chunk_id}` : ""}
       </div>
-      <div style={{ marginTop: 4, fontStyle: "italic" }}>
+      {/* dir="auto" so an excerpt in an RTL script reads and aligns correctly.
+          No fontStyle: "italic" here on purpose — scripts like Arabic have no italic form,
+          so the browser synthesises a slanted oblique that deforms the glyphs and breaks
+          ligatures. The quotation marks already mark this as quoted text. */}
+      <div dir="auto" style={{ marginTop: 4 }}>
         “{citation.excerpt}”
       </div>
       {citation.valid_until && (
