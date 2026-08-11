@@ -119,17 +119,22 @@ function EmailSkin({ citation }) {
                   color: palette.gray.base,
                   width: 44,
                   flexShrink: 0,
-                  textAlign: "right",
+                  // Logical, not physical: stays flush against the value in either direction.
+                  textAlign: "end",
                 }}
               >
                 {label}
               </span>
-              <span style={{ color: palette.gray.dark2 }}>{value}</span>
+              {/* dir="auto" so an RTL header value reads right-to-left on its own. */}
+              <span dir="auto" style={{ color: palette.gray.dark2 }}>{value}</span>
             </div>
           ))}
         </div>
 
+        {/* dir="auto" on the block, not the inline <mark>: paragraph direction is what
+            controls alignment and where the truncation ellipsis lands. */}
         <div
+          dir="auto"
           style={{
             borderTop: `1px solid ${palette.gray.light2}`,
             paddingTop: spacing[300],
@@ -241,7 +246,10 @@ function PaperSkin({ citation }) {
           }}
         >
           <BlurredLines lines={FILLER.slice(0, 2)} />
-          <p style={{ margin: "0 0 10px" }}>
+          {/* dir="auto" so a source document in an RTL script (Arabic, Hebrew) reads and
+              aligns correctly. The surrounding filler stays LTR — only the real cited
+              excerpt follows its own script. */}
+          <p dir="auto" style={{ margin: "0 0 10px" }}>
             <Highlight>{citation?.excerpt}</Highlight>
           </p>
           <BlurredLines lines={FILLER.slice(2)} />

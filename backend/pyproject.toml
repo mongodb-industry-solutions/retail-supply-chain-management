@@ -14,6 +14,15 @@ dependencies = [
     "langgraph>=0.2.0",
     "langchain-anthropic>=0.3.0",
     "sse-starlette>=2.1.0",
+    # Direct dependency as of the alternative_finder rerank fallback: the tier-2 external
+    # reranker call. Previously present only transitively.
+    "httpx>=0.28.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
 ]
 
 [build-system]

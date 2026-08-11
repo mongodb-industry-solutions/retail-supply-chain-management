@@ -78,7 +78,12 @@ MongoDB capabilities used (`$geoWithin`, `$vectorSearch`, `$rankFusion`, native
 `$rerank`, `$geoNear`, aggregations), the ReAct parsing/fallback behavior, the
 real SSE event types, and the confirmed dead code (`risk_evaluator`'s
 `retrieve_memory`). Note that `$rerank` runs natively in-pipeline inside
-`alternative_finder` — no external Voyage API call is made at runtime ([ADR-007](../docs/adr/007-backend-native_reranking.md)).
+`alternative_finder`, so on the default path no external reranking call is made at
+runtime ([ADR-007](../docs/adr/007-backend-native_reranking.md)). Native `$rerank` is a
+Preview capability whose rollout can vary by environment, so `funnel_node` wraps that step
+in a resilience fallback (native → external Voyage API → unranked `$rankFusion` order) and
+reports which tier actually ran; the second tier does make an external call, and the third
+makes none ([ADR-011](../docs/adr/011-backend-multilingual-retrieval.md)).
 
 ---
 
@@ -119,7 +124,7 @@ backend/
 │   └── schemas.py           AlternativeFinderState (TypedDict)
 ```
 
-Architecture Decision Records live outside this folder, in [`docs/adr/`](../docs/adr/) — see the [ADR index](#architecture-decision-records) below. The seed files and their setup guide also live outside this folder, in [`docs/database-files/`](../docs/database-files/).
+Architecture Decision Records live outside this folder, in [`docs/adr/`](../docs/adr/) — see the [ADR index](#architecture-decision-records) below. The seed files and their setup guide also live outside this folder, in [`docs/setup/collections/`](../docs/setup/collections/).
 
 ---
 
@@ -145,7 +150,7 @@ Eight MongoDB collections in two groups.
 | `supplier_risk_evaluations` | `risk_evaluator` | One doc per non-OK supplier per session: dynamic RPN, triggering signals, operational context, LLM summary. Carries `evaluation_id`. |
 | `supplier_alternatives` | `alternative_finder` | The ranked shortlist, `approved_supplier_id: null` until a human approves. |
 
-> **Setup required:** See [`../docs/database-files/`](../docs/database-files/) for setup.
+> **Setup required:** See [`../docs/setup/collections/`](../docs/setup/collections/) for setup.
 
 ---
 
@@ -192,7 +197,7 @@ README for the full contract.
 ### Prerequisites
 - Python 3.13+
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) — `curl -LsSf https://astral.sh/uv/install.sh | sh`
-- A MongoDB Atlas cluster with the seed data and indexes loaded (see [`../docs/database-files/`](../docs/database-files/))
+- A MongoDB Atlas cluster with the seed data and indexes loaded (see [`../docs/setup/collections/`](../docs/setup/collections/))
 
 ### Setup
 ```bash
@@ -217,6 +222,7 @@ API at `http://localhost:8000`. Health check: `GET /`.
 | `LLM_BASE_URL` | Base URL for the LLM endpoint (direct Anthropic or your gateway) |
 | `ANTHROPIC_MODEL` | Claude model name |
 | `CORS_ORIGINS` | Allowed origins (default: `["*"]` — restrict before production) |
+| `VOYAGE_API_KEY_FALLBACK` | **Optional.** Voyage AI key used only by `alternative_finder`'s tier-2 rerank fallback, for environments where native `$rerank` isn't currently exposed. Obtained from the Voyage AI dashboard, not from Atlas. Unset simply disables tier 2, and the pipeline serves the unranked `$rankFusion` order instead ([ADR-011](../docs/adr/011-backend-multilingual-retrieval.md)). |
 
 ---
 
@@ -256,3 +262,4 @@ SSE stream. Terminal event `shortlist_ready` carries the persisted
 - [008 — Two Separate Precedent Signals](../docs/adr/008-backend-precedent_signals_no_fusion.md)
 - [009 — agent_memory: Precedent Reads Now, Closure-Loop Write Deferred by Design](../docs/adr/009-backend-agent_memory_single_writer.md)
 - [010 — Direct Driver Access to Atlas, Not MCP](../docs/adr/010-backend-direct-driver-not-mcp.md)
+- [011 — Multilingual Retrieval](../docs/adr/011-backend-multilingual-retrieval.md)
