@@ -44,6 +44,9 @@ class AlternativeFinderState(TypedDict):
     # --- Layer 2 (Reflect & Critique) outputs ------------------------------
     # Keyed by supplier_id. Each audit:
     #   {criteria: [{criterion, status, citation|null, note?}],
+    #    # citation: {chunk_id, doc_type, source_file, page, excerpt, valid_until,
+    #    #            language, excerpt_language}  — the last two are BCP-47 tags and may be
+    #    #            absent/None on documents persisted before they were added.
     #    precedent: {exact_track_record, semantic_precedent},   # two separate fields, never merged
     #    evidence_coverage: {criteria_total, criteria_verified}}
     audits: dict

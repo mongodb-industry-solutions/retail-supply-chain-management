@@ -97,7 +97,9 @@ Once `risk_evaluator` flags a supplier as CRITICAL, a name alone isn't enough â€
             "source_file": "iso9001_2025.pdf",
             "page": 1,
             "excerpt": "ISO 9001:2015 â€” scope: rigid and flexible packaging manufacturing...",
-            "valid_until": "2027-03-01"
+            "valid_until": "2027-03-01",
+            "language": "en",
+            "excerpt_language": "en"
           }
         }
       ],

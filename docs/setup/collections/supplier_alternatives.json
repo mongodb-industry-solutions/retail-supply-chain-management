@@ -1,455 +1,15 @@
 [{
   "_id": {
-    "$oid": "6a7afbdfa3a830df6096f1ce"
+    "$oid": "6a7ee25d0a4bff84202512e6"
   },
-  "evaluation_id_ref": "EVAL-49ebc372-SNO-US-1786444605",
-  "session_id": "49ebc372-68d8-4d30-a4eb-e0eb921db550",
-  "blocked_supplier_id": "SUP-FRESNO-US",
+  "evaluation_id_ref": "EVAL-d2835c44-VN-088-1786368005",
+  "session_id": "langbadge-smoke",
+  "blocked_supplier_id": "SUP-VN-088",
   "is_base": false,
   "is_demo_trigger": false,
   "status": "pending_approval",
   "risk_types": [
-    "climate_disruption"
-  ],
-  "reference_point": {
-    "name": "FreshMart Los Angeles DC (assumed)",
-    "coordinates": [
-      -118.2437,
-      34.0522
-    ],
-    "assumed": true
-  },
-  "candidates_evaluated": 5,
-  "candidates_discarded": 0,
-  "candidates": [
-    {
-      "supplier_id": "SUP-VALLE-MX",
-      "supplier_name": "Valle Verde Productores S.C.",
-      "location": "Mexico",
-      "category": "fresh_produce",
-      "proximity_km": 2858.9,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 3
-      },
-      "precedent_summary": "exact_track_record",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-VALLE-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "ggap_cert_ValleVerde_2025.pdf",
-            "page": 1,
-            "excerpt": "GLOBALG.A.P. Certificate of Conformance. Producer: Valle Verde Productores S.C., Carretera Oaxaca-Pochutla Km 14, San Marcos Tlapazola, Oaxaca, Mexico. Scope: fresh produce — avocado, mango, citrus. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-004471. Valid from 2025-03-01 to 2026-10-15. Issued by Control Union Certifications México S.A.",
-            "valid_until": "2026-10-15T00:00:00Z"
-          },
-          "note": "Chunk confirms GLOBALG.A.P. IFA v6.0 cert GGAP-MX-2025-004471 issued by Control Union Certifications México, valid to 2026-10-15. Not expired."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-VALLE-EMAIL-05-01",
-            "doc_type": "email",
-            "source_file": "email_ValleVerde_season_Apr2026.eml",
-            "page": 1,
-            "excerpt": "From: gerencia@valleverdesc.com.mx | To: procurement@freshmart.com | Date: 2026-04-14 | Subject: Season Outlook and Q2–Q3 Availability. Hass avocado season is progressing well — projecting 12% volume increase vs 2025 for May–August window. No weather alerts active for our growing zones. CONAGUA seasonal forecast indicates above-average rainfall in Oaxaca May–July — monitoring closely. Committed to…",
-            "valid_until": null
-          },
-          "note": "April 2026 supplier email confirms commitment to ORD-2026-0388/0389 and 12% projected volume increase for May–Aug Hass window."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-VALLE-SUST-04-01",
-            "doc_type": "sustainability_report",
-            "source_file": "sustainability_audit_ValleVerde_2025.pdf",
-            "page": 2,
-            "excerpt": "Sustainability audit conducted June 2025 under Rainforest Alliance standard. Findings: water use intensity reduced 14% year-on-year through drip irrigation expansion (now 88% of avocado acreage). Biodiversity buffer zones maintained on 12% of farm area. Smallholder partner programme covers 6 cooperatives supplying 31% of total volume — all partners trained on Rainforest Alliance standard. Overall …",
-            "valid_until": null
-          },
-          "note": "June 2025 Rainforest Alliance audit chunk states 84/100 score, 14% water-use reduction, 88% drip irrigation, 12% biodiversity buffer — matches claim."
-        }
-      ],
-      "rank": 1,
-      "rationale": "Valle Verde Productores S.C. is the TOP RECOMMENDATION in this shortlist. All three criteria are compliant with full evidence_coverage (criteria_verified 3 of 3), spanning a valid GLOBALG.A.P. compliance_certification through 2026-10-15, confirmed operational_status via April 2026 supplier commitment with a projected 12% volume uplift, and audited sustainability_practices under Rainforest Alliance. Precedent is strong: an exact_track_record shows this supplier was previously proposed and approved_and_successful, reinforced by a moderate semantic_precedent on the same risk_type. The proximity_km of 2858.9 is a known trade-off but is outweighed by the fully verified evidence base and confirmed prior success.",
-      "glossary": [
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        },
-        {
-          "term": "precedent",
-          "definition": "Shorthand for 'this has happened before' — covers both an exact past case and a similar one used for comparison."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-SINALOA-MX",
-      "supplier_name": "Agroindustrias del Noroeste S.A.",
-      "location": "Mexico",
-      "category": "fresh_produce",
-      "proximity_km": 1469.9,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 2
-      },
-      "precedent_summary": "exact_track_record",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-SIN-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "ggap_cert_Sinaloa_2025.pdf",
-            "page": 1,
-            "excerpt": "GLOBALG.A.P. Certificate of Conformance. Producer: Agroindustrias del Noroeste S.A., Carretera Culiacán–Navolato Km 8, Culiacán, Sinaloa 80140, Mexico. Product scope: tomatoes (field and greenhouse), bell peppers, cucumbers, and jalapeños. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-MX-2025-009341. Valid: 2025-01-15 to 2026-11-30.",
-            "valid_until": "2026-11-30T00:00:00Z"
-          },
-          "note": "Certificate GGAP-MX-2025-009341 for tomatoes, peppers, cucumbers, jalapeños valid to 2026-11-30; not expired."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-SIN-EMAIL-04-01",
-            "doc_type": "email",
-            "source_file": "email_Sinaloa_season_2026.eml",
-            "page": 1,
-            "excerpt": "From: exportaciones@agroindustriasnoroeste.com.mx | To: procurement@freshmart.com | Date: 2026-04-05 | Subject: Spring Season Outlook. Tomato crop is on track for normal yields. Current reservoir level is 52% — improved from last year. No tropical storm activity forecast for Sinaloa through June per CONAGUA. Confirming Q2 volumes as discussed.",
-            "valid_until": null
-          },
-          "note": "April 2026 email confirms Q2 volumes and normal tomato yields, indicating active operations."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "unknown",
-          "citation": null,
-          "note": "No chunk documents sustainability commitments or environmental reporting."
-        }
-      ],
-      "rank": 2,
-      "rationale": "Agroindustrias del Noroeste S.A. is a strong second-choice supplier: it has two compliant criteria (compliance_certification via a valid GLOBALG.A.P. certificate to 2026-11-30, and operational_status confirmed by an April 2026 email verifying Q2 tomato volumes), and it is backed by both an exact_track_record from a prior episode where it was proposed as an alternative, plus a moderate semantic_precedent on the same climate_disruption risk type. Its proximity_km of about 1,470 km is also favorable relative to typical alternatives in this shortlist. It ranks below Valle Verde Productores S.C. because its evidence_coverage is 2 of 3 criteria_verified rather than a full 3 of 3, with sustainability_practices left unknown for lack of documentation.",
-      "glossary": [
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        },
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-MEDELLIN-CO",
-      "supplier_name": "Tropical Harvest S.A.S.",
-      "location": "Colombia",
-      "category": "fresh_produce",
-      "proximity_km": 5366.3,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 2
-      },
-      "precedent_summary": "moderate_directional",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-MED-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "ggap_cert_Medellin_2025.pdf",
-            "page": 1,
-            "excerpt": "GLOBALG.A.P. Certificate. Producer: Tropical Harvest S.A.S., Km 22 Autopista Medellín–Bogotá, Municipio de Guarne, Antioquia, Colombia. Product scope: physalis, pitaya (dragon fruit), uchuva (cape gooseberry), and tropical juice concentrates. Certificate number: GGAP-CO-2025-002041. Valid: 2025-04-01 to 2027-07-31.",
-            "valid_until": "2027-07-31T00:00:00Z"
-          },
-          "note": "Certificate GGAP-CO-2025-002041 valid until 2027-07-31, covers stated product scope."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-MED-EMAIL-04-01",
-            "doc_type": "email",
-            "source_file": "email_Medellin_season_2026.eml",
-            "page": 1,
-            "excerpt": "From: exports@tropicalharvest.com.co | To: procurement@freshmart.com | Date: 2026-04-01 | Subject: Season Outlook Q2 2026. Physalis harvest started well — Brix values 14–16, excellent for this time of year. Pitaya volumes approximately 8% ahead of last year. Lead time to Miami warehouse remains 3 days air freight. Please send Q2 orders by April 15 to secure allocation.",
-            "valid_until": null
-          },
-          "note": "April 2026 email confirms active Q2 harvest, 3-day air freight lead time, and open allocation."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "unknown",
-          "citation": null,
-          "note": "No cited chunk addresses sustainability or environmental practices."
-        }
-      ],
-      "rank": 3,
-      "rationale": "Tropical Harvest S.A.S. lands at rank 3 with 2 of 3 criteria_verified: a valid compliance_certification (GLOBALG.A.P. through 2027-07-31) and confirmed operational_status via an April 2026 harvest email showing active Q2 allocation and 3-day air freight to Miami. A moderate semantic_precedent (MEM-20250427-VALLEMX-T) offers directional context on climate_disruption risk, though no exact_track_record exists for this supplier. It ranks below Valle Verde Productores S.C. because that candidate has full evidence_coverage (3 of 3), a direct exact_track_record, and materially closer proximity_km (2858.9 vs 5366.3).",
-      "glossary": [
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-LIMA-PE",
-      "supplier_name": "Agroexportaciones del Sur S.A.C.",
-      "location": "Peru",
-      "category": "fresh_produce",
-      "proximity_km": 6732.1,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 2
-      },
-      "precedent_summary": "moderate_directional",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-LIM-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "ggap_cert_Lima_2025.pdf",
-            "page": 1,
-            "excerpt": "GLOBALG.A.P. Certificate. Producer: Agroexportaciones del Sur S.A.C., Carretera Panamericana Sur Km 354, Ica, Peru. Product scope: table grapes (Red Globe, Crimson Seedless), asparagus, and blueberries. Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-PE-2025-003301. Valid: 2025-07-01 to 2027-08-31.",
-            "valid_until": "2027-08-31T00:00:00Z"
-          },
-          "note": "Certificate GGAP-PE-2025-003301 valid 2025-07-01 to 2027-08-31, scope matches claim."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-LIM-EMAIL-04-01",
-            "doc_type": "email",
-            "source_file": "email_Lima_season_2026.eml",
-            "page": 1,
-            "excerpt": "From: exports@agroexportacionesdelsur.com.pe | To: procurement@freshmart.com | Date: 2026-03-10 | Subject: Asparagus and Grape Season Outlook 2026. Asparagus season started 2 weeks early due to favourable temperature conditions. Current Callao port operating normally — no canal restrictions in effect. Table grape volumes projected at 105% of 2025 levels. Confirming Q2 allocations as discussed.",
-            "valid_until": null
-          },
-          "note": "March 2026 email confirms early asparagus season, normal Callao operations, and confirmed Q2 FreshMart allocations."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "unknown",
-          "citation": null,
-          "note": "No cited or available chunk addresses environmental/sustainability commitments or reporting."
-        }
-      ],
-      "rank": 4,
-      "rationale": "Agroexportaciones del Sur S.A.C. shows solid standing on its own merits, with compliance_certification confirmed via a valid GLOBALG.A.P. certificate through August 2027 and operational_status verified by a March 2026 email confirming normal Callao port operations and confirmed Q2 allocations. A semantic_precedent from a prior climate_disruption case offers moderate directional context, though no exact_track_record exists for this supplier specifically. It ranks below the top candidate because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices is unknown) and its proximity_km of 6732.1 is materially farther than the leader's, whereas the top candidate has full coverage and an exact_track_record.",
-      "glossary": [
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-BARCELONA-ES",
-      "supplier_name": "Envases Mediterráneos S.L.",
-      "location": "Spain",
-      "category": "fresh_produce",
-      "proximity_km": 9664.8,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 1
-      },
-      "precedent_summary": "moderate_directional",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-BAR-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "iso_ggap_cert_BCN_2025.pdf",
-            "page": 1,
-            "excerpt": "Dual Certification. Envases Mediterráneos S.L., Polígon Industrial Can Roqueta, Carrer dels Emprenedors 22, 08202 Sabadell, Catalonia, Spain. (1) ISO 9001:2015 — Scope: food-grade packaging and fresh produce distribution. Valid to 2027-09-30. (2) GLOBALG.A.P. CoC Chain of Custody — for fresh produce packaging compliance, certificate number GGAP-ES-COC-2025-00441. Valid to 2026-12-31. Both certifie…",
-            "valid_until": "2026-12-31T00:00:00Z"
-          },
-          "note": "Chunk explicitly states both certifications, issuer, and valid_until dates; not expired."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "unknown",
-          "citation": null,
-          "note": "No cited chunk confirms active operational standing or recent commercial activity."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "unknown",
-          "citation": null,
-          "note": "No chunk addresses environmental or sustainability commitments."
-        }
-      ],
-      "rank": 5,
-      "rationale": "Envases Mediterráneos S.L. holds a verified compliance_certification (dual ISO 9001:2015 and GLOBALG.A.P. CoC, valid through 2026-12-31), and a semantic_precedent from a prior climate_disruption case offers moderate directional context. However, evidence_coverage is thin at only 1 of 3 criteria_verified, with operational_status and sustainability_practices both unconfirmed, and proximity_km sits at 9664.8. It ranks below Valle Verde Productores S.C. because that candidate has full evidence_coverage across all three criteria, an exact_track_record precedent, and a far shorter proximity_km of 2858.9.",
-      "glossary": [
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        }
-      ]
-    }
-  ],
-  "discarded_candidates": [],
-  "approved_supplier_id": null,
-  "decision_deadline": null,
-  "created_at": "2026-08-11T10:39:27.153029+00:00"
-},
-{
-  "_id": {
-    "$oid": "6a7afeb71afe84a9cfe1818b"
-  },
-  "evaluation_id_ref": "EVAL-c5622390-LAN-IT-1786445368",
-  "session_id": "c5622390-0868-4907-a0f0-ab2757ac2f23",
-  "blocked_supplier_id": "SUP-MILAN-IT",
-  "is_base": false,
-  "is_demo_trigger": false,
-  "status": "pending_approval",
-  "risk_types": [
-    "logistics_disruption"
+    "geopolitical_tariff"
   ],
   "reference_point": {
     "name": "FreshMart Los Angeles DC (assumed)",
@@ -482,10 +42,12 @@
             "doc_type": "certificate",
             "source_file": "iso_cert_GDL_2024.pdf",
             "page": 1,
-            "excerpt": "ISO 9001:2015 Certificate. Empaque del Pacifico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, Mexico. Scope: packaging materials including food-grade and industrial. Certificate number: MX-QMS-2024-05531. Valid: 2024-10-01 to 2027-12-31. Issued by Bureau Veritas Mexico.",
-            "valid_until": "2027-12-31T00:00:00Z"
+            "excerpt": "Certificado ISO 9001:2015. Empaque del Pacífico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, México. Alcance: materiales de empaque, incluyendo grado alimenticio e industrial. Número de certificado: MX-QMS-2024-05531. Vigencia: del 2024-10-01 al 2027-12-31. Emitido por Bureau Veritas México.",
+            "valid_until": "2027-12-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "ISO 9001:2015 cert MX-QMS-2024-05531 by Bureau Veritas Mexico, valid to 2027-12-31, scope matches claim."
+          "note": "ISO 9001:2015 cert MX-QMS-2024-05531 by Bureau Veritas Mexico, valid 2024-10-01 to 2027-12-31, scope includes food-grade and industrial packaging — matches claim."
         },
         {
           "criterion": "operational_status",
@@ -495,10 +57,12 @@
             "doc_type": "email",
             "source_file": "email_GDL_capacity_Jun2026.eml",
             "page": 1,
-            "excerpt": "From: ventas@empaquepacifico.com.mx | To: procurement@freshmart.com | Date: 2026-06-02 | Subject: Q3 2026 Capacity Availability. We confirm availability for incremental Q3 volume with 3 weeks lead time. Current facility utilisation is 63%. No disruptions to our Guadalajara–Laredo logistics corridor. Standard transit to LA DC remains 4 business days. Please confirm forecast by June 20 to secure all…",
-            "valid_until": null
+            "excerpt": "De: ventas@empaquepacifico.com.mx | Para: procurement@freshmart.com | Fecha: 2026-06-02 | Asunto: Disponibilidad de Capacidad Q3 2026. Confirmamos disponibilidad para el volumen incremental del Q3 con 3 semanas de plazo de entrega. La utilización actual de la planta es del 63%. Sin interrupciones en nuestro corredor logístico Guadalajara–Laredo. El tránsito estándar al Centro de Distribución de Lo…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "June 2026 email confirms Q3 capacity, 63% utilisation, and no Guadalajara-Laredo disruptions as claimed."
+          "note": "June 2026 email confirms Q3 2026 incremental capacity, 63% utilization, and uninterrupted Guadalajara-Laredo corridor as claimed."
         },
         {
           "criterion": "sustainability_practices",
@@ -508,14 +72,507 @@
             "doc_type": "sustainability_report",
             "source_file": "sustainability_audit_GDL_2025.pdf",
             "page": 7,
-            "excerpt": "Carbon emissions: 18.4 tCO2e per year (Scope 1+2). Water recycling rate 74%. Corrugated fibreboard uses minimum 75% post-consumer recycled content, exceeding FreshMart's 60% requirement. Mill certificates from Cartones Ponderosa and PAPSA confirm recycled fibre content per lot. Chain-of-custody documentation maintained at SKU level. Verified by SGS México under ISO 14064-1. Audit date: March 2025.",
-            "valid_until": null
+            "excerpt": "Emisiones de carbono: 18.4 tCO2e por año (Alcance 1+2). Tasa de reciclaje de agua: 74%. El cartón corrugado utiliza un mínimo de 75% de contenido reciclado posconsumo, superando el requisito del 60% establecido por FreshMart. Los certificados de las papeleras Cartones Ponderosa y PAPSA confirman el contenido de fibra reciclada por lote. La documentación de cadena de custodia se mantiene a nivel de…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "Report states 18.4 tCO2e, 74% water recycling, 75% PCR fibre, SGS-verified under ISO 14064-1 — matches claim."
+          "note": "Report cites 18.4 tCO2e Scope 1+2, 74% water recycling, ≥75% PCR content, SGS Mexico verification under ISO 14064-1 — matches claim."
         }
       ],
       "rank": 1,
-      "rationale": "This is the top recommendation on the shortlist. All three evaluation criteria (compliance_certification, operational_status, sustainability_practices) are marked compliant, giving full evidence_coverage (3 of 3 criteria_verified) backed by a current ISO 9001:2015 certificate valid through 2027, a June 2026 email confirming Q3 capacity and an undisrupted Guadalajara–Laredo corridor, and an SGS-verified sustainability report showing 75% post-consumer recycled fibre. While there is no exact_track_record for this supplier, a moderate semantic_precedent on logistics_disruption provides directional context, and the proximity_km of 2090.6 to the LA DC is workable given the confirmed 4-day standard transit.",
+      "rationale": "Empaque del Pacifico S.A. de C.V. is the top recommendation for this shortlist. It shows full evidence_coverage with 3 of 3 criteria_verified as compliant, spanning compliance_certification (ISO 9001:2015 valid through 2027), operational_status (June 2026 email confirming Q3 capacity and an uninterrupted Guadalajara-Laredo corridor), and sustainability_practices (audited emissions, water recycling, and >=75% PCR content). While there is no exact_track_record with this supplier, a moderate semantic_precedent on the same risk_type provides directional support, and the proximity_km of 2090.6 is acceptable given the strength of citations.",
+      "glossary": [
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-CDMX-MX",
+      "supplier_name": "Soluciones de Empaque Central S.A.",
+      "location": "Mexico",
+      "category": "packaging_materials",
+      "proximity_km": 2493.3,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CDMX-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_CDMX_2025.pdf",
+            "page": 1,
+            "excerpt": "Certificado ISO 9001:2015. Soluciones de Empaque Central S.A., Parque Industrial Vallejo, Avenida Ceylan 880, Azcapotzalco, Ciudad de México 02300, México. Alcance: empaque para venta al consumidor. Número de certificado: MX-QMS-2025-07001. Vigencia: del 2025-06-01 al 2028-01-31. Emitido por TÜV Rheinland México.",
+            "valid_until": "2028-01-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Certificate MX-QMS-2025-07001 from TÜV Rheinland México explicitly valid 2025-06-01 to 2028-01-31, not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CDMX-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_CDMX_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "De: operaciones@empaquecentral.com.mx | Para: procurement@freshmart.com | Fecha: 2026-05-22 | Asunto: Disponibilidad Q3. Planta al 58% de capacidad. Podemos confirmar los volúmenes del Q3 con 4 semanas de plazo de entrega. Tránsito al Centro de Distribución de Monterrey: 6 horas; al cruce de Laredo: 8 horas. Sin interrupciones actuales en el corredor CDMX–Monterrey.",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "May 2026 email confirms 58% capacity, 4-week lead time, and no disruptions on CDMX–Monterrey corridor."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CDMX-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_CDMX_2025.pdf",
+            "page": 4,
+            "excerpt": "Auditoría de sostenibilidad realizada en septiembre de 2025 bajo la norma ISO 14001. Participación de electricidad renovable: 62% (frente a 48% en el año fiscal 2024). La intensidad de consumo de agua se redujo un 11%. Contenido reciclado en la cadena de suministro de cartón: 68%. En camino de alcanzar la meta de 80% de electricidad renovable para el año fiscal 2027. Auditor: BSI Group México. Cer…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Sept 2025 ISO 14001 audit by BSI Group México confirms 62% renewable electricity, 11% water reduction, 68% recycled content, certification valid to 2028-01-31."
+        }
+      ],
+      "rank": 2,
+      "rationale": "Soluciones de Empaque Central S.A. presents strong evidence, with full evidence_coverage of 3 of 3 criteria_verified as compliant: a valid ISO 9001:2015 compliance_certification from TÜV Rheinland México through 2028-01-31, operational_status confirmed via a May 2026 email showing 58% capacity and a stable CDMX–Monterrey corridor, and sustainability_practices validated by a Sept 2025 ISO 14001 audit. On precedent, there is no exact_track_record, but a moderate semantic_precedent (MEM-20260405-VN204-G) provides directional context on geopolitical_tariff risk. It ranks below the top candidate primarily due to greater proximity_km (2493.3 vs 2090.6), since both suppliers otherwise match on compliant criteria coverage and precedent strength.",
+      "glossary": [
+        {
+          "term": "precedent",
+          "definition": "Shorthand for 'this has happened before' — covers both an exact past case and a similar one used for comparison."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-CURITIBA-BR",
+      "supplier_name": "Papelera Sul Brasileira S.A.",
+      "location": "Brazil",
+      "category": "packaging_materials",
+      "proximity_km": 9840.3,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "fsc_cert_CUR_2025.pdf",
+            "page": 1,
+            "excerpt": "FSC Chain of Custody Certificate. Papelera Sul Brasileira S.A., Rodovia BR-116 Km 92, Fazenda Rio Grande, Paraná 83820-000, Brazil. FSC scope: certified sustainable forestry sourcing. Certificate number: FSC-COC-BR-2025-0088. ISO 9001:2015 also held — scope: paper and cardboard packaging — food-grade. Certificate number BR-QMS-2025-00489, valid to 2027-10-31. Both issued by Rainforest Alliance. FS…",
+            "valid_until": "2027-10-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 (BR-QMS-2025-00489, valid 2027-10-31) and FSC CoC (valid 2028-03-31) both issued by Rainforest Alliance; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_CUR_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: exports@papelerasul.com.br | To: procurement@freshmart.com | Date: 2026-05-12 | Subject: Q3 Availability. Facility at 64% capacity with room for incremental FreshMart volume. Paranaguá port operating normally. No current Panama Canal restrictions affecting our US East Coast routes. Standard transit NY/NJ: 17–20 days via Panama.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Email dated 2026-05-12 confirms 64% capacity, room for FreshMart volume, and normal Paranaguá port operations."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_CUR_2025.pdf",
+            "page": 3,
+            "excerpt": "Sustainability audit November 2025 under FSC Certified standard. 100% of raw fibre sourced from FSC-certified managed forests in Paraná state. Zero deforestation commitment verified by satellite monitoring (PRODES/INPE). Scope 1+2 emissions: 12.1 tCO2e per tonne of output — 18% reduction vs 2020 baseline. Water use: closed-loop system, zero discharge to Iguaçu watershed. Auditor: Rainforest Allian…",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Nov 2025 Rainforest Alliance audit confirms 100% FSC fibre, satellite-verified zero deforestation, 18% emissions reduction, closed-loop zero-discharge water."
+        }
+      ],
+      "rank": 3,
+      "rationale": "Papelera Sul Brasileira S.A. presents strong own-evidence: full evidence_coverage with 3 of 3 criteria_verified as compliant across compliance_certification (FSC CoC and ISO 9001:2015, both valid and issued by Rainforest Alliance), operational_status (64% capacity, Paranaguá port normal, per May 2026 email), and sustainability_practices (Nov 2025 audit confirming 100% FSC fibre, satellite-verified zero deforestation, and closed-loop water). There is no exact_track_record for this candidate, though a moderate semantic_precedent on geopolitical_tariff risk offers directional context. It ranks below Empaque del Pacifico S.A. de C.V. primarily because its proximity_km of 9840.3 is materially farther than the top candidate's 2090.6, despite equivalent evidence coverage.",
+      "glossary": [
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-MONTERREY-MX",
+      "supplier_name": "Envases Norteños S.A.",
+      "location": "Mexico",
+      "category": "packaging_materials",
+      "proximity_km": 1961,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-MTY-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_MTY_2025.pdf",
+            "page": 1,
+            "excerpt": "Certificado ISO 9001:2015. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, México. Alcance: empaque rígido y flexible. Número de certificado: MX-QMS-2025-06204. Vigente: 2025-03-01 a 2027-05-31. Emitido por Bureau Veritas México.",
+            "valid_until": "2027-05-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Certificate text confirms ISO 9001:2015, cert MX-QMS-2025-06204, Bureau Veritas México, valid to 2027-05-31, not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-MTY-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_MTY_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "De: ventas@envasesnortenos.com.mx | Para: procurement@freshmart.com | Fecha: 2026-05-05 | Asunto: Confirmación de Capacidad Q3. La planta está operando al 55% de su capacidad. Podemos absorber el volumen incremental del Q3 con 3 semanas de plazo de entrega. Sin interrupciones actuales en el cruce fronterizo de Laredo. El tránsito estándar al Centro de Distribución de Los Ángeles es de 5 días hábil…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Email dated 2026-05-05 explicitly states 55% capacity, ability to absorb Q3 volume, and no Laredo border disruptions."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited or available chunk addresses environmental or sustainability practices."
+        }
+      ],
+      "rank": 4,
+      "rationale": "Envases Norteños S.A. ranks 4 of 5 on the strength of two compliant criteria: a verified compliance_certification (ISO 9001:2015 via Bureau Veritas México, valid to 2027-05-31) and a confirmed operational_status showing the plant at 55% capacity with no Laredo border disruptions as of 2026-05-05. Proximity_km of 1961 is favorable, and a moderate semantic_precedent (MEM-20260405-VN204-G) provides directional context on geopolitical_tariff risk, though no exact_track_record exists for this candidate. It ranks below Empaque del Pacifico S.A. de C.V. because its evidence_coverage is only 2 of 3 criteria_verified versus the top candidate's full 3-of-3 coverage, leaving sustainability_practices unverified.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-SAOPAULO-BR",
+      "supplier_name": "BrasilPack Indústria e Comércio Ltda.",
+      "location": "Brazil",
+      "category": "packaging_materials",
+      "proximity_km": 9917.4,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_SAO_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. BrasilPack Indústria e Comércio Ltda., Rodovia Anhanguera Km 18, Guarulhos, São Paulo 07222-900, Brazil. Scope: packaging materials and consumer goods. Certificate number: BR-QMS-2025-00317. Valid: 2025-01-01 to 2027-07-31.",
+            "valid_until": "2027-07-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert BR-QMS-2025-00317 valid through 2027-07-31, scope matches packaging materials."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_SAO_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: comercial@brasilpack.com.br | To: procurement@freshmart.com | Date: 2026-04-18 | Subject: Q3 Capacity and Logistics Update. Facility at 61% capacity. Santos port operating normally. Panama Canal no restrictions currently in effect. Q3 orders should be placed by June 1 to secure preferred sailing slots. Standard transit via Panama to NY/NJ is 18–21 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Email dated 2026-04-18 confirms 61% capacity, Santos port normal, Q3 intake open."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk describes sustainability initiatives; CETESB license is a regulatory operating permit, not a sustainability practice."
+        }
+      ],
+      "rank": 5,
+      "rationale": "BrasilPack Indústria e Comércio Ltda. lands at rank 5 of 5 on the shortlist. Its own file is partially solid: compliance_certification is verified via a valid ISO 9001:2015 certificate (BR-QMS-2025-00317, valid to 2027-07-31), and operational_status is confirmed by an April 2026 email showing 61% capacity with Santos port operating normally, but sustainability_practices remains unknown, leaving evidence_coverage at only 2 of 3 criteria_verified. There is no exact_track_record for this supplier, only a moderate semantic_precedent (MEM-20260405-VN204-G) offering directional cross-supplier context rather than candidate-specific confirmation. It ranks below the top candidate, Empaque del Pacifico S.A. de C.V., because that supplier has full evidence_coverage across all three criteria and a much shorter proximity_km (2,090.6 km versus 9,917.4 km to the NY/NJ destination).",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-08-14T09:39:41.408473+00:00"
+},
+{
+  "_id": {
+    "$oid": "6a7ee73b7ff9d57991d0a8e9"
+  },
+  "evaluation_id_ref": "EVAL-e40f0536-AI-087-1786701458",
+  "session_id": "e40f0536-0006-4898-b81b-02459bf2d88a",
+  "blocked_supplier_id": "SUP-SHANGHAI-087",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": [
+    "geopolitical_tariff"
+  ],
+  "reference_point": {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ],
+    "assumed": true
+  },
+  "candidates_evaluated": 5,
+  "candidates_discarded": 0,
+  "candidates": [
+    {
+      "supplier_id": "SUP-BERLIN-DE",
+      "supplier_name": "Deutsche Frischware GmbH",
+      "location": "Germany",
+      "category": "ambient_grocery",
+      "proximity_km": 9320.1,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_Berlin_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Deutsche Frischware GmbH, Siemensstraße 12, 14612 Falkensee, Brandenburg, Germany. Scope: food production — ambient and dairy. Audit type: Unannounced. Certificate date: 2025-10-15. Valid to 2027-09-30. ISO 22000:2018 also held — valid to 2027-09-30. Both issued by DQS GmbH.",
+            "valid_until": "2027-06-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Chunk confirms BRC Grade A unannounced and ISO 22000:2018 issued by DQS GmbH, both valid to 2027-09-30; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_Berlin_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: export@deutschefrischware.de | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Q3 Capacity Confirmation. Production facility at 62% capacity. No Rotterdam port disruptions currently affecting our Bremerhaven loading schedule. Standard transit Hamburg–Newark is 14 days. Q3 orders should be submitted by June 10.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "May 2026 email confirms active commercial relationship, 62% capacity, and standard Hamburg-Newark 14-day transit."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_Berlin_2025.pdf",
+            "page": 5,
+            "excerpt": "Sustainability audit August 2025 under ISO 14001. Facility achieved 100% renewable electricity via Ørsted Wind Germany PPA. Emergency generator backup provides 72 hours cold chain continuity. Scope 1+2 carbon intensity: 0.43 tCO2e per tonne of chilled product output. Reviewed the 2024 power outage event (August 14, 6.5 hours) — confirmed no temperature exceedances. Auditor: TÜV Rheinland Germany.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 14001 August 2025 audit confirms 100% renewable via Ørsted PPA and 0.43 tCO2e/tonne, verified by TÜV Rheinland."
+        }
+      ],
+      "rank": 1,
+      "rationale": "Top recommendation. All three criteria (compliance_certification, operational_status, sustainability_practices) are compliant with full evidence_coverage of 3 of 3 criteria_verified, backed by BRC Grade A and ISO 22000 certificates valid through 2027, a May 2026 capacity email, and an ISO 14001 sustainability audit. While there is no exact_track_record for this supplier, a moderate semantic_precedent (geopolitical_tariff) provides directional context. The proximity_km of 9320.1 reflects transatlantic sourcing but is offset by strong documented reliability.",
       "glossary": [
         {
           "term": "compliance_certification",
@@ -551,6 +608,360 @@
         }
       ]
     },
+    {
+      "supplier_id": "SUP-JP-033",
+      "supplier_name": "Osaka Quality Foods Ltd.",
+      "location": "Japan",
+      "category": "ambient_grocery",
+      "proximity_km": 9199.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-JP033-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_JP033_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Osaka Quality Foods Ltd., 3-14 Sakurajima, Konohana-ku, Osaka 554-0021, Japan. Scope: food production and distribution. Audit type: Announced. Certificate issue date: 2025-08-20. Valid to 2028-02-28. ISO 22000:2018 also held — valid to 2028-02-28. Certification body: NSF International.",
+            "valid_until": "2027-11-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Chunk states BRC Grade A and ISO 22000:2018 valid to 2028-02-28, certified by NSF International; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-JP033-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_JP033_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 8 — Allergen Management and Food Safety. Supplier maintains dedicated allergen-free production lines for FreshMart product range. Pre-production CIP cleaning procedures validated annually. All 14 EU-regulated allergens plus sesame and mustard covered in allergen risk assessment. Allergen incident notification to FreshMart within 2 hours of detection.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Contract Article 8 confirms dedicated allergen-free lines and allergen management terms."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited chunk addresses environmental or sustainability commitments."
+        }
+      ],
+      "rank": 2,
+      "rationale": "Osaka Quality Foods Ltd. presents solid evidence with 2 of 3 criteria_verified, showing compliant compliance_certification (BRC Grade A and ISO 22000:2018 valid to 2028) and compliant operational_status via contractually dedicated allergen-free lines. A moderate semantic_precedent on geopolitical_tariff risk provides directional context, though no exact_track_record exists for this candidate. It ranks below Deutsche Frischware GmbH because its evidence_coverage is weaker, with sustainability_practices left unknown while the top candidate has all three criteria compliant.",
+      "glossary": [
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-SAOPAULO-BR",
+      "supplier_name": "BrasilPack Indústria e Comércio Ltda.",
+      "location": "Brazil",
+      "category": "ambient_grocery",
+      "proximity_km": 9917.4,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_SAO_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. BrasilPack Indústria e Comércio Ltda., Rodovia Anhanguera Km 18, Guarulhos, São Paulo 07222-900, Brazil. Scope: packaging materials and consumer goods. Certificate number: BR-QMS-2025-00317. Valid: 2025-01-01 to 2027-07-31.",
+            "valid_until": "2027-07-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert BR-QMS-2025-00317, valid until 2027-07-31, scope matches."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_SAO_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: comercial@brasilpack.com.br | To: procurement@freshmart.com | Date: 2026-04-18 | Subject: Q3 Capacity and Logistics Update. Facility at 61% capacity. Santos port operating normally. Panama Canal no restrictions currently in effect. Q3 orders should be placed by June 1 to secure preferred sailing slots. Standard transit via Panama to NY/NJ is 18–21 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "April 2026 email confirms 61% capacity and normal Santos port operations."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk evidences sustainability commitments or reporting; environmental license is a regulatory permit, not sustainability evidence."
+        }
+      ],
+      "rank": 3,
+      "rationale": "BrasilPack Indústria e Comércio Ltda. presents solid but incomplete evidence: two of three criteria are compliant, with a valid ISO 9001:2015 compliance_certification (BR-QMS-2025-00317) running through July 2027 and an April 2026 email confirming healthy operational_status at 61% capacity with Santos port running normally. Precedent is limited to a moderate semantic_precedent on geopolitical_tariff risk from another supplier, with no exact_track_record for this candidate itself, and proximity_km of roughly 9917 km keeps logistics lead times long. It ranks below Deutsche Frischware GmbH because its evidence_coverage is 2 of 3 versus the top candidate's full 3 of 3, leaving sustainability_practices unverified.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-TH-055",
+      "supplier_name": "Bangkok Agro Exports Ltd.",
+      "location": "Thailand",
+      "category": "ambient_grocery",
+      "proximity_km": 13317.9,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-TH055-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "ggap_cert_TH055_2025.pdf",
+            "page": 1,
+            "excerpt": "GLOBALG.A.P. Certificate. Producer: Bangkok Agro Exports Ltd., 88 Moo 4, Bang Phli Industrial Estate, Samut Prakan, Thailand. Product scope: cassava starch, fresh ginger, frozen vegetables (edamame, baby corn, snap peas). Standard: GLOBALG.A.P. IFA v6.0. Certificate number: GGAP-TH-2025-007812. Valid: 2025-05-01 to 2026-10-31.",
+            "valid_until": "2026-10-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Certificate GGAP-TH-2025-007812 valid to 2026-10-31, scope matches claim, not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-TH055-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_TH055_floodseason_2026.eml",
+            "page": 1,
+            "excerpt": "From: export@bangkokagro.co.th | To: procurement@freshmart.com | Date: 2026-08-15 | Subject: Flood Season Preparedness Update. Thai Meteorological Department has issued early seasonal flood advisory for central Thailand. Our Chonburi backup facility agreement has been pre-activated for October–November peak risk window. Current facility operating normally. We will provide weekly status updates thr…",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Email dated 2026-08-15 explicitly states facility operating normally with weekly flood-season updates committed."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk addresses environmental or sustainability commitments."
+        }
+      ],
+      "rank": 4,
+      "rationale": "Bangkok Agro Exports Ltd. holds a compliant_certification citation (GLOBALG.A.P. GGAP-TH-2025-007812 valid to 2026-10-31) and a compliant operational_status backed by a 2026-08-15 email confirming normal operations with flood-season monitoring. A semantic_precedent tied to geopolitical_tariff risk offers moderate directional context, though no exact_track_record exists for this supplier. It ranks below Deutsche Frischware GmbH because its evidence_coverage verifies only 2 of 3 criteria (sustainability_practices unknown) versus the top candidate's full 3-of-3 coverage, and its proximity_km of 13317.9 is notably farther.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-IN-077",
+      "supplier_name": "Mumbai Spice & Foods Pvt. Ltd.",
+      "location": "India",
+      "category": "ambient_grocery",
+      "proximity_km": 14006.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-IN077-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso22000_cert_IN077_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 22000:2018 Certificate. Mumbai Spice & Foods Pvt. Ltd., Plot 47, MIDC Taloja Industrial Area, Navi Mumbai, Maharashtra 410208, India. Scope: spices, condiments and dry grocery. Certificate number: IN-FSMS-2025-00412. Valid to 2027-07-31. Issued by Bureau Veritas India Pvt. Ltd. FSSAI Licence also held — scope: food manufacturing and export. Licence number 10025022002847, valid to 2027-09-30.",
+            "valid_until": "2027-07-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Certificate text confirms ISO 22000:2018 cert IN-FSMS-2025-00412 by Bureau Veritas India valid to 2027-07-31 and FSSAI licence valid to 2027-09-30; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-IN077-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_IN077_compliance_2026.eml",
+            "page": 1,
+            "excerpt": "From: exports@mumbaispicefoods.in | To: procurement@freshmart.com | Date: 2026-03-15 | Subject: EU Compliance Update Q1 2026. All EU-destined FreshMart SKUs have been tested against updated EC 2023/915 aflatoxin limits. All results within specification — test reports attached. FSSAI export licence renewed January 2026. No changes to our production process or raw material suppliers.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "March 2026 email to FreshMart procurement confirms active supplier relationship and ongoing EU compliance testing."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited or available chunk addresses environmental/sustainability commitments."
+        }
+      ],
+      "rank": 5,
+      "rationale": "Mumbai Spice & Foods Pvt. Ltd. holds a valid compliance_certification (ISO 22000:2018 to 2027-07-31 plus FSSAI to 2027-09-30) and its operational_status is confirmed via a March 2026 email to FreshMart on active EU aflatoxin testing. Only a moderate semantic_precedent applies (cross-supplier geopolitical_tariff context), with no exact_track_record for this candidate. It ranks below Deutsche Frischware GmbH because its evidence_coverage is 2 of 3 criteria_verified versus the top candidate's full 3 of 3, and its proximity_km of 14006.8 is materially farther than the top candidate's 9320.1.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-08-14T10:00:27.909319+00:00"
+},
+{
+  "_id": {
+    "$oid": "6a7ee82f7ff9d57991d0a8f2"
+  },
+  "evaluation_id_ref": "EVAL-cf28ed46-VN-204-1786701712",
+  "session_id": "cf28ed46-00f2-42ca-a24a-d30229da0101",
+  "blocked_supplier_id": "SUP-VN-204",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": [
+    "geopolitical_tariff"
+  ],
+  "reference_point": {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ],
+    "assumed": true
+  },
+  "candidates_evaluated": 5,
+  "candidates_discarded": 0,
+  "candidates": [
     {
       "supplier_id": "SUP-AMSTERDAM-NL",
       "supplier_name": "Noord-Holland Packaging B.V.",
@@ -572,9 +983,11 @@
             "source_file": "iso_cert_AMS_2025.pdf",
             "page": 1,
             "excerpt": "ISO 9001:2015 Certificate. Noord-Holland Packaging B.V., Westpoort Industrial Zone, Molenwerf 4, 1014 BE Amsterdam, Netherlands. Scope: sustainable packaging materials. Certificate number: NL-QMS-2025-00741. Valid: 2025-05-01 to 2028-01-31. Issued by Lloyd's Register.",
-            "valid_until": "2028-01-31T00:00:00Z"
+            "valid_until": "2028-01-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "ISO 9001:2015 cert NL-QMS-2025-00741 by Lloyd's Register, valid through 2028-01-31, scope matches claim."
+          "note": "ISO 9001:2015 cert NL-QMS-2025-00741 by Lloyd's Register, valid 2025-05-01 to 2028-01-31, scope matches."
         },
         {
           "criterion": "operational_status",
@@ -585,9 +998,11 @@
             "source_file": "email_AMS_portupdate_2026.eml",
             "page": 1,
             "excerpt": "From: logistics@nhpackaging.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Situation Update. Rotterdam Maasvlakte II currently operating at 85% gate capacity with dwell times averaging 4.2 days vs usual 2.0 days. We have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an additional 5 days in planning. Follow-up…",
-            "valid_until": null
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "May 2026 email to FreshMart procurement confirms active Rotterdam status coordination and July delivery planning."
+          "note": "May 2026 email from supplier logistics to FreshMart procurement confirms active operational engagement."
         },
         {
           "criterion": "sustainability_practices",
@@ -598,102 +1013,15 @@
             "source_file": "sustainability_audit_AMS_2025.pdf",
             "page": 3,
             "excerpt": "Sustainability audit October 2025 under ISO 14001 standard. Renewable electricity: 91% via Dutch wind PPA. Recycled content in corrugated board: 82%. Carbon intensity: 0.31 tCO2e per tonne of packaging output — best-in-class for Netherlands packaging sector. Water use intensity reduced 19% since 2020. Auditor: Bureau Veritas Netherlands.",
-            "valid_until": null
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "October 2025 Bureau Veritas ISO 14001 audit confirms all four cited metrics verbatim."
+          "note": "Oct 2025 ISO 14001 audit by Bureau Veritas confirms all cited metrics verbatim."
         }
       ],
-      "rank": 2,
-      "rationale": "Noord-Holland Packaging B.V. presents strong standalone evidence: full evidence_coverage with 3 of 3 criteria_verified as compliant, including a verbatim ISO 9001:2015 compliance_certification valid through 2028-01-31, documented operational_status coordination on the Rotterdam port situation, and Bureau Veritas ISO 14001 sustainability_practices metrics. A moderate semantic_precedent for logistics_disruption provides directional context, though no exact_track_record exists for this candidate. It ranks below the top candidate primarily due to its far greater proximity_km (8949.7 km vs 2090.6 km), which weighs against it despite equally strong compliance evidence.",
-      "glossary": [
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-ROTTERDAM-NL",
-      "supplier_name": "Delta Logistics & Packaging B.V.",
-      "location": "Netherlands",
-      "category": "packaging_materials",
-      "proximity_km": 8964.3,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 3
-      },
-      "precedent_summary": "exact_track_record",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-ROT-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "iso_cert_ROT_2024.pdf",
-            "page": 1,
-            "excerpt": "ISO 9001:2015 Certificate. Delta Logistics & Packaging B.V., Waalhaven Oostzijde 12, 3087 BM Rotterdam, Netherlands. Scope: packaging and distribution — food and non-food. Certificate number: NL-QMS-2024-00553. Valid: 2024-07-01 to 2027-06-30.",
-            "valid_until": "2027-06-30T00:00:00Z"
-          },
-          "note": "ISO 9001:2015 cert NL-QMS-2024-00553 valid to 2027-06-30, not expired."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-ROT-EMAIL-04-01",
-            "doc_type": "email",
-            "source_file": "email_ROT_portcongestion_May2026.eml",
-            "page": 1,
-            "excerpt": "From: ops@deltalogisticsrdam.nl | To: procurement@freshmart.com | Date: 2026-05-19 | Subject: Rotterdam Port Update. As of this morning, Maasvlakte II operating at 85% gate capacity with vessel dwell times averaging 4.2 days (normal 2.0 days). We are closely monitoring the situation and have pre-alerted our Antwerp contingency partner. For shipments with July delivery commitments please allow an a…",
-            "valid_until": null
-          },
-          "note": "May 2026 operational email confirms active operations and contingency coordination."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-ROT-SUST-03-01",
-            "doc_type": "sustainability_report",
-            "source_file": "sustainability_audit_ROT_2026.pdf",
-            "page": 2,
-            "excerpt": "Sustainability audit January 2026 under ISO 14001. Facility achieved carbon neutrality for Scope 1+2 in 2025 through renewable electricity and on-site solar installation. Participating in Port of Rotterdam Hydrogen Hub pilot for clean logistics fuel from 2027. Auditor: DNV Netherlands.",
-            "valid_until": null
-          },
-          "note": "ISO 14001 audit Jan 2026 by DNV confirms Scope 1+2 carbon neutrality and Hydrogen Hub pilot participation."
-        }
-      ],
-      "rank": 3,
-      "rationale": "Delta Logistics & Packaging B.V. shows full evidence_coverage with criteria_verified 3 of 3, all three criteria compliant: a live ISO 9001:2015 compliance_certification valid to 2027-06-30, a May 2026 operational_status email confirming active operations and Antwerp contingency coordination, and sustainability_practices backed by a DNV ISO 14001 audit citing Scope 1+2 carbon neutrality. Precedent is also strong, with an exact_track_record showing a prior approved_and_successful outcome plus a moderate semantic_precedent on logistics_disruption. It ranks below the top candidate because its proximity_km of 8964.3 is substantially farther than the top candidate's 2090.6, despite equivalent compliant coverage.",
+      "rank": 1,
+      "rationale": "Noord-Holland Packaging B.V. is the top recommendation on this shortlist. Its evidence_coverage is complete with 3 of 3 criteria_verified as compliant: a current compliance_certification (ISO 9001:2015 by Lloyd's Register, valid through Jan 2028), verified operational_status via a May 2026 logistics email confirming active engagement and Rotterdam contingency planning, and strong sustainability_practices backed by an Oct 2025 ISO 14001 audit from Bureau Veritas. While there is no exact_track_record for this supplier, a moderate semantic_precedent (MEM-20260405-VN204-G) provides directional context on the same risk_type, and the proximity_km of 8949.7 is a known trade-off offset by the fully documented compliance profile.",
       "glossary": [
         {
           "term": "evidence_coverage",
@@ -750,7 +1078,9 @@
             "source_file": "iso_cert_Hamburg_2025.pdf",
             "page": 1,
             "excerpt": "ISO 9001:2015 Certificate. Nordpack Verpackungen GmbH, Moorfleeter Deich 200, 22113 Hamburg, Germany. Scope: industrial and retail packaging. Certificate number: DE-QMS-2025-02281. Valid: 2025-01-01 to 2027-12-31.",
-            "valid_until": "2027-12-31T00:00:00Z"
+            "valid_until": "2027-12-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
           },
           "note": "ISO 9001:2015 cert DE-QMS-2025-02281 valid to 2027-12-31, scope matches."
         },
@@ -763,9 +1093,11 @@
             "source_file": "email_Hamburg_capacity_2026.eml",
             "page": 1,
             "excerpt": "From: vertrieb@nordpackverpackungen.de | To: procurement@freshmart.com | Date: 2026-04-22 | Subject: Capacity Confirmation Q3 2026. Hamburg facility at 58% installed capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard delivery to Rotterdam for trans-Atlantic loading is 1 business day. No current disruptions at Hamburg port.",
-            "valid_until": null
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "April 2026 email confirms 58% capacity, 4-week lead time, no disruptions."
+          "note": "April 2026 email confirms 58% capacity, incremental volume accommodation, no port disruption."
         },
         {
           "criterion": "sustainability_practices",
@@ -776,13 +1108,110 @@
             "source_file": "sustainability_audit_Hamburg_2025.pdf",
             "page": 2,
             "excerpt": "Sustainability audit July 2025 under ISO 14001. Renewable electricity: 78% via Hamburg Stadtwerke green tariff. Recycled fibre content: 71% of all corrugated board. Participated in Hamburg Climate Action 2030 programme since 2021. Scope 2 emissions reduced 44% since baseline year 2019. Auditor: Bureau Veritas Germany.",
-            "valid_until": null
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "July 2025 ISO 14001 audit confirms 78% renewable, 71% recycled fibre, 44% Scope 2 reduction."
+          "note": "July 2025 ISO 14001 audit confirms 78% renewable, 71% recycled fibre, 44% Scope 2 reduction, Bureau Veritas verified."
         }
       ],
-      "rank": 4,
-      "rationale": "Nordpack Verpackungen GmbH presents strong own-evidence: full evidence_coverage with 3 of 3 criteria_verified as compliant, including a current ISO 9001:2015 compliance_certification valid to 2027-12-31, an April 2026 operational_status confirmation of 58% capacity with no disruptions, and audited sustainability_practices (78% renewable, 71% recycled fibre, 44% Scope 2 reduction). No exact_track_record exists for this supplier, though a moderate semantic_precedent on logistics_disruption offers directional context. It ranks below the top candidate primarily because its proximity_km of 9083.7 is materially farther than the leader's 2090.6, adding lead-time and logistics exposure despite equivalent criteria coverage.",
+      "rank": 2,
+      "rationale": "Nordpack Verpackungen GmbH presents strong own-evidence: all three criteria are compliant with full evidence_coverage (criteria_verified 3 of 3), including a valid ISO 9001:2015 compliance_certification through 2027, an April 2026 email confirming operational_status at 58% capacity with no port disruption, and a Bureau Veritas-verified ISO 14001 audit supporting sustainability_practices at 78% renewable and 71% recycled fibre. A moderate semantic_precedent on geopolitical_tariff risk offers directional context, though no exact_track_record exists for this supplier. It ranks just below the top candidate because, while both show identical compliant coverage and comparable precedent, Nordpack's proximity_km of 9083.7 is meaningfully farther than the leader's 8949.7.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-CURITIBA-BR",
+      "supplier_name": "Papelera Sul Brasileira S.A.",
+      "location": "Brazil",
+      "category": "packaging_materials",
+      "proximity_km": 9840.3,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "fsc_cert_CUR_2025.pdf",
+            "page": 1,
+            "excerpt": "FSC Chain of Custody Certificate. Papelera Sul Brasileira S.A., Rodovia BR-116 Km 92, Fazenda Rio Grande, Paraná 83820-000, Brazil. FSC scope: certified sustainable forestry sourcing. Certificate number: FSC-COC-BR-2025-0088. ISO 9001:2015 also held — scope: paper and cardboard packaging — food-grade. Certificate number BR-QMS-2025-00489, valid to 2027-10-31. Both issued by Rainforest Alliance. FS…",
+            "valid_until": "2027-10-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Chunk states ISO 9001:2015 (BR-QMS-2025-00489, valid to 2027-10-31) and FSC-COC-BR-2025-0088, both issued by Rainforest Alliance; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_CUR_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: exports@papelerasul.com.br | To: procurement@freshmart.com | Date: 2026-05-12 | Subject: Q3 Availability. Facility at 64% capacity with room for incremental FreshMart volume. Paranaguá port operating normally. No current Panama Canal restrictions affecting our US East Coast routes. Standard transit NY/NJ: 17–20 days via Panama.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "May 2026 email confirms 64% capacity, room for FreshMart volume, Paranaguá operating normally, standard US East Coast transit."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CUR-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_CUR_2025.pdf",
+            "page": 3,
+            "excerpt": "Sustainability audit November 2025 under FSC Certified standard. 100% of raw fibre sourced from FSC-certified managed forests in Paraná state. Zero deforestation commitment verified by satellite monitoring (PRODES/INPE). Scope 1+2 emissions: 12.1 tCO2e per tonne of output — 18% reduction vs 2020 baseline. Water use: closed-loop system, zero discharge to Iguaçu watershed. Auditor: Rainforest Allian…",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Nov 2025 audit confirms 100% FSC fibre, satellite-verified zero deforestation, closed-loop zero discharge, 18% Scope 1+2 reduction vs 2020."
+        }
+      ],
+      "rank": 3,
+      "rationale": "Papelera Sul Brasileira S.A. presents strong standalone evidence: full evidence_coverage with 3 of 3 criteria_verified as compliant, including a valid compliance_certification (FSC-COC and ISO 9001:2015 to 2027-10-31), confirmed operational_status via a May 2026 email showing 64% capacity and normal Paranaguá port operations, and audited sustainability_practices (100% FSC fibre, zero deforestation, closed-loop water). A moderate semantic_precedent on geopolitical_tariff risk offers directional context, though no exact_track_record exists for this candidate. It ranks below the top candidate mainly on proximity_km (9840.3 km vs 8949.7 km), as evidence coverage and precedent strength are otherwise comparable.",
       "glossary": [
         {
           "term": "evidence_coverage",
@@ -805,12 +1234,107 @@
           "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
         },
         {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
           "term": "exact_track_record",
           "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
         },
         {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-SAOPAULO-BR",
+      "supplier_name": "BrasilPack Indústria e Comércio Ltda.",
+      "location": "Brazil",
+      "category": "packaging_materials",
+      "proximity_km": 9917.4,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_SAO_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. BrasilPack Indústria e Comércio Ltda., Rodovia Anhanguera Km 18, Guarulhos, São Paulo 07222-900, Brazil. Scope: packaging materials and consumer goods. Certificate number: BR-QMS-2025-00317. Valid: 2025-01-01 to 2027-07-31.",
+            "valid_until": "2027-07-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert BR-QMS-2025-00317, scope and validity through 2027-07-31 confirmed in chunk text."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_SAO_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: comercial@brasilpack.com.br | To: procurement@freshmart.com | Date: 2026-04-18 | Subject: Q3 Capacity and Logistics Update. Facility at 61% capacity. Santos port operating normally. Panama Canal no restrictions currently in effect. Q3 orders should be placed by June 1 to secure preferred sailing slots. Standard transit via Panama to NY/NJ is 18–21 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "April 2026 email explicitly states 61% capacity, Santos port normal, and Q3 order timing — matches claim."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-SAO-PERMIT-05-01",
+            "doc_type": "certificate",
+            "source_file": "licenca_ambiental_SAO_2025.pdf",
+            "page": 1,
+            "excerpt": "Licença Ambiental de Operação. BrasilPack Indústria e Comércio Ltda., São Paulo, Brasil. Número da licença: BR-LAO-2025-00761. Emitida pela CETESB (Companhia Ambiental do Estado de São Paulo) para fabricação de materiais de embalagem e produtos de mercearia. Válida até 2028-08-31.",
+            "valid_until": "2028-08-31T00:00:00Z",
+            "language": "pt-BR",
+            "excerpt_language": "pt-BR"
+          },
+          "note": "CETESB Licença Ambiental de Operação BR-LAO-2025-00761 valid until 2028-08-31 confirmed in chunk text."
+        }
+      ],
+      "rank": 4,
+      "rationale": "BrasilPack shows full evidence_coverage with all 3 criteria_verified as compliant: ISO 9001:2015 compliance_certification valid through 2027, operational_status confirmed via April 2026 email citing 61% capacity and normal Santos port operations, and sustainability_practices backed by a CETESB environmental license valid to 2028. Precedent is limited to a moderate semantic_precedent on geopolitical_tariff risk with no exact_track_record for this candidate. It ranks below the top candidate primarily because its proximity_km of 9917.4 is materially farther than the top option's 8949.7, while evidence coverage and precedent strength are otherwise comparable.",
+      "glossary": [
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
           "term": "semantic_precedent",
           "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
         },
         {
           "term": "proximity_km",
@@ -826,7 +1350,7 @@
       "proximity_km": 9647.6,
       "evidence_coverage": {
         "criteria_total": 3,
-        "criteria_verified": 1
+        "criteria_verified": 2
       },
       "precedent_summary": "exact_track_record",
       "criteria": [
@@ -839,29 +1363,48 @@
             "source_file": "iso_cert_Warsaw_2025.pdf",
             "page": 1,
             "excerpt": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemysłowa 44, 05-092 Łomianki, Masovian Voivodeship, Poland. Scope: packaging materials — rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
-            "valid_until": "2027-03-31T00:00:00Z"
+            "valid_until": "2027-03-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
           },
-          "note": "Certificate PL-QMS-2025-00912 explicitly stated, valid 2025-03-01 to 2027-03-31, not expired."
+          "note": "Certificate text explicitly names ISO 9001:2015, number PL-QMS-2025-00912, scope rigid/flexible packaging, valid until 2027-03-31; not expired."
         },
         {
           "criterion": "operational_status",
-          "status": "unknown",
-          "citation": null,
-          "note": "No dated correspondence, deliveries, or execution signals showing current active operations."
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-WAR-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_Warsaw_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 14 — Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Article 14 of contract with FreshMart evidences active supply relationship with defined crate return and tracking obligations."
         },
         {
           "criterion": "sustainability_practices",
           "status": "unknown",
           "citation": null,
-          "note": "Reusable crate clause is a commercial return/tracking term, not a declared sustainability practice or environmental reporting."
+          "note": "No cited chunk describes an environmental or sustainability program; waste permit is regulatory authorization, not a sustainability commitment."
         }
       ],
       "rank": 5,
-      "rationale": "Polskie Opakowania Sp. z o.o. holds a valid compliance_certification (ISO 9001:2015, PL-QMS-2025-00912, valid through 2027-03-31), and it carries an exact_track_record from MEM-20250616-LAUS-R where it was previously proposed and approved successfully, plus a moderate semantic_precedent on logistics_disruption context. It ranks 5th because its evidence_coverage is only 1 of 3 criteria_verified (operational_status and sustainability_practices remain unknown) and its proximity_km of 9647.6 is substantially farther than the top candidate, which has all 3 criteria compliant and sits much closer at 2090.6 km.",
+      "rationale": "Polskie Opakowania Sp. z o.o. shows solid standalone evidence: compliance_certification is compliant via a valid ISO 9001:2015 certificate (PL-QMS-2025-00912) covering rigid and flexible packaging through 2027-03-31, and operational_status is confirmed through Article 14 of an active FreshMart contract with defined crate return and tracking obligations. Precedent is supportive, with an exact_track_record (MEM-20250616-LAUS-R) where this candidate was previously proposed and approved successfully, plus a moderate semantic_precedent on the same geopolitical_tariff risk_type. It ranks below Noord-Holland Packaging B.V. because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices remains unknown) versus full 3 of 3 coverage at the top, and its proximity_km of 9647.6 is farther than the top candidate's 8949.7.",
       "glossary": [
         {
           "term": "compliance_certification",
           "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
         },
         {
           "term": "exact_track_record",
@@ -880,14 +1423,6 @@
           "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
         },
         {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
           "term": "proximity_km",
           "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
         }
@@ -897,20 +1432,20 @@
   "discarded_candidates": [],
   "approved_supplier_id": null,
   "decision_deadline": null,
-  "created_at": "2026-08-11T10:51:35.149032+00:00"
+  "created_at": "2026-08-14T10:04:31.066678+00:00"
 },
 {
   "_id": {
-    "$oid": "6a7b1b7fb5efb76effeaf7c6"
+    "$oid": "6a7ee9187ff9d57991d0a8f9"
   },
-  "evaluation_id_ref": "EVAL-3544d270-EN-441-1786452540",
-  "session_id": "3544d270-90fc-4848-b713-a81016e0d1de",
-  "blocked_supplier_id": "SUP-SHENZHEN-441",
+  "evaluation_id_ref": "EVAL-1a7892ba-TH-055-1786701982",
+  "session_id": "1a7892ba-7104-4c3c-88ea-fb960d46b2a1",
+  "blocked_supplier_id": "SUP-TH-055",
   "is_base": false,
   "is_demo_trigger": false,
   "status": "pending_approval",
   "risk_types": [
-    "geopolitical_tariff"
+    "climate_disruption"
   ],
   "reference_point": {
     "name": "FreshMart Los Angeles DC (assumed)",
@@ -923,6 +1458,583 @@
   "candidates_evaluated": 5,
   "candidates_discarded": 0,
   "candidates": [
+    {
+      "supplier_id": "SUP-BERLIN-DE",
+      "supplier_name": "Deutsche Frischware GmbH",
+      "location": "Germany",
+      "category": "ambient_grocery",
+      "proximity_km": 9320.1,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "brc_cert_Berlin_2025.pdf",
+            "page": 1,
+            "excerpt": "BRC Global Standard for Food Safety Grade A. Deutsche Frischware GmbH, Siemensstraße 12, 14612 Falkensee, Brandenburg, Germany. Scope: food production — ambient and dairy. Audit type: Unannounced. Certificate date: 2025-10-15. Valid to 2027-09-30. ISO 22000:2018 also held — valid to 2027-09-30. Both issued by DQS GmbH.",
+            "valid_until": "2027-06-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Chunk explicitly states BRC Grade A unannounced and ISO 22000:2018, both DQS GmbH, valid to 2027-09-30; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_Berlin_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "From: export@deutschefrischware.de | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Q3 Capacity Confirmation. Production facility at 62% capacity. No Rotterdam port disruptions currently affecting our Bremerhaven loading schedule. Standard transit Hamburg–Newark is 14 days. Q3 orders should be submitted by June 10.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "May 2026 email confirms 62% Q3 capacity and standard 14-day Hamburg-Newark transit as claimed."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BER-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_Berlin_2025.pdf",
+            "page": 5,
+            "excerpt": "Sustainability audit August 2025 under ISO 14001. Facility achieved 100% renewable electricity via Ørsted Wind Germany PPA. Emergency generator backup provides 72 hours cold chain continuity. Scope 1+2 carbon intensity: 0.43 tCO2e per tonne of chilled product output. Reviewed the 2024 power outage event (August 14, 6.5 hours) — confirmed no temperature exceedances. Auditor: TÜV Rheinland Germany.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 14001 Aug 2025 audit by TÜV Rheinland; 100% renewable via Ørsted PPA; 0.43 tCO2e/tonne — all stated in chunk."
+        }
+      ],
+      "rank": 1,
+      "rationale": "Deutsche Frischware GmbH is the top recommendation on this shortlist. Full evidence_coverage was achieved with criteria_verified 3 of 3, and all three criteria — compliance_certification (BRC Grade A unannounced plus ISO 22000:2018, valid to 2027-09-30), operational_status (May 2026 confirmation of 62% Q3 capacity and standard 14-day Hamburg–Newark transit), and sustainability_practices (ISO 14001 audit, 100% renewable PPA, 0.43 tCO2e/tonne) — are compliant with clean citations. While there is no exact_track_record for this supplier, a moderate semantic_precedent on the same climate_disruption risk_type provides directional support. Proximity_km of 9320.1 reflects the transatlantic lane, which is consistent with the documented and confirmed Hamburg–Newark routing.",
+      "glossary": [
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "precedent",
+          "definition": "Shorthand for 'this has happened before' — covers both an exact past case and a similar one used for comparison."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-CAPETOWN-ZA",
+      "supplier_name": "Cape Harvest Agricultural Exports Pty.",
+      "location": "South Africa",
+      "category": "fresh_produce",
+      "proximity_km": 16068.7,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CPT-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "ggap_cert_CapeTown_2025.pdf",
+            "page": 1,
+            "excerpt": "GLOBALG.A.P. Certificate. Producer: Cape Harvest Agricultural Exports Pty. Ltd., Farm Eikenhof, Villiersdorp Road, Elgin Valley, Western Cape 7180, South Africa. Product scope: apples (Granny Smith, Fuji, Pink Lady), pears (Packham's Triumph), and table grapes. Certificate number: GGAP-ZA-2025-004801. Valid: 2025-03-01 to 2027-04-30.",
+            "valid_until": "2027-04-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Certificate GGAP-ZA-2025-004801 valid to 2027-04-30 covering apples, pears, table grapes."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CPT-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_CapeTown_season_2026.eml",
+            "page": 1,
+            "excerpt": "From: exports@capeharvestexports.co.za | To: procurement@freshmart.com | Date: 2026-03-05 | Subject: Autumn Harvest Outlook 2026. Apple harvest has started — early quality assessments show excellent Brix and firmness for Granny Smith. Western Cape dam levels at 61%, no water restrictions currently in effect. EU MRL test results for first 2026 lots all within specification. Confirming Q2 volumes.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "March 2026 email confirms active harvest, in-spec EU MRL results, and confirmed Q2 volumes."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-CPT-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_CapeTown_2025.pdf",
+            "page": 4,
+            "excerpt": "Sustainability audit March 2025 under Rainforest Alliance standard. Water rights: licensed DWS irrigation from Theewaterskloof catchment plus borehole allocation. Current dam level 61%. Pressure-compensating drip irrigation on 100% of apple orchard blocks — water use reduced 22% vs 2016 baseline. Biodiversity corridors maintained on 8% of farm area. Auditor: Rainforest Alliance South Africa.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "March 2025 Rainforest Alliance audit documents 22% water reduction via drip irrigation and 8% biodiversity corridors."
+        }
+      ],
+      "rank": 2,
+      "rationale": "Cape Harvest Agricultural Exports Pty. presents strong standalone evidence, with all three criteria_verified (full evidence_coverage) across compliance_certification (GLOBALG.A.P. valid to 2027-04-30), operational_status (confirmed 2026 harvest with in-spec EU MRL results), and sustainability_practices (Rainforest Alliance audit showing 22% water reduction). A moderate semantic_precedent on climate_disruption offers directional context, though no exact_track_record exists for this candidate. It ranks below Deutsche Frischware GmbH primarily due to weaker proximity_km (16068.7 vs 9320.1), as both candidates match on compliant criteria coverage and precedent strength.",
+      "glossary": [
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-LIMA-PE",
+      "supplier_name": "Agroexportaciones del Sur S.A.C.",
+      "location": "Peru",
+      "category": "fresh_produce",
+      "proximity_km": 6732.1,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-LIM-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "ggap_cert_Lima_2025.pdf",
+            "page": 1,
+            "excerpt": "Certificado GLOBALG.A.P. Productor: Agroexportaciones del Sur S.A.C., Carretera Panamericana Sur Km 354, Ica, Perú. Alcance del producto: uvas de mesa (Red Globe, Crimson Seedless), espárragos y arándanos. Norma: GLOBALG.A.P. IFA v6.0. Número de certificado: GGAP-PE-2025-003301. Vigencia: del 2025-07-01 al 2027-08-31. Emitido por SGS del Perú.",
+            "valid_until": "2027-08-31T00:00:00Z",
+            "language": "es-PE",
+            "excerpt_language": "es-PE"
+          },
+          "note": "Certificate GGAP-PE-2025-003301, IFA v6.0, valid through 2027-08-31, covers stated products."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-LIM-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_Lima_season_2026.eml",
+            "page": 1,
+            "excerpt": "De: exports@agroexportacionesdelsur.com.pe | Para: procurement@freshmart.com | Fecha: 2026-03-10 | Asunto: Panorama de Temporada de Espárragos y Uvas 2026. La temporada de espárragos comenzó 2 semanas antes debido a condiciones de temperatura favorables. El puerto del Callao opera con normalidad actualmente — sin restricciones del canal vigentes. Se proyectan volúmenes de uva de mesa al 105% de lo…",
+            "valid_until": null,
+            "language": "es-PE",
+            "excerpt_language": "es-PE"
+          },
+          "note": "March 2026 email confirms Q2 allocations, normal Callao operations, and 105% grape volumes."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk addresses environmental or sustainability commitments."
+        }
+      ],
+      "rank": 3,
+      "rationale": "Agroexportaciones del Sur S.A.C. lands at rank 3 of 5 on the strength of two compliant criteria: a verified compliance_certification (GLOBALG.A.P. GGAP-PE-2025-003301, valid through 2027-08-31) and confirmed operational_status showing normal Callao port operations and 105% grape volumes for the 2026 season. Its proximity_km of 6732.1 is favorable, and a moderate semantic_precedent on climate_disruption offers directional context, though no exact_track_record exists for this supplier. It ranks below Deutsche Frischware GmbH because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices is unknown), whereas the top candidate has full coverage across all three criteria.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-IN-077",
+      "supplier_name": "Mumbai Spice & Foods Pvt. Ltd.",
+      "location": "India",
+      "category": "ambient_grocery",
+      "proximity_km": 14006.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-IN077-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso22000_cert_IN077_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 22000:2018 Certificate. Mumbai Spice & Foods Pvt. Ltd., Plot 47, MIDC Taloja Industrial Area, Navi Mumbai, Maharashtra 410208, India. Scope: spices, condiments and dry grocery. Certificate number: IN-FSMS-2025-00412. Valid to 2027-07-31. Issued by Bureau Veritas India Pvt. Ltd. FSSAI Licence also held — scope: food manufacturing and export. Licence number 10025022002847, valid to 2027-09-30.",
+            "valid_until": "2027-07-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 22000:2018 cert IN-FSMS-2025-00412 valid to 2027-07-31 and FSSAI licence valid to 2027-09-30, both current."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-IN077-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_IN077_compliance_2026.eml",
+            "page": 1,
+            "excerpt": "From: exports@mumbaispicefoods.in | To: procurement@freshmart.com | Date: 2026-03-15 | Subject: EU Compliance Update Q1 2026. All EU-destined FreshMart SKUs have been tested against updated EC 2023/915 aflatoxin limits. All results within specification — test reports attached. FSSAI export licence renewed January 2026. No changes to our production process or raw material suppliers.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "March 2026 email confirms active EU-destined FreshMart supply relationship and renewed FSSAI export licence."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No provided chunk addresses environmental or sustainability commitments."
+        }
+      ],
+      "rank": 4,
+      "rationale": "Mumbai Spice & Foods Pvt. Ltd. lands at rank 4 on the strength of two compliant criteria: a current ISO 22000:2018 compliance_certification valid through 2027 alongside an active FSSAI licence, and a verified operational_status confirmed by a March 2026 email on EU-destined FreshMart supply. There is no exact_track_record for this candidate, though a moderate semantic_precedent from a comparable climate_disruption case provides some directional context. It ranks below Deutsche Frischware GmbH because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices unknown) versus the top candidate's full coverage, and its proximity_km of 14006.8 is materially farther.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-NAIROBI-KE",
+      "supplier_name": "East Africa Fresh Exports Ltd.",
+      "location": "Kenya",
+      "category": "fresh_produce",
+      "proximity_km": 15561.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "exact_track_record",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-NAI-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "ggap_cert_Nairobi_2025.pdf",
+            "page": 1,
+            "excerpt": "GLOBALG.A.P. Certificate. Producer: East Africa Fresh Exports Ltd., Thika Road, Ruiru Industrial Zone, Kiambu County, Kenya. Product scope: French beans, snow peas, sugar snap peas, and baby courgettes for air-freight export to European and North American markets. Certificate number: GGAP-KE-2025-001441. Valid: 2025-01-01 to 2027-09-30. Certification body: SGS Kenya.",
+            "valid_until": "2027-09-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Certificate GGAP-KE-2025-001441 valid through 2027-09-30, scope matches claim."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-NAI-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_Nairobi_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 8 — Air Freight and Cold Chain. All FreshMart shipments transported by air freight from Jomo Kenyatta International (NBO) on Kenya Airways or Ethiopian Airlines cargo to Chicago O'Hare (ORD) cold store. Transit temperature not to exceed 4°C for beans and peas. Sensitech TempTale loggers in every consignment. Temperature data submitted to FreshMart quality system within 12 hours of arrival.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Contract Article 8 confirms active air-freight cold-chain NBO-ORD with temp logging."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited chunk addresses sustainability."
+        }
+      ],
+      "rank": 5,
+      "rationale": "East Africa Fresh Exports Ltd. carries useful evidence: a valid compliance_certification (GLOBALG.A.P. certificate GGAP-KE-2025-001441 through 2027-09-30) and a confirmed operational_status via Article 8 of the framework contract covering the NBO-ORD air-freight cold chain. Precedent is also supportive, with an exact_track_record showing this supplier was previously proposed and approved successfully, plus a moderate semantic_precedent on the same climate_disruption risk_type. It ranks below Deutsche Frischware GmbH because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices unknown) and its proximity_km of 15561.8 is materially farther than the top candidate's fully verified profile at 9320.1 km.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-08-14T10:08:24.808468+00:00"
+},
+{
+  "_id": {
+    "$oid": "6a7eeaff7ff9d57991d0a903"
+  },
+  "evaluation_id_ref": "EVAL-01c7c0da-ULO-BR-1786702404",
+  "session_id": "01c7c0da-c7c4-4f0a-8228-0accd133a9e0",
+  "blocked_supplier_id": "SUP-SAOPAULO-BR",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": [
+    "climate_disruption"
+  ],
+  "reference_point": {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ],
+    "assumed": true
+  },
+  "candidates_evaluated": 5,
+  "candidates_discarded": 0,
+  "candidates": [
+    {
+      "supplier_id": "SUP-LOSANGELES-US",
+      "supplier_name": "Pacific Coast Packaging Inc.",
+      "location": "United States",
+      "category": "packaging_materials",
+      "proximity_km": 0,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-LAX-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_LAX_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. Pacific Coast Packaging Inc., 2800 East Vernon Avenue, Vernon, California 90058, USA. Scope: retail packaging — food and non-food. Certificate number: US-QMS-2025-04471. Valid: 2025-08-01 to 2027-11-30.",
+            "valid_until": "2027-11-30T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert US-QMS-2025-04471 valid 2025-08-01 to 2027-11-30, scope matches retail food/non-food packaging."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-LAX-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_LAX_droughtupdate_2026.eml",
+            "page": 1,
+            "excerpt": "From: ops@pacificcoastpackaging.com | To: procurement@freshmart.com | Date: 2026-05-03 | Subject: Water Situation and Q3 Capacity. Current State Water Board allocation is Tier 1 — no production restrictions in effect. Following the wet 2025–2026 winter, reservoir levels in Southern California are at 78% capacity. We do not anticipate any water-related production constraints for Q3 2026. Facility a…",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "May 2026 email from supplier ops confirms Tier 1 water allocation, no Q3 2026 constraints, 61% capacity with headroom."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-LAX-SUST-03-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_LAX_2025.pdf",
+            "page": 3,
+            "excerpt": "Sustainability audit November 2025 under FSC Certified standard. Cooling towers converted to closed-loop — water use reduced 31%. Sub-meter monitoring installed across all process areas. Currently Tier 1 State Water allocation — no production restrictions in effect. Solar panels installed Q2 2025 covering 28% of facility electricity. Participating in California Water Action Collaborative. Auditor:…",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Nov 2025 SCS Global Services FSC audit documents 31% water reduction, sub-meter monitoring, 28% solar, CWAC participation — all figures match claim."
+        }
+      ],
+      "rank": 1,
+      "rationale": "Pacific Coast Packaging Inc. is the TOP RECOMMENDATION for this shortlist. Full evidence_coverage is achieved with criteria_verified 3 of 3, all three criteria (compliance_certification, operational_status, sustainability_practices) marked compliant with dated citations including a valid ISO 9001:2015 certificate through 2027-11-30 and a November 2025 FSC sustainability audit. Proximity_km is 0.0, placing the facility directly at the served location, and while no exact_track_record exists, a moderate semantic_precedent on climate_disruption provides supporting directional context.",
+      "glossary": [
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
     {
       "supplier_id": "SUP-GUADALAJARA-MX",
       "supplier_name": "Empaque del Pacifico S.A. de C.V.",
@@ -944,9 +2056,11 @@
             "source_file": "iso_cert_GDL_2024.pdf",
             "page": 1,
             "excerpt": "Certificado ISO 9001:2015. Empaque del Pacífico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, México. Alcance: materiales de empaque, incluyendo grado alimenticio e industrial. Número de certificado: MX-QMS-2024-05531. Vigencia: del 2024-10-01 al 2027-12-31. Emitido por Bureau Veritas México.",
-            "valid_until": "2027-12-31T00:00:00Z"
+            "valid_until": "2027-12-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "ISO 9001:2015 cert MX-QMS-2024-05531 by Bureau Veritas Mexico, valid to 2027-12-31, scope covers food-grade and industrial packaging."
+          "note": "Certificate MX-QMS-2024-05531 by Bureau Veritas México, valid through 2027-12-31, scope covers food-grade and industrial packaging."
         },
         {
           "criterion": "operational_status",
@@ -956,10 +2070,12 @@
             "doc_type": "email",
             "source_file": "email_GDL_capacity_Jun2026.eml",
             "page": 1,
-            "excerpt": "From: ventas@empaquepacifico.com.mx | To: procurement@freshmart.com | Date: 2026-06-02 | Subject: Q3 2026 Capacity Availability. We confirm availability for incremental Q3 volume with 3 weeks lead time. Current facility utilisation is 63%. No disruptions to our Guadalajara–Laredo logistics corridor. Standard transit to LA DC remains 4 business days. Please confirm forecast by June 20 to secure all…",
-            "valid_until": null
+            "excerpt": "De: ventas@empaquepacifico.com.mx | Para: procurement@freshmart.com | Fecha: 2026-06-02 | Asunto: Disponibilidad de Capacidad Q3 2026. Confirmamos disponibilidad para el volumen incremental del Q3 con 3 semanas de plazo de entrega. La utilización actual de la planta es del 63%. Sin interrupciones en nuestro corredor logístico Guadalajara–Laredo. El tránsito estándar al Centro de Distribución de Lo…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "June 2026 email confirms active operations, 63% utilization, no disruptions on Guadalajara-Laredo corridor."
+          "note": "Email confirms Q3 2026 capacity availability, 63% plant utilization, and no disruptions on Guadalajara-Laredo corridor."
         },
         {
           "criterion": "sustainability_practices",
@@ -970,102 +2086,15 @@
             "source_file": "sustainability_audit_GDL_2025.pdf",
             "page": 7,
             "excerpt": "Emisiones de carbono: 18.4 tCO2e por año (Alcance 1+2). Tasa de reciclaje de agua: 74%. El cartón corrugado utiliza un mínimo de 75% de contenido reciclado posconsumo, superando el requisito del 60% establecido por FreshMart. Los certificados de las papeleras Cartones Ponderosa y PAPSA confirman el contenido de fibra reciclada por lote. La documentación de cadena de custodia se mantiene a nivel de…",
-            "valid_until": null
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "Sustainability report confirms 18.4 tCO2e/yr, 74% water recycling, 75% PCR corrugated content, verified by SGS Mexico under ISO 14064-1."
-        }
-      ],
-      "rank": 1,
-      "rationale": "This is the TOP RECOMMENDATION with full evidence_coverage across all three criteria_verified (compliance_certification via ISO 9001:2015 valid through 2027-12-31, operational_status confirmed by June 2026 capacity email showing 63% utilization and no corridor disruptions, and sustainability_practices documented at 75% PCR content exceeding FreshMart's 60% requirement). While there is no exact_track_record for this supplier, a moderate semantic_precedent on geopolitical_tariff risk provides directional context. Proximity_km of 2090.6 to the LA DC is supported by a 4-day standard transit on the established Guadalajara-Laredo corridor.",
-      "glossary": [
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "compliance_certification",
-          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
-        },
-        {
-          "term": "operational_status",
-          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
-          "term": "exact_track_record",
-          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
-        },
-        {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
-        },
-        {
-          "term": "proximity_km",
-          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
-        }
-      ]
-    },
-    {
-      "supplier_id": "SUP-CDMX-MX",
-      "supplier_name": "Soluciones de Empaque Central S.A.",
-      "location": "Mexico",
-      "category": "packaging_materials",
-      "proximity_km": 2493.3,
-      "evidence_coverage": {
-        "criteria_total": 3,
-        "criteria_verified": 3
-      },
-      "precedent_summary": "moderate_directional",
-      "criteria": [
-        {
-          "criterion": "compliance_certification",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-CDMX-CERT-01-01",
-            "doc_type": "certificate",
-            "source_file": "iso_cert_CDMX_2025.pdf",
-            "page": 1,
-            "excerpt": "ISO 9001:2015 Certificate. Soluciones de Empaque Central S.A., Parque Industrial Vallejo, Avenida Ceylan 880, Azcapotzalco, Ciudad de México 02300, Mexico. Scope: consumer retail packaging. Certificate number: MX-QMS-2025-07001. Valid: 2025-06-01 to 2028-01-31.",
-            "valid_until": "2028-01-31T00:00:00Z"
-          },
-          "note": "Certificate MX-QMS-2025-07001 for consumer retail packaging, valid to 2028-01-31, matches claim."
-        },
-        {
-          "criterion": "operational_status",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-CDMX-EMAIL-04-01",
-            "doc_type": "email",
-            "source_file": "email_CDMX_capacity_2026.eml",
-            "page": 1,
-            "excerpt": "From: operaciones@empaquecentral.com.mx | To: procurement@freshmart.com | Date: 2026-05-22 | Subject: Q3 Availability. Facility at 58% capacity. We can confirm Q3 volumes with 4 weeks lead time. Transit to Monterrey DC is 6 hours, to Laredo crossing 8 hours. No disruptions to CDMX–Monterrey corridor currently.",
-            "valid_until": null
-          },
-          "note": "May 2026 email confirms 58% capacity, 4-week lead time, and no CDMX-Monterrey corridor disruptions."
-        },
-        {
-          "criterion": "sustainability_practices",
-          "status": "compliant",
-          "citation": {
-            "chunk_id": "CHUNK-SDOC-CDMX-SUST-03-01",
-            "doc_type": "sustainability_report",
-            "source_file": "sustainability_audit_CDMX_2025.pdf",
-            "page": 4,
-            "excerpt": "Auditoría de sostenibilidad realizada en septiembre de 2025 bajo la norma ISO 14001. Participación de electricidad renovable: 62% (frente a 48% en el año fiscal 2024). La intensidad de consumo de agua se redujo un 11%. Contenido reciclado en la cadena de suministro de cartón: 68%. En camino de alcanzar la meta de 80% de electricidad renovable para el año fiscal 2027. Auditor: BSI Group México. Cer…",
-            "valid_until": null
-          },
-          "note": "Sept 2025 ISO 14001 audit reports 62% renewable electricity, 11% water reduction, 68% recycled content; cert renewed to 2028-01-31."
+          "note": "Report confirms 18.4 tCO2e/yr, 74% water recycling, ≥75% PCR corrugated content, verified by SGS México under ISO 14064-1."
         }
       ],
       "rank": 2,
-      "rationale": "Soluciones de Empaque Central S.A. is a strong second-place option with full evidence_coverage (criteria_verified 3 of 3) across compliance_certification (ISO 9001:2015 valid to 2028-01-31), operational_status (58% capacity, 4-week lead time, no CDMX-Monterrey corridor disruption as of May 2026), and sustainability_practices (ISO 14001 audit with 62% renewable electricity and 68% recycled content). It also carries a moderate semantic_precedent on geopolitical_tariff risk providing directional context, though no exact_track_record exists for this candidate. It ranks below the top candidate because its proximity_km of 2493.3 is meaningfully farther than the leader's 2090.6 despite matching evidence coverage.",
+      "rationale": "Empaque del Pacifico S.A. de C.V. earns a strong second-place position with full evidence_coverage (3 of 3 criteria_verified) and all three criteria — compliance_certification (ISO 9001:2015 valid through 2027-12-31), operational_status (Q3 2026 capacity confirmed at 63% plant utilization with an undisrupted Guadalajara–Laredo corridor), and sustainability_practices (18.4 tCO2e/yr, 74% water recycling, ≥75% PCR content) — marked compliant with clear citations. A semantic_precedent on climate_disruption adds moderate directional context, though no exact_track_record exists for this supplier specifically. It ranks below the top candidate mainly due to proximity_km of 2090.6 versus the leader's near-zero distance, which materially raises transit exposure despite equally complete evidence.",
       "glossary": [
         {
           "term": "evidence_coverage",
@@ -1121,10 +2150,12 @@
             "doc_type": "certificate",
             "source_file": "iso_cert_MTY_2025.pdf",
             "page": 1,
-            "excerpt": "ISO 9001:2015 Certificate. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, Mexico. Scope: rigid and flexible packaging. Certificate number: MX-QMS-2025-06204. Valid: 2025-03-01 to 2027-05-31.",
-            "valid_until": "2027-05-31T00:00:00Z"
+            "excerpt": "Certificado ISO 9001:2015. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, México. Alcance: empaque rígido y flexible. Número de certificado: MX-QMS-2025-06204. Vigente: 2025-03-01 a 2027-05-31. Emitido por Bureau Veritas México.",
+            "valid_until": "2027-05-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "Certificate MX-QMS-2025-06204 explicitly cited, valid through 2027-05-31, scope matches claim."
+          "note": "Certificate MX-QMS-2025-06204 by Bureau Veritas México, valid until 2027-05-31, scope matches claim."
         },
         {
           "criterion": "operational_status",
@@ -1134,20 +2165,22 @@
             "doc_type": "email",
             "source_file": "email_MTY_capacity_2026.eml",
             "page": 1,
-            "excerpt": "From: ventas@envasesnortenos.com.mx | To: procurement@freshmart.com | Date: 2026-05-05 | Subject: Q3 Capacity Confirmation. Facility operating at 55% capacity. Can accommodate Q3 incremental volume with 3 weeks lead time. No current disruptions to Laredo border crossing. Standard transit to LA DC is 5 business days.",
-            "valid_until": null
+            "excerpt": "De: ventas@envasesnortenos.com.mx | Para: procurement@freshmart.com | Fecha: 2026-05-05 | Asunto: Confirmación de Capacidad Q3. La planta está operando al 55% de su capacidad. Podemos absorber el volumen incremental del Q3 con 3 semanas de plazo de entrega. Sin interrupciones actuales en el cruce fronterizo de Laredo. El tránsito estándar al Centro de Distribución de Los Ángeles es de 5 días hábil…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
           },
-          "note": "Email from supplier confirms 55% utilization, Q3 capacity, and no current disruptions."
+          "note": "May 2026 supplier email confirms 55% capacity, Q3 incremental absorption, no Laredo border disruption."
         },
         {
           "criterion": "sustainability_practices",
           "status": "unknown",
           "citation": null,
-          "note": "No cited chunk addresses environmental or sustainability practices."
+          "note": "No chunk addresses environmental/sustainability commitments; climate-risk audit chunk is BCP, not sustainability."
         }
       ],
       "rank": 3,
-      "rationale": "Envases Norteños S.A. lands at rank 3 with solid own-evidence: two out of three criteria are compliant, including a directly cited compliance_certification (ISO 9001:2015, valid through 2027-05-31) and a supplier-confirmed operational_status showing 55% utilization and no border disruptions. Its proximity_km of 1961 is favorable, and a moderate semantic_precedent on geopolitical_tariff risk provides directional context, though no exact_track_record exists for this candidate. It ranks below the top candidate because its evidence_coverage is weaker, with only 2 of 3 criteria_verified versus full coverage at the top, leaving sustainability_practices unaddressed.",
+      "rationale": "Envases Norteños S.A. shows solid own-evidence: two of three criteria are compliant, with a verified compliance_certification (ISO 9001:2015 valid to 2027-05-31) and confirmed operational_status (55% capacity, no Laredo border disruption as of May 2026). A semantic_precedent on climate_disruption offers moderate directional context, though no exact_track_record exists for this supplier. It ranks below Pacific Coast Packaging Inc. because its evidence_coverage is 2 of 3 (sustainability_practices unknown) versus the top candidate's full criteria_verified, and its proximity_km of 1961 is materially farther.",
       "glossary": [
         {
           "term": "compliance_certification",
@@ -1158,8 +2191,378 @@
           "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
         },
         {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
           "term": "proximity_km",
           "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-WARSAW-PL",
+      "supplier_name": "Polskie Opakowania Sp. z o.o.",
+      "location": "Poland",
+      "category": "packaging_materials",
+      "proximity_km": 9647.6,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "exact_track_record",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-WAR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_Warsaw_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemysłowa 44, 05-092 Łomianki, Masovian Voivodeship, Poland. Scope: packaging materials — rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
+            "valid_until": "2027-03-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert PL-QMS-2025-00912 valid to 2027-03-31, scope matches."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-WAR-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_Warsaw_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 14 — Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Article 14 confirms active FreshMart crate return/tracking arrangement."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited chunk describes sustainability programs or commitments; waste permit is regulatory, not a sustainability initiative."
+        }
+      ],
+      "rank": 4,
+      "rationale": "Polskie Opakowania Sp. z o.o. shows solid grounding on its own merits: two of three criteria are compliant, with a valid ISO 9001:2015 compliance_certification (PL-QMS-2025-00912, valid to 2027-03-31) and confirmed operational_status via the FreshMart crate return and tracking clause in the framework contract. Precedent is encouraging, with an exact_track_record from MEM-20250616-LAUS-R (approved and successful, good proposal quality) plus a moderate semantic_precedent on climate_disruption risk. It ranks below Pacific Coast Packaging Inc. because that top candidate has full evidence_coverage (3 of 3 criteria_verified versus 2 of 3 here), sustainability_practices remains unknown, and its proximity_km of 9647.6 is far greater than the top candidate's local footprint.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-BARCELONA-ES",
+      "supplier_name": "Envases Mediterráneos S.L.",
+      "location": "Spain",
+      "category": "packaging_materials",
+      "proximity_km": 9664.8,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 1
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-BAR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_ggap_cert_BCN_2025.pdf",
+            "page": 1,
+            "excerpt": "Doble Certificación. Envases Mediterráneos S.L., Polígono Industrial Can Roqueta, Carrer dels Emprenedors 22, 08202 Sabadell, Cataluña, España. (1) ISO 9001:2015 — Alcance: envases de grado alimentario y distribución de producto fresco. Vigente hasta 2027-09-30. (2) GLOBALG.A.P. CoC Cadena de Custodia — para el cumplimiento de envasado de producto fresco, número de certificado GGAP-ES-COC-2025-004…",
+            "valid_until": "2026-12-31T00:00:00Z",
+            "language": "es-ES",
+            "excerpt_language": "es-ES"
+          },
+          "note": "Chunk explicitly states both certifications, issuer, and validity dates; not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk confirms active operational standing (no recent PO, execution date, or correspondence)."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No chunk addresses environmental/sustainability commitments; EU food-contact compliance article is regulatory, not sustainability."
+        }
+      ],
+      "rank": 5,
+      "rationale": "Envases Mediterráneos S.L. shows one compliant criterion (compliance_certification) backed by a clear ISO 9001 and GLOBALG.A.P. certificate valid through 2027, and a moderate semantic_precedent on climate_disruption offers directional context. However, evidence_coverage is thin at only 1 of 3 criteria_verified, with operational_status and sustainability_practices unconfirmed, and there is no exact_track_record for this supplier. It ranks below the top candidate because that option has full evidence_coverage across all three criteria and effectively zero proximity_km, whereas this supplier sits roughly 9,665 km away with two unknown criteria.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    }
+  ],
+  "discarded_candidates": [],
+  "approved_supplier_id": null,
+  "decision_deadline": null,
+  "created_at": "2026-08-14T10:16:31.022981+00:00"
+},
+{
+  "_id": {
+    "$oid": "6a7eee2f7ff9d57991d0a90e"
+  },
+  "evaluation_id_ref": "EVAL-b0ce5cd5-OU-112-1786702773",
+  "session_id": "b0ce5cd5-de5d-43fc-aa06-3fed60cf0c96",
+  "blocked_supplier_id": "SUP-GUANGZHOU-112",
+  "is_base": false,
+  "is_demo_trigger": false,
+  "status": "pending_approval",
+  "risk_types": [
+    "geopolitical_tariff"
+  ],
+  "reference_point": {
+    "name": "FreshMart Los Angeles DC (assumed)",
+    "coordinates": [
+      -118.2437,
+      34.0522
+    ],
+    "assumed": true
+  },
+  "candidates_evaluated": 5,
+  "candidates_discarded": 0,
+  "candidates": [
+    {
+      "supplier_id": "SUP-GUADALAJARA-MX",
+      "supplier_name": "Empaque del Pacifico S.A. de C.V.",
+      "location": "Mexico",
+      "category": "packaging_materials",
+      "proximity_km": 2090.6,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 3
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-GDL-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_GDL_2024.pdf",
+            "page": 1,
+            "excerpt": "Certificado ISO 9001:2015. Empaque del Pacífico S.A. de C.V., Carretera Guadalajara–Zapotlanejo Km 12, El Salto, Jalisco 45694, México. Alcance: materiales de empaque, incluyendo grado alimenticio e industrial. Número de certificado: MX-QMS-2024-05531. Vigencia: del 2024-10-01 al 2027-12-31. Emitido por Bureau Veritas México.",
+            "valid_until": "2027-12-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "ISO 9001:2015 cert MX-QMS-2024-05531 by Bureau Veritas Mexico, valid 2024-10-01 to 2027-12-31, scope covers food-grade and industrial packaging materials — matches claim exactly."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-GDL-EMAIL-05-01",
+            "doc_type": "email",
+            "source_file": "email_GDL_capacity_Jun2026.eml",
+            "page": 1,
+            "excerpt": "De: ventas@empaquepacifico.com.mx | Para: procurement@freshmart.com | Fecha: 2026-06-02 | Asunto: Disponibilidad de Capacidad Q3 2026. Confirmamos disponibilidad para el volumen incremental del Q3 con 3 semanas de plazo de entrega. La utilización actual de la planta es del 63%. Sin interrupciones en nuestro corredor logístico Guadalajara–Laredo. El tránsito estándar al Centro de Distribución de Lo…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "June 2026 email confirms Q3 2026 capacity availability, 63% plant utilization, and stable Guadalajara–Laredo corridor as claimed."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-GDL-SUST-04-01",
+            "doc_type": "sustainability_report",
+            "source_file": "sustainability_audit_GDL_2025.pdf",
+            "page": 7,
+            "excerpt": "Emisiones de carbono: 18.4 tCO2e por año (Alcance 1+2). Tasa de reciclaje de agua: 74%. El cartón corrugado utiliza un mínimo de 75% de contenido reciclado posconsumo, superando el requisito del 60% establecido por FreshMart. Los certificados de las papeleras Cartones Ponderosa y PAPSA confirman el contenido de fibra reciclada por lote. La documentación de cadena de custodia se mantiene a nivel de…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Sustainability report confirms 18.4 tCO2e/yr Scope 1+2, 74% water recycling, ≥75% PCR content in corrugated, verified by SGS Mexico under ISO 14064-1."
+        }
+      ],
+      "rank": 1,
+      "rationale": "Top recommendation for this sourcing decision. All three evaluated criteria (compliance_certification, operational_status, sustainability_practices) came back compliant, giving full evidence_coverage (3 of 3 criteria_verified) grounded in dated primary documents: a Bureau Veritas ISO 9001:2015 certificate valid through 2027-12-31, a June 2026 email confirming Q3 capacity at 63% plant utilization on a stable Guadalajara-Laredo corridor, and a 2025 sustainability audit showing 75%+ post-consumer recycled content. While there is no exact_track_record with this supplier, a moderate semantic_precedent (MEM-20260218-TW204-E) on the same geopolitical_tariff risk_type provides directional context, and the 2090.6 proximity_km is acceptable given the confirmed logistics lane.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
+      "supplier_id": "SUP-MONTERREY-MX",
+      "supplier_name": "Envases Norteños S.A.",
+      "location": "Mexico",
+      "category": "packaging_materials",
+      "proximity_km": 1961,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "moderate_directional",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-MTY-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_MTY_2025.pdf",
+            "page": 1,
+            "excerpt": "Certificado ISO 9001:2015. Envases Norteños S.A., Parque Industrial Apodaca, Carretera Miguel Alemán Km 21, Apodaca, Nuevo León 66636, México. Alcance: empaque rígido y flexible. Número de certificado: MX-QMS-2025-06204. Vigente: 2025-03-01 a 2027-05-31. Emitido por Bureau Veritas México.",
+            "valid_until": "2027-05-31T00:00:00Z",
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "Certificate MX-QMS-2025-06204 by Bureau Veritas México, valid through 2027-05-31, not expired."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-MTY-EMAIL-04-01",
+            "doc_type": "email",
+            "source_file": "email_MTY_capacity_2026.eml",
+            "page": 1,
+            "excerpt": "De: ventas@envasesnortenos.com.mx | Para: procurement@freshmart.com | Fecha: 2026-05-05 | Asunto: Confirmación de Capacidad Q3. La planta está operando al 55% de su capacidad. Podemos absorber el volumen incremental del Q3 con 3 semanas de plazo de entrega. Sin interrupciones actuales en el cruce fronterizo de Laredo. El tránsito estándar al Centro de Distribución de Los Ángeles es de 5 días hábil…",
+            "valid_until": null,
+            "language": "es-MX",
+            "excerpt_language": "es-MX"
+          },
+          "note": "May 2026 email confirms 55% capacity and ability to absorb Q3 incremental volume with 3-week lead time."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited or available chunk addresses environmental/sustainability commitments."
+        }
+      ],
+      "rank": 2,
+      "rationale": "Envases Norteños S.A. ranks #2 with two compliant criteria: compliance_certification is confirmed via ISO 9001:2015 certificate MX-QMS-2025-06204 (Bureau Veritas México, valid through 2027-05-31), and operational_status is supported by a May 2026 email confirming 55% capacity utilization and ability to absorb Q3 incremental volume with a 3-week lead time. A moderate semantic_precedent (MEM-20260218-TW204-E) provides directional cross-supplier context on geopolitical_tariff risk, though no exact_track_record exists for this candidate. It ranks below Empaque del Pacifico S.A. de C.V. because its evidence_coverage is 2 of 3 criteria_verified versus the top candidate's full 3-of-3 coverage, leaving sustainability_practices unverified.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
         },
         {
           "term": "semantic_precedent",
@@ -1184,6 +2587,92 @@
       ]
     },
     {
+      "supplier_id": "SUP-WARSAW-PL",
+      "supplier_name": "Polskie Opakowania Sp. z o.o.",
+      "location": "Poland",
+      "category": "packaging_materials",
+      "proximity_km": 9647.6,
+      "evidence_coverage": {
+        "criteria_total": 3,
+        "criteria_verified": 2
+      },
+      "precedent_summary": "exact_track_record",
+      "criteria": [
+        {
+          "criterion": "compliance_certification",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-WAR-CERT-01-01",
+            "doc_type": "certificate",
+            "source_file": "iso_cert_Warsaw_2025.pdf",
+            "page": 1,
+            "excerpt": "ISO 9001:2015 Certificate. Polskie Opakowania Sp. z o.o., Ul. Przemysłowa 44, 05-092 Łomianki, Masovian Voivodeship, Poland. Scope: packaging materials — rigid and flexible. Certificate number: PL-QMS-2025-00912. Valid: 2025-03-01 to 2027-03-31.",
+            "valid_until": "2027-03-31T00:00:00Z",
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "ISO 9001:2015 cert PL-QMS-2025-00912 valid to 2027-03-31, scope matches."
+        },
+        {
+          "criterion": "operational_status",
+          "status": "compliant",
+          "citation": {
+            "chunk_id": "CHUNK-SDOC-WAR-CTR-02-01",
+            "doc_type": "contract",
+            "source_file": "contrato_marco_Warsaw_2025.pdf",
+            "page": 3,
+            "excerpt": "Article 14 — Reusable Packaging Return and Tracking. FreshMart shall return all reusable plastic crates within 45 days of delivery. The Supplier maintains a crate tracking system capable of identifying location and status of all units in circulation within 24 hours of enquiry. Replacement charge of EUR 18.50 per crate applies for units not returned within 60 days.",
+            "valid_until": null,
+            "language": "en",
+            "excerpt_language": "en"
+          },
+          "note": "Article 14 and 24-hour crate tracking system explicitly stated."
+        },
+        {
+          "criterion": "sustainability_practices",
+          "status": "unknown",
+          "citation": null,
+          "note": "No cited or available chunk describes sustainability commitments or reporting."
+        }
+      ],
+      "rank": 3,
+      "rationale": "Polskie Opakowania Sp. z o.o. holds two compliant criteria: a valid compliance_certification (ISO 9001:2015, valid to 2027-03-31, scope matches packaging) and confirmed operational_status via Article 14 of its framework contract, including a 24-hour crate tracking system. It also carries a supportive exact_track_record (MEM-20250616-LAUS-R, approved and successful) plus a moderate semantic_precedent on the same risk type, giving reasonable confidence in the candidate itself. It ranks below the top candidate because its evidence_coverage is weaker (criteria_verified 2 of 3, with sustainability_practices unknown) and its proximity_km of 9647.6 is substantially farther than the leader's.",
+      "glossary": [
+        {
+          "term": "compliance_certification",
+          "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
+        },
+        {
+          "term": "operational_status",
+          "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "exact_track_record",
+          "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
+        },
+        {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
+        },
+        {
+          "term": "proximity_km",
+          "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
+        }
+      ]
+    },
+    {
       "supplier_id": "SUP-VN-317",
       "supplier_name": "Binh Duong Paper & Packaging Co.",
       "location": "Vietnam",
@@ -1203,10 +2692,12 @@
             "doc_type": "certificate",
             "source_file": "iso_cert_VN317_2024.pdf",
             "page": 1,
-            "excerpt": "ISO 9001:2015 Certificate. Binh Duong Paper & Packaging Co., My Phuoc Industrial Zone 3, Ben Cat, Binh Duong Province, Vietnam. Scope: corrugated and folding carton packaging. Certificate number: VN-QMS-2024-01147. Valid: 2024-11-01 to 2027-11-30.",
-            "valid_until": "2027-11-30T00:00:00Z"
+            "excerpt": "Chứng nhận ISO 9001:2015. Công ty Giấy và Bao Bì Bình Dương (Binh Duong Paper & Packaging Co.), Khu Công nghiệp Mỹ Phước 3, Bến Cát, Tỉnh Bình Dương, Việt Nam. Phạm vi: bao bì carton gấp và bao bì sóng. Số chứng nhận: VN-QMS-2024-01147. Hiệu lực: từ 2024-11-01 đến 2027-11-30. Được cấp bởi SGS Việt Nam.",
+            "valid_until": "2027-11-30T00:00:00Z",
+            "language": "vi",
+            "excerpt_language": "vi"
           },
-          "note": "ISO 9001:2015 cert VN-QMS-2024-01147 valid through 2027-11-30, scope matches packaging."
+          "note": "Certificate VN-QMS-2024-01147 by SGS Vietnam, valid 2024-11-01 to 2027-11-30, scope covers folding carton and corrugated packaging; not expired."
         },
         {
           "criterion": "operational_status",
@@ -1216,29 +2707,23 @@
             "doc_type": "email",
             "source_file": "email_VN317_capacity_2026.eml",
             "page": 1,
-            "excerpt": "From: sales@binhduongpaper.vn | To: procurement@freshmart.com | Date: 2026-04-20 | Subject: Q2–Q3 Capacity Confirmation. Facility operating at 62% capacity. Can accommodate incremental FreshMart volume with 4 weeks lead time. Standard transit via Cat Lai port to US West Coast is 22–25 days. No current port disruptions at Ho Chi Minh City terminals.",
-            "valid_until": null
+            "excerpt": "Từ: sales@binhduongpaper.vn | Đến: procurement@freshmart.com | Ngày: 2026-04-20 | Chủ đề: Xác Nhận Công Suất Q2–Q3. Nhà máy đang hoạt động ở mức 62% công suất. Có thể tiếp nhận khối lượng tăng thêm của FreshMart với thời gian chuẩn bị 4 tuần. Thời gian vận chuyển tiêu chuẩn qua cảng Cát Lái đến bờ Tây Hoa Kỳ là 22–25 ngày. Hiện không có gián đoạn nào tại các cảng Thành phố Hồ Chí Minh.",
+            "valid_until": null,
+            "language": "vi",
+            "excerpt_language": "vi"
           },
-          "note": "April 2026 email confirms 62% capacity, incremental volume accepted at 4-week lead time."
+          "note": "Supplier email dated 2026-04-20 confirms 62% capacity utilization, ability to absorb FreshMart volume with 4-week lead time via Cat Lai port, no port disruptions."
         },
         {
           "criterion": "sustainability_practices",
           "status": "unknown",
           "citation": null,
-          "note": "No provided chunk addresses environmental or sustainability practices."
+          "note": "No provided chunk addresses environmental or sustainability commitments."
         }
       ],
       "rank": 4,
-      "rationale": "Binh Duong Paper & Packaging Co. shows solid but partial support: evidence_coverage is 2 of 3 criteria_verified, with compliance_certification confirmed via a valid ISO 9001:2015 certificate through 2027-11-30 and operational_status confirmed by an April 2026 email citing 62% capacity and a 4-week lead time. There is no exact_track_record for this supplier, though a moderate semantic_precedent on geopolitical_tariff risk offers directional context only. It ranks below the top candidate because it has fewer criteria_verified (sustainability_practices is unverified) and a far larger proximity_km (13131.5 vs 2090.6), making its overall evidence_coverage and logistics profile weaker.",
+      "rationale": "Binh Duong Paper & Packaging Co. shows solid standalone evidence: compliance_certification is compliant via SGS Vietnam ISO 9001:2015 (VN-QMS-2024-01147, valid through 2027-11-30) and operational_status is compliant per a 2026-04-20 supplier email confirming 62% capacity utilization and a 4-week lead time via Cat Lai port. A semantic_precedent (MEM-20260218-TW204-E) offers moderate directional context on geopolitical_tariff risk, though no exact_track_record exists for this candidate. It ranks below the top candidate because its evidence_coverage is only 2 of 3 criteria_verified (sustainability_practices unknown) and its proximity_km of 13131.5 is materially farther than the leader's 2090.6.",
       "glossary": [
-        {
-          "term": "evidence_coverage",
-          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
-        },
-        {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
         {
           "term": "compliance_certification",
           "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
@@ -1248,12 +2733,20 @@
           "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
         },
         {
+          "term": "semantic_precedent",
+          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+        },
+        {
           "term": "exact_track_record",
           "definition": "A documented past case with this exact alternative supplier, under this exact type of risk."
         },
         {
-          "term": "semantic_precedent",
-          "definition": "How similar situations played out elsewhere — a different supplier, a different region — used when there's no exact past case for this supplier."
+          "term": "evidence_coverage",
+          "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
+        },
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
         },
         {
           "term": "sustainability_practices",
@@ -1286,9 +2779,11 @@
             "source_file": "iso_cert_VN204_2025.pdf",
             "page": 1,
             "excerpt": "Chứng nhận ISO 9001:2015. Công ty Bao bì Hồ Chí Minh (Ho Chi Minh Packaging Corp.), Khu Công nghiệp Bình Tân, Thành phố Hồ Chí Minh, Việt Nam. Phạm vi: vật liệu bao bì, bao gồm loại dùng cho thực phẩm. Số chứng nhận: VN-QMS-2025-00892. Hiệu lực đến ngày 2027-08-15. Được cấp bởi Công ty TNHH TÜV Rheinland Việt Nam.",
-            "valid_until": "2027-08-15T00:00:00Z"
+            "valid_until": "2027-08-15T00:00:00Z",
+            "language": "vi",
+            "excerpt_language": "vi"
           },
-          "note": "Certificate text confirms ISO 9001:2015 VN-QMS-2025-00892 by TÜV Rheinland Vietnam, food-grade packaging scope, valid until 2027-08-15."
+          "note": "Vietnamese-language cert text explicitly states ISO 9001:2015, No. VN-QMS-2025-00892, issued by TÜV Rheinland Vietnam, valid until 2027-08-15, scope includes food-grade packaging materials."
         },
         {
           "criterion": "operational_status",
@@ -1298,21 +2793,27 @@
             "doc_type": "email",
             "source_file": "email_VN204_tradepolicy_May2026.eml",
             "page": 1,
-            "excerpt": "From: export@hcmpackagingcorp.vn | To: procurement@freshmart.com | Date: 2026-05-08 | Subject: Trade Policy Update. Our legal team advises that packaging materials classified under HS Chapter 39 are under review in the ongoing USTR Section 301 investigation. We recommend ensuring purchase orders requiring US delivery before a potential tariff effective date be submitted and confirmed as soon as po…",
-            "valid_until": null
+            "excerpt": "Từ: export@hcmpackagingcorp.vn | Đến: procurement@freshmart.com | Ngày: 2026-05-08 | Chủ đề: Cập Nhật Chính Sách Thương Mại. Bộ phận pháp lý của chúng tôi khuyến nghị rằng vật liệu bao bì thuộc Chương HS 39 đang được xem xét trong cuộc điều tra Mục 301 của USTR. Chúng tôi khuyến nghị đảm bảo các đơn đặt hàng yêu cầu giao hàng tại Hoa Kỳ trước ngày thuế quan có hiệu lực tiềm năng được gửi và xác nh…",
+            "valid_until": null,
+            "language": "vi",
+            "excerpt_language": "vi"
           },
-          "note": "May 2026 email to FreshMart procurement references active POs and ongoing supply relationship, evidencing operational activity."
+          "note": "Email dated 2026-05-08 from export@hcmpackagingcorp.vn to FreshMart procurement re: trade policy update confirms active commercial operations."
         },
         {
           "criterion": "sustainability_practices",
           "status": "unknown",
           "citation": null,
-          "note": "No cited chunk addresses environmental/sustainability practices."
+          "note": "No chunk addresses environmental or sustainability commitments; additional chunks cover tariff/trade compliance only."
         }
       ],
       "rank": 5,
-      "rationale": "Ho Chi Minh Packaging Corp. presents solid documentation on two of three criteria, with compliance_certification confirmed via a valid ISO 9001:2015 certificate through 2027-08-15 and operational_status supported by recent 2026 correspondence showing active purchase orders. A semantic_precedent from a related Vietnam supplier provides moderate directional context on geopolitical_tariff exposure, though no exact_track_record exists for this candidate specifically. It ranks below Empaque del Pacifico because its evidence_coverage is only 2 of 3 criteria_verified with sustainability_practices unaddressed, and its proximity_km of 13150.7 is substantially farther than the top candidate.",
+      "rationale": "Ho Chi Minh Packaging Corp. lands at rank 5 with 2 of 3 criteria_verified: compliance_certification is confirmed via ISO 9001:2015 (VN-QMS-2025-00892, valid through 2027-08-15) and operational_status is supported by a May 2026 trade-policy email, but sustainability_practices remains unknown with no citation. Precedent is limited to a moderate semantic_precedent on geopolitical_tariff risk from another supplier, with no exact_track_record for this candidate. It ranks below Empaque del Pacifico S.A. de C.V. because that top candidate has full evidence_coverage across all three criteria and a far shorter proximity_km (2,090.6 vs 13,150.7), whereas this candidate carries an unverified criterion and sits over 13,000 km away.",
       "glossary": [
+        {
+          "term": "criteria_verified",
+          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
+        },
         {
           "term": "compliance_certification",
           "definition": "Whether the supplier's required certifications and paperwork are on file and currently valid."
@@ -1320,6 +2821,10 @@
         {
           "term": "operational_status",
           "definition": "Whether the supplier has real, available capacity right now and no active disruption — the current situation, not just what's on paper."
+        },
+        {
+          "term": "sustainability_practices",
+          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
         },
         {
           "term": "semantic_precedent",
@@ -1334,14 +2839,6 @@
           "definition": "How many of the required checks for this supplier were actually backed by a real document, versus left unconfirmed."
         },
         {
-          "term": "criteria_verified",
-          "definition": "The number of required checks that were actually confirmed with a real document, out of the total checked."
-        },
-        {
-          "term": "sustainability_practices",
-          "definition": "Whether the supplier meets the required environmental and ethical sourcing standards on file."
-        },
-        {
           "term": "proximity_km",
           "definition": "How close the supplier is to where the product needs to be delivered — used to choose between already-valid candidates, never to disqualify one."
         }
@@ -1351,5 +2848,5 @@
   "discarded_candidates": [],
   "approved_supplier_id": null,
   "decision_deadline": null,
-  "created_at": "2026-08-11T12:54:23.692745+00:00"
+  "created_at": "2026-08-14T10:30:07.094762+00:00"
 }]
