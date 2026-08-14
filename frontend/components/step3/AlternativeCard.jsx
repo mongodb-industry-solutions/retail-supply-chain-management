@@ -15,6 +15,7 @@ import ReadMore from "../shared/ReadMore";
 import CitationEvidence from "./CitationEvidence";
 import WhyMongoDB from "../shared/WhyMongoDB";
 import { getGlossaryDefinition } from "@/lib/const/glossary";
+import { languageName } from "@/utils/languageNames";
 
 function RRFBar({ textScore, vectorScore }) {
   const total = textScore + vectorScore;
@@ -97,7 +98,42 @@ function ExtBadge({ ext }) {
   );
 }
 
-function EvidenceHeader({ passed, title, exts, definition = null }) {
+/**
+ * Names the language of the cited evidence, next to the file-type pill.
+ *
+ * Two tags, not one: `language` is the source document's, `excerpt_language` the quoted
+ * text's. They are equal today (the excerpt is a verbatim slice of the chunk), so we show a
+ * single name; if an excerpt ever gets translated or summarised they diverge, and we show
+ * both rather than letting one stand in for the other.
+ *
+ * Renders nothing when no tag is present — citations persisted before the citation contract
+ * carried `language` have none, and those cards must look unchanged rather than gain an
+ * "Unknown" pill.
+ */
+function LangBadge({ citation }) {
+  const docLang = languageName(citation?.language);
+  const excerptLang = languageName(citation?.excerpt_language);
+  if (!docLang && !excerptLang) return null;
+
+  const differ = docLang && excerptLang && docLang !== excerptLang;
+  const label = differ ? `${docLang} → ${excerptLang}` : docLang ?? excerptLang;
+  const description = differ
+    ? `Source document in ${docLang}; quoted excerpt in ${excerptLang}`
+    : `Source document and quoted excerpt in ${label}`;
+
+  return (
+    <Badge
+      className="d-flex me-2"
+      variant="lightgray"
+      aria-label={description}
+      title={description}
+    >
+      {label}
+    </Badge>
+  );
+}
+
+function EvidenceHeader({ passed, title, exts, definition = null, citation = null }) {
   return (
     <div className="d-flex align-items-center gap-2" style={{ minWidth: 0 }}>
       <Icon
@@ -128,6 +164,7 @@ function EvidenceHeader({ passed, title, exts, definition = null }) {
         {exts.map((ext) => (
           <ExtBadge key={ext} ext={ext} />
         ))}
+        <LangBadge citation={citation} />
       </div>
     </div>
   );
@@ -252,6 +289,7 @@ export default function AlternativeCard({ supplier, isFirst, onEscalate }) {
                         ]
                       : []
                   }
+                  citation={criteria?.citation}
                 />
               </Accordion.Header>
               <Accordion.Body>

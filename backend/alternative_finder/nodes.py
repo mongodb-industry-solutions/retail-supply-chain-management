@@ -97,7 +97,8 @@ _MEMORY_VECTOR_INDEX = "agent_memory_autoembed_index"
 # `page_ref` (not `page`), and no `excerpt` field at all (the citable text is `chunk_text`).
 # We keep the contract's OUTPUT key names but populate them from these real fields — an
 # explicit, documented mapping, not a silent rename. `valid_until`/`chunk_id`/`doc_type`
-# exist as-named.
+# exist as-named, as does `language` (BCP-47), which passes through unrenamed and is also
+# copied to `excerpt_language` — see `_build_citation` for why those are two fields.
 _CITATION_FIELD_MAP = {"source_file": "filename", "page": "page_ref"}  # excerpt <- chunk_text (sliced)
 _EXCERPT_MAX_CHARS = 400
 
@@ -890,9 +891,16 @@ def _build_citation(chunk: dict) -> dict:
     The contract keys ``source_file`` / ``page`` / ``excerpt`` have no same-named field in
     the live collection; they are populated from the real fields ``filename`` / ``page_ref``
     / ``chunk_text`` (sliced) per ``_CITATION_FIELD_MAP``. ``chunk_id`` / ``doc_type`` /
-    ``valid_until`` exist as-named. This mapping is explicit and reported, not silent.
+    ``valid_until`` / ``language`` exist as-named. This mapping is explicit and reported,
+    not silent.
+
+    ``language`` and ``excerpt_language`` are both the chunk's BCP-47 tag today, and are kept
+    as two fields on purpose: ``language`` describes the source document, ``excerpt_language``
+    the text actually quoted in ``excerpt``. They diverge the moment an excerpt is translated
+    or summarised, and a consumer that conflates them would then mislabel the quote.
     """
     text = chunk.get("chunk_text", "") or ""
+    language = chunk.get("language")
     return {
         "chunk_id": chunk.get("chunk_id"),
         "doc_type": chunk.get("doc_type"),
@@ -900,12 +908,19 @@ def _build_citation(chunk: dict) -> dict:
         "page": chunk.get("page_ref"),
         "excerpt": text[:_EXCERPT_MAX_CHARS] + ("…" if len(text) > _EXCERPT_MAX_CHARS else ""),
         "valid_until": chunk.get("valid_until"),
+        "language": language,
+        # excerpt is a verbatim slice of chunk_text, so it is in the document's language.
+        "excerpt_language": language,
     }
 
 
 _CHUNK_PROJECTION = {
     "_id": 0, "chunk_id": 1, "doc_type": 1, "chunk_text": 1,
     "filename": 1, "page_ref": 1, "valid_until": 1, "supplier_id": 1,
+    # `language` rides along here so the citation can name the language it quotes without a
+    # second query: this is the only projection that feeds `_build_citation` (the Layer-1
+    # funnel projections stop at chunk_id/supplier_id/doc_type and never reach it).
+    "language": 1,
 }
 
 

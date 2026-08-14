@@ -212,8 +212,58 @@ the metric you actually care about (citation/retrieval rate against real
 queries), not its nearest cheap proxy (corpus composition), before
 declaring success.
 
+### 8. The citation names the language it quotes: `language` + `excerpt_language`
+
+Until now the persisted `citation` carried no language field. The stated
+rationale (recorded in `docs/setup/collections/README.md`, which cited
+this ADR for it — a cross-reference to a decision that had never actually
+been written down here) was that the excerpt is a verbatim slice of
+`chunk_text`, so the frontend can infer what it needs from the text
+itself via `dir="auto"`.
+
+That reasoning holds for **text direction** and fails for **naming the
+language**. `dir="auto"` distinguishes RTL from LTR; it cannot tell a
+reviewer that a certificate is in Spanish (Mexico) rather than Spanish
+(Colombia), and it cannot distinguish Simplified from Traditional
+Chinese at all. A reviewer approving evidence they cannot read has a
+legitimate need to know *which* language they cannot read — that is
+provenance, not presentation.
+
+So `_build_citation` now emits two BCP-47 fields:
+
+- `language` — the language of the source document.
+- `excerpt_language` — the language of the text actually in `excerpt`.
+
+They are equal today and are still kept separate. The excerpt is
+currently a verbatim slice, but the moment one is translated or
+summarised for display the two diverge, and a single field would then
+mislabel the quote as being in the source's language. Splitting them now
+costs one dictionary key; retrofitting the distinction later would mean
+migrating persisted documents.
+
+**This costs no extra query.** `language` was already on every chunk
+(Decision 4) and the citation is built from a chunk dict that
+`reflect_critique_node` already holds in `chunk_map` — the field was
+absent only because `_CHUNK_PROJECTION` did not request it. Widening that
+projection by one key was the entire data-access change; no `$lookup`, no
+per-`chunk_id` fetch. This matters because `chunk_id` is not indexed on
+`supplier_documents`, so any join-after-the-fact approach would have been
+a collection scan per citation.
+
+**Existing persisted documents are not migrated.** The curated example
+runs in the `supplier_alternatives` seed predate this change and their
+citations have no language tags. They are left exactly as they are, as a
+reference for the pre-change shape. Consumers must therefore treat both
+fields as optional: the frontend renders no language badge at all when
+they are absent, rather than displaying "Unknown" — an absent tag on a
+historical document is not a data-quality signal and must not look like
+one.
+
 ## Consequences
 
+- The persisted `citation` shape gained two optional BCP-47 fields
+  (`language`, `excerpt_language`); the four curated seed runs predate
+  them and remain untagged, so every consumer degrades silently.
 - Corpus-wide non-English share: 12/146 (8.2%, original rollout) →
   58/146 (39.7%, after closing gaps + Decision 5) → 70/158 (44.3%, after
   adding the 12 local permits).
