@@ -54,6 +54,10 @@ function buildBlocks(rawSteps) {
           startTs && step.ts ? (step.ts - startTs) / 1000 : null;
         group = null;
         blocks.push({ kind: "tool_end", log: step, duration });
+      } else if (step.kind === "error") {
+        // Surface errors as their own block, never buried inside an open group
+        group = null;
+        blocks.push({ kind: "error", log: step });
       } else if (step.kind === "agent_response") {
         const duration = firstTs && step.ts ? (step.ts - firstTs) / 1000 : null;
         group = null;
@@ -96,6 +100,11 @@ function buildBlocks(rawSteps) {
       case "candidate_audited":
       case "shortlist_ready":
         blocks.push({ kind: step.kind, log: step });
+        break;
+      case "error":
+        // Close any pending tool call so the error isn't swallowed with it
+        bTool = null;
+        blocks.push({ kind: "error", log: step });
         break;
       default:
         blocks.push({ kind: "orphan", log: step });
@@ -181,6 +190,41 @@ function LayerCompletedBlock({ log }) {
         label={log.summary ?? "Layer completed"}
         time={log.time}
       />
+    </div>
+  );
+}
+
+function ErrorBlock({ log }) {
+  const recoverable = log.recoverable === true;
+  return (
+    <div
+      style={{
+        ...cardBase,
+        background: palette.red.light3,
+        borderLeft: `3px solid ${recoverable ? palette.yellow.dark2 : palette.red.base}`,
+      }}
+    >
+      <RowHeader
+        glyph="Warning"
+        accent={recoverable ? palette.yellow.dark2 : palette.red.base}
+        label={recoverable ? "Recoverable error" : "Error — run aborted"}
+        time={log.time}
+      />
+      {log.message && (
+        <div
+          style={{
+            fontFamily: "var(--font-geist-mono, monospace)",
+            fontSize: 12,
+            lineHeight: 1.5,
+            color: palette.red.dark2,
+            marginTop: 6,
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
+          {log.message}
+        </div>
+      )}
     </div>
   );
 }
@@ -335,7 +379,11 @@ function Citation({ citation }) {
         {citation.page ? ` · p.${citation.page}` : ""}
         {citation.chunk_id ? ` · ${citation.chunk_id}` : ""}
       </div>
-      <div style={{ marginTop: 4, fontStyle: "italic" }}>
+      {/* dir="auto" so an excerpt in an RTL script reads and aligns correctly.
+          No fontStyle: "italic" here on purpose — scripts like Arabic have no italic form,
+          so the browser synthesises a slanted oblique that deforms the glyphs and breaks
+          ligatures. The quotation marks already mark this as quoted text. */}
+      <div dir="auto" style={{ marginTop: 4 }}>
         “{citation.excerpt}”
       </div>
       {citation.valid_until && (
@@ -679,6 +727,8 @@ function renderBlock(block, key) {
       return <CandidateAuditedBlock key={key} log={block.log} />;
     case "shortlist_ready":
       return <ShortlistCard key={key} log={block.log} />;
+    case "error":
+      return <ErrorBlock key={key} log={block.log} />;
     default:
       return null;
   }

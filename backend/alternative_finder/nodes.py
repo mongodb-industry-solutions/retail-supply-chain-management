@@ -29,6 +29,9 @@ import json
 import logging
 from datetime import datetime, timezone
 
+import httpx
+from pymongo.errors import OperationFailure
+
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
@@ -55,8 +58,26 @@ _DOC_TYPES = ["audit_report", "certificate", "contract", "email", "sustainabilit
 _DOCS_VECTOR_INDEX = "supplier_documents_vector_index"      # autoEmbed voyage-4 on auto_embed_text; filters supplier_id, doc_type
 _DOCS_FULLTEXT_INDEX = "supplier_documents_fulltext_index"  # $search on chunk_text (lucene.standard)
 # Native Voyage reranker — requires the "Native Reranking" Atlas project setting ON and a
-# project-level Voyage Model API key (both enabled 2026-07-07). Model confirmed available.
+# project-level Voyage Model API key.
+# Native $rerank rollout can vary by environment/cluster at any given time — this is expected
+# for a Preview feature. This fallback chain (native -> external Voyage API -> fused order)
+# keeps the pipeline resilient regardless of whether native $rerank is available here right
+# now. See ADR-007.
 _RERANK_MODEL = "rerank-2.5"
+# The ONE server error that means "this deployment does not implement $rerank". Only this exact
+# code triggers the tier-2 fallback; any other OperationFailure (bad path, missing field,
+# auth, timeout) is a real bug or a real outage and is deliberately allowed to propagate.
+_RERANK_UNSUPPORTED_CODE = 40324
+# Tier-2 external reranker: Voyage AI's public rerank endpoint. Same model as the native
+# stage, so tier 1 and tier 2 produce comparable orderings. The API key is read from
+# settings at call time and is NEVER logged, echoed, or persisted.
+_VOYAGE_RERANK_URL = "https://api.voyageai.com/v1/rerank"
+_VOYAGE_RERANK_TIMEOUT_S = 10.0
+# Which tier actually produced the ordering, surfaced in logs and in the $rerank
+# atlas_operation event so a run is never silently un-reranked.
+_RERANK_MODE_NATIVE = "native_in_database"
+_RERANK_MODE_EXTERNAL = "external_voyage_api"
+_RERANK_MODE_NONE = "none_fused_order"
 # rankFusion weights: semantic profile match matters more than lexical overlap for sourcing.
 _FUSION_WEIGHTS = {"vector": 0.7, "text": 0.3}
 _FUSION_LIMIT = 50          # chunks kept from each search arm / fused output (README's "top 50")
@@ -76,7 +97,8 @@ _MEMORY_VECTOR_INDEX = "agent_memory_autoembed_index"
 # `page_ref` (not `page`), and no `excerpt` field at all (the citable text is `chunk_text`).
 # We keep the contract's OUTPUT key names but populate them from these real fields — an
 # explicit, documented mapping, not a silent rename. `valid_until`/`chunk_id`/`doc_type`
-# exist as-named.
+# exist as-named, as does `language` (BCP-47), which passes through unrenamed and is also
+# copied to `excerpt_language` — see `_build_citation` for why those are two fields.
 _CITATION_FIELD_MAP = {"source_file": "filename", "page": "page_ref"}  # excerpt <- chunk_text (sliced)
 _EXCERPT_MAX_CHARS = 400
 
@@ -460,6 +482,171 @@ async def plan_node(state: AlternativeFinderState, config: RunnableConfig) -> di
 # ---------------------------------------------------------------------------
 # Layer 1 — Deterministic Funnel
 # ---------------------------------------------------------------------------
+async def _rerank_native(db, rank_fusion_stage: dict, query_text: str, num_docs: int) -> list[dict]:
+    """TIER 1 — reranking inside the database, as one more aggregation stage.
+
+    ``$rerank`` is chained AFTER ``$rankFusion`` in the OUTER pipeline. It is deliberately
+    never placed inside ``$rankFusion.input.pipelines`` — the documented limitation is that
+    ``$rerank`` cannot be used *for* ``$rankFusion``/``$scoreFusion`` input pipelines, while
+    chaining it downstream is the pattern MongoDB recommends.
+
+    Raises ``OperationFailure`` (including code 40324 when the deployment does not implement
+    the stage) — the caller decides what to do with it.
+    """
+    return await db["supplier_documents"].aggregate([
+        rank_fusion_stage,
+        {"$limit": _FUSION_LIMIT},
+        {
+            "$rerank": {
+                "query": {"text": query_text},
+                "path": "chunk_text",
+                "model": _RERANK_MODEL,
+                "numDocsToRerank": num_docs,
+            }
+        },
+        {"$project": {"_id": 0, "chunk_id": 1, "supplier_id": 1, "doc_type": 1}},
+    ]).to_list(length=None)
+
+
+async def _rerank_external_voyage(db, fused: list[dict], query_text: str) -> list[dict] | None:
+    """TIER 2 — same model, called over HTTP instead of in-database.
+
+    Returns the fused chunks reordered by Voyage's relevance score, or ``None`` when this tier
+    is unavailable for ANY reason (key not configured, network error, rate limit, invalid key,
+    timeout, unexpected payload). ``None`` means "fall through to tier 3"; this function never
+    raises, because a reranking *preference* must not be able to fail a sourcing run.
+
+    The chunk text is fetched lazily here rather than widened into the Layer-1 projection, so
+    the in-database path never pays to ship chunk text it does not need.
+
+    Chunks whose ``chunk_text`` is empty/missing are not sent to the API (the endpoint rejects
+    empty documents); they are appended after the reranked ones, preserving their fused order.
+
+    SECURITY: the API key is read from settings, passed only in the request header, and never
+    logged. Failure logging is limited to the exception type and, for HTTP errors, the status
+    code — response bodies are deliberately NOT logged, since a provider error body is an
+    uncontrolled string that could echo request material.
+    """
+    settings = get_settings()
+    api_key = settings.voyage_api_key_fallback
+    if not api_key:
+        logger.info(
+            "rerank tier 2 skipped: no fallback Voyage API key configured "
+            "(set VOYAGE_API_KEY_FALLBACK to enable the external reranker)"
+        )
+        return None
+
+    ids = [c["chunk_id"] for c in fused if c.get("chunk_id")]
+    if not ids:
+        return None
+    text_rows = await db["supplier_documents"].find(
+        {"chunk_id": {"$in": ids}}, {"_id": 0, "chunk_id": 1, "chunk_text": 1}
+    ).to_list(length=None)
+    text_by_id = {r["chunk_id"]: (r.get("chunk_text") or "") for r in text_rows}
+
+    rerankable = [c for c in fused if text_by_id.get(c.get("chunk_id"), "").strip()]
+    leftover = [c for c in fused if not text_by_id.get(c.get("chunk_id"), "").strip()]
+    if not rerankable:
+        logger.warning("rerank tier 2 skipped: no fused chunk carried usable chunk_text")
+        return None
+
+    documents = [text_by_id[c["chunk_id"]] for c in rerankable]
+    try:
+        async with httpx.AsyncClient(timeout=_VOYAGE_RERANK_TIMEOUT_S) as client:
+            response = await client.post(
+                _VOYAGE_RERANK_URL,
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={
+                    "query": query_text,
+                    "documents": documents,
+                    "model": _RERANK_MODEL,
+                    "top_k": len(documents),
+                },
+            )
+        response.raise_for_status()
+        results = response.json()["data"]
+    except httpx.HTTPStatusError as exc:
+        # Status code only — never the response body.
+        logger.warning(
+            "rerank tier 2 failed: external reranker returned HTTP %s; falling back to fused order",
+            exc.response.status_code,
+        )
+        return None
+    except Exception as exc:  # network, timeout, malformed payload, missing key in response
+        logger.warning(
+            "rerank tier 2 failed: %s; falling back to fused order", type(exc).__name__
+        )
+        return None
+
+    try:
+        ordered_idx = [
+            int(r["index"])
+            for r in sorted(results, key=lambda r: r.get("relevance_score", 0.0), reverse=True)
+        ]
+    except (TypeError, KeyError, ValueError) as exc:
+        logger.warning(
+            "rerank tier 2 failed: unexpected response shape (%s); falling back to fused order",
+            type(exc).__name__,
+        )
+        return None
+
+    # Defensive on both sides: a repeated index must not duplicate a chunk, and an index the
+    # API omitted must not lose one. Output is always a permutation of the input.
+    reordered: list[dict] = []
+    used: set[int] = set()
+    for i in ordered_idx:
+        if 0 <= i < len(rerankable) and i not in used:
+            used.add(i)
+            reordered.append(rerankable[i])
+    reordered += [c for i, c in enumerate(rerankable) if i not in used]
+    return reordered + leftover
+
+
+async def _rerank_chunks(
+    db, fused: list[dict], rank_fusion_stage: dict, query_text: str
+) -> tuple[list[dict], str]:
+    """Order the fused chunks using the best reranker actually available.
+
+    Three tiers, tried in order, returning ``(ordered_chunks, mode)`` so the caller can report
+    which one ran:
+
+      1. ``_RERANK_MODE_NATIVE``   — in-database ``$rerank``.
+      2. ``_RERANK_MODE_EXTERNAL`` — Voyage AI HTTP API, same model. Reached ONLY when tier 1
+         fails with ``OperationFailure`` code 40324 ("Unrecognized pipeline stage name"),
+         i.e. the deployment does not implement the stage. Every other ``OperationFailure``
+         propagates, because it means something is genuinely wrong with the query or cluster
+         and silently degrading would hide it.
+      3. ``_RERANK_MODE_NONE``    — the ``$rankFusion`` fused order, unchanged. Sanctioned
+         fallback per ADR-007 lines 93-98. Never raises.
+    """
+    if not fused:
+        return [], _RERANK_MODE_NONE
+
+    try:
+        reranked = await _rerank_native(db, rank_fusion_stage, query_text, len(fused))
+        logger.info("rerank tier 1 used: native in-database $rerank (%d chunks)", len(reranked))
+        return reranked, _RERANK_MODE_NATIVE
+    except OperationFailure as exc:
+        if exc.code != _RERANK_UNSUPPORTED_CODE:
+            raise
+        logger.warning(
+            "rerank tier 1 unavailable: this deployment does not implement $rerank "
+            "(OperationFailure code %s); trying the external reranker",
+            _RERANK_UNSUPPORTED_CODE,
+        )
+
+    external = await _rerank_external_voyage(db, fused, query_text)
+    if external is not None:
+        logger.info("rerank tier 2 used: external Voyage API (%d chunks)", len(external))
+        return external, _RERANK_MODE_EXTERNAL
+
+    logger.warning(
+        "rerank tier 3 used: no reranker available, serving $rankFusion fused order unchanged "
+        "(%d chunks)", len(fused)
+    )
+    return fused, _RERANK_MODE_NONE
+
+
 async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> dict:
     """Narrow the supplier universe to a small candidate set — Stage 4.2 (real).
 
@@ -614,22 +801,10 @@ async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> 
         metrics={"candidates_in": corpus_size, "candidates_out": len(fused)},
     )
 
-    # --- 3. native Voyage $rerank -----------------------------------------------------
-    reranked: list[dict] = []
-    if fused:
-        reranked = await db["supplier_documents"].aggregate([
-            _rank_fusion_stage(),
-            {"$limit": _FUSION_LIMIT},
-            {
-                "$rerank": {
-                    "query": {"text": query_text},
-                    "path": "chunk_text",
-                    "model": _RERANK_MODEL,
-                    "numDocsToRerank": len(fused),
-                }
-            },
-            {"$project": {"_id": 0, "chunk_id": 1, "supplier_id": 1, "doc_type": 1}},
-        ]).to_list(length=None)
+    # --- 3. rerank, via the best tier available (see _rerank_chunks) -------------------
+    reranked, rerank_mode = await _rerank_chunks(
+        db, fused, _rank_fusion_stage(), query_text
+    )
 
     # Dedupe reranked chunks to the top distinct suppliers, preserving rerank order.
     ordered_supplier_ids: list[str] = []
@@ -657,14 +832,31 @@ async def funnel_node(state: AlternativeFinderState, config: RunnableConfig) -> 
             "category": category,
         })
 
-    await _emit(
-        config, session_id, "atlas_operation", layer=1,
-        operation_type="$rerank", collection="supplier_documents",
-        description=(
+    # The description must state which tier actually ran — claiming "in-cluster, no external
+    # call" while the external fallback is in use would be a false statement to the operator.
+    _RERANK_DESCRIPTIONS = {
+        _RERANK_MODE_NATIVE: (
             "Native Voyage reranking (in-cluster, no external call), narrowing to top "
             f"{_TARGET_CANDIDATES} suppliers"
         ),
-        metrics={"candidates_in": len(fused), "candidates_out": len(candidates)},
+        _RERANK_MODE_EXTERNAL: (
+            "Native $rerank unavailable on this deployment — reranked via an external "
+            f"Voyage AI API call, narrowing to top {_TARGET_CANDIDATES} suppliers"
+        ),
+        _RERANK_MODE_NONE: (
+            "No reranker available — serving the $rankFusion fused order unchanged, "
+            f"narrowing to top {_TARGET_CANDIDATES} suppliers"
+        ),
+    }
+    await _emit(
+        config, session_id, "atlas_operation", layer=1,
+        operation_type="$rerank", collection="supplier_documents",
+        description=_RERANK_DESCRIPTIONS[rerank_mode],
+        metrics={
+            "candidates_in": len(fused),
+            "candidates_out": len(candidates),
+            "rerank_mode": rerank_mode,
+        },
     )
 
     await _emit(
@@ -699,9 +891,16 @@ def _build_citation(chunk: dict) -> dict:
     The contract keys ``source_file`` / ``page`` / ``excerpt`` have no same-named field in
     the live collection; they are populated from the real fields ``filename`` / ``page_ref``
     / ``chunk_text`` (sliced) per ``_CITATION_FIELD_MAP``. ``chunk_id`` / ``doc_type`` /
-    ``valid_until`` exist as-named. This mapping is explicit and reported, not silent.
+    ``valid_until`` / ``language`` exist as-named. This mapping is explicit and reported,
+    not silent.
+
+    ``language`` and ``excerpt_language`` are both the chunk's BCP-47 tag today, and are kept
+    as two fields on purpose: ``language`` describes the source document, ``excerpt_language``
+    the text actually quoted in ``excerpt``. They diverge the moment an excerpt is translated
+    or summarised, and a consumer that conflates them would then mislabel the quote.
     """
     text = chunk.get("chunk_text", "") or ""
+    language = chunk.get("language")
     return {
         "chunk_id": chunk.get("chunk_id"),
         "doc_type": chunk.get("doc_type"),
@@ -709,12 +908,19 @@ def _build_citation(chunk: dict) -> dict:
         "page": chunk.get("page_ref"),
         "excerpt": text[:_EXCERPT_MAX_CHARS] + ("…" if len(text) > _EXCERPT_MAX_CHARS else ""),
         "valid_until": chunk.get("valid_until"),
+        "language": language,
+        # excerpt is a verbatim slice of chunk_text, so it is in the document's language.
+        "excerpt_language": language,
     }
 
 
 _CHUNK_PROJECTION = {
     "_id": 0, "chunk_id": 1, "doc_type": 1, "chunk_text": 1,
     "filename": 1, "page_ref": 1, "valid_until": 1, "supplier_id": 1,
+    # `language` rides along here so the citation can name the language it quotes without a
+    # second query: this is the only projection that feeds `_build_citation` (the Layer-1
+    # funnel projections stop at chunk_id/supplier_id/doc_type and never reach it).
+    "language": 1,
 }
 
 

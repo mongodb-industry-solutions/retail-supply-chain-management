@@ -15,7 +15,7 @@ Once `risk_evaluator` flags a supplier as CRITICAL, a name alone isn't enough �
 **② `funnel_node`**
 - **What it does:** narrows the whole supplier universe down to five candidates using a pre-filter, hybrid search, and native reranking.
 - **Objective:** hand the expensive reasoning step a short, high-quality shortlist instead of the entire corpus.
-- **MongoDB's role:** fully deterministic — no LLM call at all. A plain `find` builds the candidate pool over `suppliers` (active, matching product category, excluding the disrupted region and the disrupted supplier itself). Then hybrid retrieval over `supplier_documents` — each certificate, contract, or audit excerpt lives as one chunk document holding `chunk_text`, its own `auto_embed_text`, `doc_type`, and `valid_until` all together, so the evidence, its search vector, and its expiry date sit in one place, with no separate file store and no separate vector database. A single `$rankFusion` aggregation combines a `$vectorSearch` arm (on `auto_embed_text`, biased toward step ①'s `doc_type_hint`) and a `$search` arm (full-text, on `chunk_text`) — weighted 70% vector / 30% text. Native Voyage reranking (`$rerank`, model `rerank-2.5`) then runs as a further stage in an aggregation pipeline — never an external API call. One real inefficiency worth flagging: the fusion aggregation runs twice per request — once to size the candidate pool, again inside the rerank pipeline — so the fusion work itself gets paid for twice.
+- **MongoDB's role:** fully deterministic — no LLM call at all. A plain `find` builds the candidate pool over `suppliers` (active, matching product category, excluding the disrupted region and the disrupted supplier itself). Then hybrid retrieval over `supplier_documents` — each certificate, contract, or audit excerpt lives as one chunk document holding `chunk_text`, its own `auto_embed_text`, `doc_type`, and `valid_until` all together, so the evidence, its search vector, and its expiry date sit in one place, with no separate file store and no separate vector database. A single `$rankFusion` aggregation combines a `$vectorSearch` arm (on `auto_embed_text`, biased toward step ①'s `doc_type_hint`) and a `$search` arm (full-text, on `chunk_text`) — weighted 70% vector / 30% text. Native Voyage reranking (`$rerank`, model `rerank-2.5`) then runs as a further stage in an aggregation pipeline — never an external API call. Native `$rerank` rollout can vary by environment, which is expected for a Preview capability, so `funnel_node` wraps this step in a resilience fallback (native → external Voyage API → unranked fused order) and reports which tier actually ran; the pipeline keeps working regardless. One real inefficiency worth flagging: the fusion aggregation runs twice per request — once to size the candidate pool, again inside the rerank pipeline — so the fusion work itself gets paid for twice.
 - **Collections:** reads `suppliers`, `supplier_documents` (`$rankFusion` + `$rerank`).
 
 **③ `reflect_critique_node`**
@@ -47,6 +47,9 @@ Once `risk_evaluator` flags a supplier as CRITICAL, a name alone isn't enough �
 
 1. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `funnel_node`, combining a `$vectorSearch` arm and a `$search` arm into one fused, ranked result.
 2. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as a further aggregation stage in the same pipeline; candidates are never pulled out to an external API.
+
+   > **Note:** Native `$rerank` rollout can vary by environment. This project includes a resilience fallback (native → external Voyage API → unranked fused order) so the pipeline keeps working regardless.
+
 3. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — the vector arm of the hybrid search over `supplier_documents`, plus a separate cross-supplier precedent search over `agent_memory` in `reflect_critique_node`.
 4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search on `supplier_documents.chunk_text`, the lexical arm of the hybrid search. Confirmed to appear in exactly this one place — no other node uses it.
 5. [Atlas Auto-Embedding](https://www.mongodb.com/docs/vector-search/crud-embeddings/automated-embedding/) — confirmed identical to `risk_evaluator`: both `supplier_documents` and `agent_memory` declare `auto_embed_text` and pass a plain text query; Atlas generates and maintains the embedding, no client-side vector computed anywhere in this module.
@@ -94,7 +97,9 @@ Once `risk_evaluator` flags a supplier as CRITICAL, a name alone isn't enough �
             "source_file": "iso9001_2025.pdf",
             "page": 1,
             "excerpt": "ISO 9001:2015 — scope: rigid and flexible packaging manufacturing...",
-            "valid_until": "2027-03-01"
+            "valid_until": "2027-03-01",
+            "language": "en",
+            "excerpt_language": "en"
           }
         }
       ],
@@ -144,3 +149,4 @@ curl -N -X POST http://localhost:8000/api/alternative-finder/find \
 - [ADR-007](../../docs/adr/007-backend-native_reranking.md) — Native In-Pipeline Reranking
 - [ADR-008](../../docs/adr/008-backend-precedent_signals_no_fusion.md) — Two Separate Precedent Signals (why exact and semantic precedent are never fused into one score)
 - [ADR-009](../../docs/adr/009-backend-agent_memory_single_writer.md) — `agent_memory`: precedent reads now, closure-loop write deferred by design (this module never writes to `agent_memory`)
+- [ADR-011](../../docs/adr/011-backend-multilingual-retrieval.md) — Multilingual retrieval: language-agnostic evidence, and the rerank fallback chain this module relies on

@@ -46,12 +46,13 @@ sidecarContainers:
             name: retail-supply-chain-management-prod
             key: DATABASE_NAME
 
-      # Voyage AI API Key (embeddings)
-      - name: VOYAGE_API_KEY
+      # Voyage AI API Key — external rerank fallback (used only when native
+      # $rerank is unavailable on the deployed cluster; see ADR-011/ADR-007)
+      - name: VOYAGE_API_KEY_FALLBACK
         valueFrom:
           secretKeyRef:
             name: retail-supply-chain-management-prod
-            key: VOYAGE_API_KEY
+            key: VOYAGE_API_KEY_FALLBACK
 
       - name: LLM_API_KEY
         valueFrom:

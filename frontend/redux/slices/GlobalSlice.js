@@ -100,9 +100,22 @@ const GlobalSlice = createSlice({
         "[appendAlternativeSuppliersAgentReasoning] data.layer !== null",
         data.layer !== null,
       );
+      const eventName = data.event || data.type;
       if (data.layer !== null)
         state.alternativeSuppliersAgentReasoning[data.layer].steps.push(data);
-      else if (
+      // Errors arrive without a layer — attach them to the phase that was
+      // running so ReActAgent renders them instead of dropping them
+      else if (eventName === "error") {
+        const layers = state.alternativeSuppliersAgentReasoning;
+        let activeLayer = 0;
+        for (let i = layers.length - 1; i >= 0; i--) {
+          if (layers[i].steps.length > 0) {
+            activeLayer = i;
+            break;
+          }
+        }
+        layers[activeLayer].steps.push(data);
+      } else if (
         data.event == "alternative_finder_started" ||
         data.event == "stream_end"
       )

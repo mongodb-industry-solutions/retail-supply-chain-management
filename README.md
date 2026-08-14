@@ -28,13 +28,16 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
   LangGraph. Narrows candidates with `$rankFusion` hybrid search (vector + full-text), reranks natively in-pipeline with `$rerank`, cross-checks each candidate against its own cited documents and historical precedent, then ranks survivors by `$geoNear` proximity. Human-in-the-loop: the final pick is always the procurement manager's call.
 
 - **One dataset, every collection type in play**
-  Suppliers, purchase orders, a risk catalog, supplier documents, and historical agent memory episodes all live in [`docs/database-files/`](./docs/database-files/) — so you can run the full demo end to end.
+  Suppliers, purchase orders, a risk catalog, supplier documents, and historical agent memory episodes all live in [`docs/setup/collections/`](./docs/setup/collections/) — so you can run the full demo end to end.
 
 ### MongoDB Atlas capabilities used in this demo
 
 1. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` (risk precedent) and `supplier_documents` (certifications, contracts), with Atlas Auto-Embedding — no separate embedding pipeline to maintain.
 2. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
 3. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as an aggregation stage inside Atlas; candidates are never pulled out to an external API to be reranked.
+
+   > **Note:** Native `$rerank` is a Preview capability whose rollout can vary by environment. This project includes a resilience fallback so the demo keeps working regardless — falling back to an external call to the same Voyage model, and finally to the unreranked `$rankFusion` order if needed.
+
 4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search over `supplier_documents` chunks, the lexical half of the hybrid search.
 5. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `risk_evaluator`, so a physical disruption (a storm, a port closure) only affects suppliers actually within its radius.
 6. [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/) — proximity ranking in `alternative_finder`, factoring distance-to-distribution-center into how alternative suppliers are ranked.
@@ -67,7 +70,7 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
 - [`risk_evaluator` README](./backend/risk_evaluator/README.md)
 - [`alternative_finder` README](./backend/alternative_finder/README.md)
 - [Architecture Decision Records](./docs/adr/) — the reasoning behind each design choice. You can also learn about the good practices and patterns related to this demo as a PoC.
-- [Dataset & seed setup](./docs/database-files/) — sample data to populate your own Atlas cluster for this demo, with a guide to unlock advanced features like auto-embed and native rerank
+- [Dataset & seed setup](./docs/setup/collections/) — sample data to populate your own Atlas cluster for this demo, with a guide to unlock advanced features like auto-embed and reranking (native `$rerank` where the environment exposes it, with a resilience fallback otherwise). The supplier paperwork is deliberately multilingual: 12 of the 146 chunks are in the language their issuer actually wrote them in.
 
 ---
 
@@ -79,7 +82,11 @@ retail-supply-chain-management/
 ├── backend/                # FastAPI backend (vertical slice architecture)
 ├── docs/
 │   ├── adr/                # Architecture Decision Records (backend-tagged; frontend series to follow)
-│   ├── database-files/     # Seed data (suppliers, orders, risk catalog, agent memory) + setup guide
+│   ├── setup/
+│   │   ├── collections/    # Seed data (suppliers, purchase orders, risk catalog, supplier_documents,
+│   │   │                   #   supplier_alternatives, agent memory) + setup guide
+│   │   ├── indexes/        # Search / vector / geospatial index definitions
+│   │   └── atlas-triggers/ # Optional scheduled triggers (session cleanup, cert renewal)
 │   └── images/              # Diagrams used in this README
 ├── docker-compose.yml      # Orchestrates services
 └── makefile                # Dev commands
@@ -95,7 +102,7 @@ retail-supply-chain-management/
 - Anthropic API key — used by `risk_evaluator` and `alternative_finder` for their LLM calls (risk summaries, planning, auditing, rationales)
 - Voyage AI API key — used by Atlas for `agent_memory` / `supplier_documents` auto-embedding and the native `$rerank` stage in `alternative_finder`
 - [Atlas Charts](https://www.mongodb.com/products/charts) dashboard configured with your cluster
-- Sample data loaded into your cluster — see [`docs/database-files/`](./docs/database-files/) for the seed files (suppliers, purchase orders, risk catalog, supplier documents, and historical `agent_memory` episodes)
+- Sample data loaded into your cluster — see [`docs/setup/collections/`](./docs/setup/collections/) for the seed files (suppliers, purchase orders, risk catalog, supplier documents, and historical `agent_memory` episodes)
 - Environment configuration files (`.env`) for each service, using the example files as a template:
   - [frontend](./frontend/EXAMPLE.env)
   - [backend](./backend/.env.example)

@@ -82,7 +82,18 @@ judging whether a candidate supplier is a safe replacement.
 `chunk_index`/`chunk_total`; `doc_type` (`certificate`/`contract`/
 `audit_report`/`sustainability_report`/`email`); `chunk_text` (the
 extracted passage); `auto_embed_text` (text indexed for semantic
-search); `valid_until` (ISO-8601 string, relevant for certificates).
+search); `valid_until` (ISO-8601 string, relevant for certificates);
+`language` (BCP-47 tag for the language the passage is actually written
+in — e.g. `en`, `es-MX`, `es-CO`, `es-PE`, `es-ES`, `zh-Hans`, `zh-Hant`,
+`vi`, `ar`, `nl`, `de`, `pt-BR`, `ja`, `th`, `pl`, `it`, `fr-CA`).
+**On `language`:** it is present on every document, and a substantial
+minority are in a language other than English — real supplier paperwork
+is written in the language of whoever issued it, not in English by
+default. Retrieval does not *rank* on this field, but it is no longer
+purely descriptive: `alternative_finder` copies it into each citation it
+builds, as `language` / `excerpt_language`, so a reviewer can see which
+language the quoted evidence is in. See
+[ADR-011](../../adr/011-backend-multilingual-retrieval.md).
 **Reads:** `alternative_finder` only. **Writes:** none — reference data.
 **On the chunks:** this demo ships only the already-chunked text, not the
 original source files (PDFs, emails) they came from — those aren't part
@@ -157,7 +168,17 @@ structured `{term, definition}` shape as in `supplier_risk_evaluations`
 terms that candidate's `rationale` uses).
 **Reads:** none of the current modules (it's a terminal output, meant for
 a UI/reviewer). **Writes:** `alternative_finder` only — session-generated,
-same caveat as above: this is a shape reference, not a stable seed.
+so a live run always creates its own documents rather than reading these.
+**On this seed:** it ships 4 curated example runs carrying 49 citations,
+many of which quote a non-English source document — so it doubles as a
+worked example of what multilingual evidence looks like end to end, not
+only a field-shape reference. Note that none of those 49 citations carry
+the `language` / `excerpt_language` fields: they predate
+[ADR-011 Decision 8](../../adr/011-backend-multilingual-retrieval.md),
+which added those two BCP-47 tags to the citation built by a live run.
+The seed is deliberately left untagged as a reference for the pre-change
+shape, so **treat both fields as optional** — consumers render nothing
+rather than "Unknown" when they are absent.
 **Note:** this schema is still evolving as the module is actively being
 extended — don't treat it as final.
 
