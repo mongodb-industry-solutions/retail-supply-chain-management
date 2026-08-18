@@ -33,18 +33,19 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
 ### MongoDB Atlas capabilities used in this demo
 
 1. [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) — semantic search over `agent_memory` (risk precedent) and `supplier_documents` (certifications, contracts), with Atlas Auto-Embedding — no separate embedding pipeline to maintain.
-2. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
-3. [Native `$rerank`](https://www.mongodb.com/docs/vector-search/hybrid-search/vector-search-with-full-text-search/) — Voyage's reranking model running as an aggregation stage inside Atlas; candidates are never pulled out to an external API to be reranked.
+2. [Atlas Auto-Embedding](https://www.mongodb.com/company/blog/product-release-announcements/ai-search-for-agents-announcing-automated-embedding-atlas) — Atlas generates and keeps embeddings in sync automatically for `agent_memory` and `supplier_documents`; no separate embedding pipeline to maintain.
+3. [`$rankFusion`](https://www.mongodb.com/resources/products/capabilities/hybrid-search) — hybrid search in `alternative_finder`, combining vector similarity and full-text relevance into a single ranked result.
+4. [Native `$rerank`](https://www.mongodb.com/company/blog/product-release-announcements/improving-agent-retrieval-native-reranking-hybrid-search) — Voyage's reranking model running as an aggregation stage inside Atlas; candidates are never pulled out to an external API to be reranked.
 
    > **Note:** Native `$rerank` is a Preview capability whose rollout can vary by environment. This project includes a resilience fallback so the demo keeps working regardless — falling back to an external call to the same Voyage model, and finally to the unreranked `$rankFusion` order if needed.
 
-4. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search over `supplier_documents` chunks, the lexical half of the hybrid search.
-5. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `risk_evaluator`, so a physical disruption (a storm, a port closure) only affects suppliers actually within its radius.
-6. [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/) — proximity ranking in `alternative_finder`, factoring distance-to-distribution-center into how alternative suppliers are ranked.
-7. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used throughout for operational context (e.g. active purchase orders per supplier) alongside the search stages above.
-8. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — powers the geospatial queries on `suppliers.location`.
-9. [Compound indexes](https://www.mongodb.com/docs/manual/core/index-compound/) — e.g. `supplier_id + risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
-10. **Session cleanup** — demo-session data in `external_conditions` needs periodic cleanup; either a [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/) or also an [Atlas Scheduled Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/) can implement this.
+5. [`$search`](https://www.mongodb.com/docs/atlas/atlas-search/) — full-text search over `supplier_documents` chunks, the lexical half of the hybrid search.
+6. [`$geoWithin` / `$centerSphere`](https://www.mongodb.com/docs/manual/geospatial-queries/) — geospatial matching in `risk_evaluator`, so a physical disruption (a storm, a port closure) only affects suppliers actually within its radius.
+7. [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/) — proximity ranking in `alternative_finder`, factoring distance-to-distribution-center into how alternative suppliers are ranked.
+8. [Aggregation pipelines](https://www.mongodb.com/docs/manual/aggregation/) — used throughout for operational context (e.g. active purchase orders per supplier) alongside the search stages above.
+9. [2dsphere index](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-geospatial/) — powers the geospatial queries on `suppliers.location`.
+10. [Compound indexes](https://www.mongodb.com/docs/manual/core/index-compound/) — e.g. `supplier_id + risk_type` on `agent_memory`, keeping precedent lookups fast as the collection grows.
+11. **Session cleanup** — demo-session data in `external_conditions` needs periodic cleanup; either a [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/) or also an [Atlas Scheduled Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/) can implement this.
 
 
 ---
@@ -157,10 +158,10 @@ Agentic AI workloads break assumptions most data platforms were never built for.
 Agentic systems need operational data, vector embeddings, full-text search, and reranking to all be queryable together — an agent reasoning across a disruption doesn't have time to round-trip between four different systems to assemble context. MongoDB is the only platform that unifies all of it — database, vector store, search engine, and reranker — in one place, queried through a [single aggregation pipeline](https://www.mongodb.com/company/blog/technical/converged-datastore-for-agentic-ai). This demo's `alternative_finder` proves it end to end: [`$rankFusion`](https://www.mongodb.com/company/blog/technical/harness-power-atlas-search-vector-search-with-rankfusion) and [native `$rerank`](https://www.mongodb.com/products/updates/) run as stages in the same pipeline, no data ever leaves Atlas.
 
 ### 2. Architecturally built for AI
-Agentic workloads deal with messy, evolving, real-world entities — suppliers, contracts, incidents — that don't fit a fixed relational shape and never stop changing. A [flexible, document-native schema](https://www.mongodb.com/company/blog/technical/from-prompt-production-mongodb-atlas-agentic-dev) lets that data evolve at the pace of the business, not the pace of a migration.
+Agentic workloads deal with messy, evolving, real-world entities — suppliers, contracts, incidents — that don't fit a fixed relational shape and never stop changing. A [flexible, document-native schema](https://www.mongodb.com/company/blog/innovation/production-ready-agents-need-production-ready-data-platform) lets that data evolve at the pace of the business, not the pace of a migration.
 
 ### 3. Trustworthy, secure, and governed by default
-An autonomous agent making decisions over sensitive operational data raises the stakes on security, not just the convenience. Nothing about agentic AI matters if the platform underneath it can't be trusted — [encryption, access control, and governance need to be defaults built into the platform](https://www.mongodb.com/products/capabilities/security), not something bolted on after an agent is already querying live data.
+An autonomous agent making decisions over sensitive operational data [raises the stakes on security](https://www.mongodb.com/company/blog/innovation/security-in-the-age-of-ai), not just the convenience. Nothing about agentic AI matters if the platform underneath it can't be trusted — [encryption, access control, and governance need to be defaults built into the platform](https://www.mongodb.com/products/capabilities/security), not something bolted on after an agent is already querying live data.
 
 
 ### 4. Build once, run anywhere

@@ -135,7 +135,7 @@ export default function Step2() {
 
       <ReActAgent
         title="Identifying affected suppliers"
-        subtitle="The ReAct (Reason + Act) agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
+        subtitle="The agent will cross-reference all active external conditions against your supplier base to determine which suppliers are impacted, and to which degree."
         phases={[
           {
             name: null,
@@ -151,7 +151,7 @@ export default function Step2() {
         show={logsOpen}
         onHide={() => setLogsOpen(false)}
         title="Agent Execution Logs"
-        subtitle="ReAct Agent powered by LangGraph + MongoDB Atlas"
+        subtitle="Agent powered by LangGraph + MongoDB Atlas"
         phases={[{ name: "Affected suppliers", steps: affectedSuppliersAgentReasoning || [] }]}
       />
 

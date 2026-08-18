@@ -86,7 +86,7 @@ function buildDisplayItems(events) {
 
 export default function ReActAgent({
   phases,
-  agentCurrentThought = "ReAct Agent",
+  agentCurrentThought = "Agent",
   title,
   subtitle,
   onComplete,
@@ -321,7 +321,7 @@ export default function ReActAgent({
           </div>
         </div>
 
-        {!showDone && agentCurrentThought && agentCurrentThought !== "ReAct Agent" && (
+        {!showDone && agentCurrentThought && agentCurrentThought !== "Agent" && (
           <div
             style={{
               marginTop: spacing[300],

@@ -86,15 +86,11 @@ Session-scoped documents expire after 2 hours without any service needing to man
 **3. The shared schema is the contract.**  
 When the ingestion_engine writes to `external_conditions`, the document structure it writes is the contract the risk_evaluator depends on.
 
-> **Current implementation status.** This contract is a convention today, **not enforced by a shared `core/schemas/` package** — that package does not exist. `core/` holds only infrastructure (`config`, `db`, `session`, `exceptions`, `json_utils`, `glossary`). Each slice defines its own Pydantic models in its local `schemas.py`, and the persisted documents are in several cases hand-built dicts that diverge from those models (e.g. `risk_evaluator` writes `supplier_risk_evaluations` as a dict that adds `is_base`/`evaluated_at`/`memory_episodes_used` and omits the model's `location`). The "compile-time propagation" described here is the intended target, not current behavior.
-
 ---
 
 ## The shared schema problem
 
 The main risk of a shared database is schema coupling: if one service changes the structure of a document, it can silently break all readers. We mitigate this with two practices:
-
-**Pydantic models per slice** — the intended mitigation is that document schemas are shared and every read and write goes through them, so a breaking change fails loudly at the slice boundary. *Current status:* there is no shared `core/schemas/` package; each slice keeps its own `schemas.py`, and not every write goes through a model (some are hand-built dicts). Consolidating schemas into a shared, enforced location remains future work.
 
 **ODL ownership rule** — only the owning service writes to a collection. Schema changes are always initiated by the owner, never by a consumer. The owner is responsible for backward compatibility or coordinating the migration.
 
