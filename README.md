@@ -52,8 +52,8 @@ None of this is fast enough on a patchwork of legacy ERP tables, a separate vect
 
 ## 🧩 Architecture Overview
 
-![Architecture Overview](docs/images/architecture_detailed.jpg)
-![Workflow Diagram](docs/images/workflow_diagram.png)
+![Architecture Overview](docs/images/architecture_detailed.svg)
+![Workflow Diagram](docs/images/workflow_diagram.svg)
 
 | Component | Description |
 |-----------|-------------|
