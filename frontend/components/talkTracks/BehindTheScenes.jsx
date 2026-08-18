@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Body, H3, Link } from "@leafygreen-ui/typography";
-import { OrderedList, OrderedListItem } from "@leafygreen-ui/ordered-list";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { Container } from "react-bootstrap";
@@ -33,6 +32,7 @@ function Lead({ children }) {
 
 const steps = [
   {
+    step: "Step 0",
     title: "Unstructured Document Ingestion",
     description: (
       <Body style={bodyStyle}>
@@ -51,18 +51,25 @@ const steps = [
     ),
   },
   {
+    step: "Step 1",
     title: "Decouple from the ERP",
     description: (
       <Body style={bodyStyle}>
         An ERP enforces business rules and owns transactional workflows.
-        Leave it there. Stream its supplier and order data into Atlas through
-        CDC, and let agents read from that copy instead of the ERP directly.
-        This decoupling is the point: new capabilities evolve above the ERP,
-        on their own timeline.
+        Stream its supplier and order data into Atlas through CDC, and let
+        agents read from that copy instead of the ERP directly. This{" "}
+        <Link
+          href="https://github.com/mongodb-industry-solutions/retail-supply-chain-management/blob/main/docs/adr/005-backend-operational-data-layer.md#demo-vs-production"
+          target="_blank"
+        >
+          decoupling is the point
+        </Link>
+        : new capabilities evolve above the ERP, on their own timeline.
       </Body>
     ),
   },
   {
+    step: "Step 2–3",
     title: "External Risk Signal Ingestion",
     description: (
       <Body style={bodyStyle}>
@@ -88,6 +95,7 @@ const steps = [
     ),
   },
   {
+    step: "Step 4",
     title: "Supplier Risk Evaluation (Risk Evaluator Agent)",
     description: (
       <Body style={bodyStyle}>
@@ -112,6 +120,7 @@ const steps = [
     ),
   },
   {
+    step: "Step 5",
     title: "Alternative Supplier Discovery (Alternative Supplier Finder Agent)",
     description: (
       <Body style={bodyStyle}>
@@ -154,6 +163,7 @@ const steps = [
     ),
   },
   {
+    step: "Step 6",
     title: "Memory Enrichment",
     description: (
       <Body style={bodyStyle}>
@@ -181,6 +191,52 @@ const steps = [
     ),
   },
 ];
+
+function StepList({ items }) {
+  return (
+    <div style={{ marginTop: spacing[300] }}>
+      {items.map((item, index) => (
+        <div
+          key={item.title}
+          style={{
+            display: "flex",
+            gap: spacing[300],
+            paddingTop: spacing[300],
+            paddingBottom: spacing[300],
+            borderTop:
+              index === 0 ? "none" : `1px solid ${palette.gray.light2}`,
+          }}
+        >
+          <div
+            style={{
+              flexShrink: 0,
+              minWidth: 64,
+              fontWeight: 700,
+              fontSize: 13,
+              color: palette.green.dark2,
+              paddingTop: 2,
+            }}
+          >
+            {item.step}
+          </div>
+          <div>
+            <Body
+              style={{
+                ...bodyStyle,
+                fontWeight: 700,
+                color: palette.gray.dark3,
+                marginBottom: spacing[100],
+              }}
+            >
+              {item.title}
+            </Body>
+            {item.description}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const BehindTheScenes = () => {
   return (
@@ -268,15 +324,7 @@ const BehindTheScenes = () => {
         }}
       />
 
-      <OrderedList>
-        {steps.map((step) => (
-          <OrderedListItem
-            key={step.title}
-            title={step.title}
-            description={step.description}
-          />
-        ))}
-      </OrderedList>
+      <StepList items={steps} />
     </Container>
   );
 };
