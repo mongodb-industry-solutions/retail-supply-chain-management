@@ -23,7 +23,7 @@ const HowToStep2 = () => {
       <Body style={bodyStyle}>
         This is <Lead>Step 2 · Identify Affected Suppliers</Lead>. The three
         external conditions from Step 1 are now cross-referenced against the
-        retailer&apos;s supplier base by a <Lead>ReAct agent</Lead> — reason,
+        retailer&apos;s supplier base by an <Lead>Agent</Lead> — reason,
         act, repeat — to answer one question: which of my suppliers are actually
         at risk, and how badly?
       </Body>
@@ -83,8 +83,8 @@ const HowToStep2 = () => {
               </Body>
               <Screenshot
                 src="/images/howTo/agent-1.png"
-                alt="ReAct agent running with its reasoning steps appearing one by one"
-                caption="Identifying affected suppliers — the ReAct loop in progress."
+                alt="Agent running with its reasoning steps appearing one by one"
+                caption="Identifying affected suppliers — the agent loop in progress."
               />
               <SayThis>
                 &ldquo;It isn&apos;t running one query. It reasons, calls a tool,

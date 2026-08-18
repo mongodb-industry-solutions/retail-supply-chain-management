@@ -21,7 +21,7 @@ const HowToStep3 = () => {
 
       <Body style={bodyStyle}>
         This is <Lead>Step 3 · Search for Alternative Suppliers</Lead> — Phase 2
-        of the demo, where the disruption gets resolved. A second ReAct agent
+        of the demo, where the disruption gets resolved. A second agent
         searches the retailer&apos;s unstructured document library — PDFs,
         emails, contracts, audit reports — to find suppliers that can actually
         replace the critical one you selected in Step 2, and proves each claim
@@ -185,11 +185,11 @@ const HowToStep3 = () => {
           }
         />
         <OrderedListItem
-          title="Close the loop with Escalate"
+          title="Close the loop with Elect"
           description={
             <>
               <Body style={bodyStyle}>
-                Click <Lead>Escalate</Lead> at the bottom right of a card. A
+                Click <Lead>Elect</Lead> at the bottom right of a card. A
                 full-page <Lead>Congratulations!</Lead> modal confirms the
                 decision; <Lead>Got it 👍</Lead> closes it. The approval is
                 written back to MongoDB Atlas and enriches the agent&apos;s
@@ -197,8 +197,8 @@ const HowToStep3 = () => {
               </Body>
               <Screenshot
                 src="/images/howTo/end.png"
-                alt="Congratulations modal shown after escalating an alternative supplier"
-                caption="Escalate — the human approval that closes the loop."
+                alt="Congratulations modal shown after electing an alternative supplier"
+                caption="Elect — the human approval that closes the loop."
               />
               <SayThis>
                 &ldquo;A human made the call, and the system just learned from

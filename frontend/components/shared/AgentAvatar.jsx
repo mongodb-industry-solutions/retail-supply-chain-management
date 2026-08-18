@@ -4,7 +4,7 @@ import { Body } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Image from "next/image";
 
-export default function AgentAvatar({ agentCurrentThought = "ReAct Agent", idle = false }) {
+export default function AgentAvatar({ agentCurrentThought = "Agent", idle = false }) {
   return (
     <div>
       <Image
