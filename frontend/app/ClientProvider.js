@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { Provider, useDispatch } from "react-redux";
 import { Body } from "@leafygreen-ui/typography";
 import Button from "@leafygreen-ui/button";
@@ -14,7 +15,7 @@ function SessionInitializer({ children }) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const newSessionId = crypto.randomUUID();
+    const newSessionId = uuidv4();
     dispatch(setSessionId(newSessionId));
 
     fetch("/api/simulation/start", {
