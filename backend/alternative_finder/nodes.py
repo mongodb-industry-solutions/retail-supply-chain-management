@@ -312,9 +312,8 @@ def _make_llm() -> ChatAnthropic:
     settings = get_settings()
     return ChatAnthropic(
         model=settings.anthropic_model,
-        api_key="placeholder",
+        api_key=settings.llm_api_key,
         base_url=settings.llm_base_url,
-        default_headers={"api-key": settings.llm_api_key},
     )
 
 
