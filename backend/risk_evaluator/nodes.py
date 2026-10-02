@@ -423,9 +423,8 @@ async def reason_and_retrieve(state: RiskEvaluatorState, config: RunnableConfig)
 
     llm = ChatAnthropic(
         model=get_settings().anthropic_model,
-        api_key="placeholder",
+        api_key=get_settings().llm_api_key,
         base_url=get_settings().llm_base_url,
-        default_headers={"api-key": get_settings().llm_api_key},
     )
 
     # ── build initial context prompt ─────────────────────────────────────────
@@ -1020,9 +1019,8 @@ async def generate_summary(state: RiskEvaluatorState, config: RunnableConfig) ->
     db = await get_database()
     llm = ChatAnthropic(
         model=get_settings().anthropic_model,
-        api_key="placeholder",
+        api_key=get_settings().llm_api_key,
         base_url=get_settings().llm_base_url,
-        default_headers={"api-key": get_settings().llm_api_key},
     )
 
     _ALERT_STATUSES = {"CRITICAL", "ALERT", "WATCH"}
