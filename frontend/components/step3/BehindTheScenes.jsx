@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Body } from "@leafygreen-ui/typography";
 import { OrderedList, OrderedListItem } from "@leafygreen-ui/ordered-list";
 import { spacing } from "@leafygreen-ui/tokens";
@@ -123,6 +124,68 @@ export default function BehindTheScenes() {
         suppliers, more documents, more risk types is just more data in the same
         place — not a new system to bolt on and keep in sync.
       </WhyMongoDB>
+
+      <div style={{ marginTop: spacing[400] }}>
+        <Body as="h3" weight="medium" style={{ marginBottom: spacing[200] }}>
+          Powerful pipeline: match, rankFusion and rerank
+        </Body>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: spacing[200],
+          }}
+        >
+          {["Pipeline", "PipelineFirst", "PipelineSecond"].map(
+            (name, index) => (
+              <Image
+                key={name}
+                src={`/images/behindTheScenes/${name}.svg`}
+                alt={`${name} search pipeline diagram`}
+                width={960}
+                height={540}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  gridColumn: index === 0 ? "1 / -1" : undefined,
+                }}
+              />
+            ),
+          )}
+        </div>
+      </div>
+
+      <div style={{ marginTop: spacing[400] }}>
+        <Body as="h3" weight="medium" style={{ marginBottom: spacing[200] }}>
+          Multilingual Capabilities with Voyage AI
+        </Body>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: spacing[200],
+          }}
+        >
+          {[
+            "SharedVectorSpace",
+            "SemanticSearch1",
+            "SemanticSearch2",
+          ].map((name, index) => (
+              <Image
+                key={name}
+                src={`/images/behindTheScenes/${name}.svg`}
+                alt={`${name} multilingual search diagram`}
+                width={960}
+                height={540}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  gridColumn: index === 0 ? "1 / -1" : undefined,
+                }}
+              />
+            ))}
+        </div>
+      </div>
     </BehindTheScenesCard>
   );
 }
