@@ -127,7 +127,7 @@ export default function BehindTheScenes() {
 
       <div style={{ marginTop: spacing[400] }}>
         <Body as="h3" weight="medium" style={{ marginBottom: spacing[200] }}>
-          Powerfull pipeline: match, rankFusion and rerank
+          Powerful pipeline: match, rankFusion and rerank
         </Body>
         <div
           style={{
